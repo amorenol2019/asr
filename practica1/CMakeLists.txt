@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(practica1)
 
-find_package(Boost REQUIRED COMPONENTS
+find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	std_msgs
 	roslint
