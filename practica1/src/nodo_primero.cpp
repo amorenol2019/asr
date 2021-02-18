@@ -54,6 +54,8 @@ private:
 
 int main(int argc, char **argv)
 {
+  //un comentario
+
   ros::init(argc, argv, "bump");
 
   Bump bump;
