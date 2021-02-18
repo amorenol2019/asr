@@ -32,15 +32,16 @@ public:
 
   void messageCallback(const kobuki_msgs::BumperEvent::ConstPtr& msg)
   {
-    // pressed_ = (...);
-
-    //  ...
+    is_pressed_ = msg->state;
   }
 
   void move()
   {
     geometry_msgs::Twist vel;
-    // pub_vel_.publish(...);
+    if(is_pressed_) vel.linear.x = 0.0;
+    else vel.linear.x = 0.2;
+
+    robot_vel_.publish(vel);
   }
 
 private:
