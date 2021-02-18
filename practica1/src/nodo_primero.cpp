@@ -19,14 +19,14 @@
 class Bump
 {
 public:
-  Bump():
+  Bump()
   {
     is_pressed_ = false;
     //Se suscribe al bumper
-    sub_bumper_ = n.subscribe("/mobile_base/events/bumper", 1, &Bump::messageCallback, this);
+    sub_bumper_ = n_.subscribe("/mobile_base/events/bumper", 1, &Bump::messageCallback, this);
 
     //Publica en el topic de los comandos de velocidad
-    robot_vel_ = n.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
+    robot_vel_ = n_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
 
   }
 
@@ -55,7 +55,6 @@ private:
 
 int main(int argc, char **argv)
 {
-  //un comentario
 
   ros::init(argc, argv, "bump");
 
