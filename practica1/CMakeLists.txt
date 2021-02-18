@@ -14,7 +14,7 @@ catkin_package(
 CATKIN_DEPENDS roscpp std_msgs kobuki_msgs sensor_msgs
 )
 
-include directories(
+include_directories(
 	${catkin_INCLUDE_DIRS}
 )
 
