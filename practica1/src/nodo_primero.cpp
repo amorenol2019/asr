@@ -32,7 +32,7 @@ public:
 
   void messageCallback(const kobuki_msgs::BumperEvent::ConstPtr& msg)
   {
-    is_pressed_ = msg->state ;
+    is_pressed_ = msg->state == msg->PRESSED;
   }
 
   void move()
