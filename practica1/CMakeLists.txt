@@ -3,15 +3,12 @@ project(practica1)
 
 find_package(catkin REQUIRED COMPONENTS
 	roscpp
-	std_msgs
-	roslint
-	sensor_msgs
 	kobuki_msgs
-	rospy
+	geometry_msgs
 )
 
 catkin_package(
-CATKIN_DEPENDS roscpp std_msgs kobuki_msgs sensor_msgs
+CATKIN_DEPENDS roscpp
 )
 
 include_directories(
@@ -20,7 +17,3 @@ include_directories(
 
 add_executable(nodo_primero src/nodo_primero.cpp)
 target_link_libraries(nodo_primero ${catkin_LIBRARIES})
-
-roslint_cpp(
-	src/nodo_primero.cpp
-)

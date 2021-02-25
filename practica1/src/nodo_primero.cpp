@@ -22,12 +22,8 @@ public:
   Bump()
   {
     is_pressed_ = false;
-    //Se suscribe al bumper
     sub_bumper_ = n_.subscribe("/mobile_base/events/bumper", 1, &Bump::messageCallback, this);
-
-    //Publica en el topic de los comandos de velocidad
     robot_vel_ = n_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
-
   }
 
   void messageCallback(const kobuki_msgs::BumperEvent::ConstPtr& msg)
@@ -38,8 +34,11 @@ public:
   void move()
   {
     geometry_msgs::Twist vel;
-    if(is_pressed_) vel.linear.x = 0.0;
-    else vel.linear.x = 0.2;
+    if(is_pressed_) {
+      vel.linear.x = 0.0;
+    } else {
+      vel.linear.x = 0.2;
+    }
 
     robot_vel_.publish(vel);
   }
@@ -52,10 +51,8 @@ private:
   ros::Publisher robot_vel_;
 };
 
-
 int main(int argc, char **argv)
 {
-
   ros::init(argc, argv, "bump");
 
   Bump bump;
