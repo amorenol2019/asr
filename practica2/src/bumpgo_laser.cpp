@@ -23,7 +23,6 @@
 
 int main(int argc, char **argv)
 {
-
   Detector detector;
 
   ros::Rate loop_rate(20);

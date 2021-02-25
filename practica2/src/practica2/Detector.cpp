@@ -23,7 +23,7 @@ namespace practica2
 
   Detector(): state_(GOING_FORWARD), pressed_(false)
   {
-    sub_detect = n_.subscribe("/scan",1,&Detector::detectorCallback, this)
+    sub_detect = n_.subscribe("/scan",1,&Detector::detectorCallback, this);
     pub_detect = n_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
   }
 
