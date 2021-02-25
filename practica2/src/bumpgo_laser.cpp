@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "practica2/detect.h"
-
+#include "practica2/Detector.h"
 #include "ros/ros.h"
 
-#include "kobuki_msgs/BumperEvent.h"
+#include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Twist.h"
 
 #define TURNING_TIME 5.0
@@ -24,15 +23,14 @@
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "bumpgo");
 
-  BumpGo bumpgo;
+  Detector detector;
 
   ros::Rate loop_rate(20);
 
   while (ros::ok())
   {
-    bumpgo.step();
+    detector.step();
 
     ros::spinOnce();
     loop_rate.sleep();

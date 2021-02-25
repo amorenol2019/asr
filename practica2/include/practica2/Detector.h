@@ -16,14 +16,17 @@
 #ifndef PRACTICA2_DETECT_H
 #define PRACTICA2_DETECT_H
 
+#include "geometry_msgs/Twist.h"
+#include "sensor_msgs/LaserScan.h"
+
 namespace practica2 // Para que sirve?
 {
 
 class Detect
 {
   public:
-    Detect(): state_(GOING_FORWARD), pressed_(false);
-    void bumperCallback(const kobuki_msgs::BumperEvent::ConstPtr& msg);
+    Detector(): state_(GOING_FORWARD), pressed_(false);
+    void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
     void step();
 
   private:
@@ -39,8 +42,8 @@ class Detect
     ros::Time press_ts_;
     ros::Time turn_ts_;
 
-    ros::Subscriber sub_bumber_;
-    ros::Publisher pub_vel_;
+    ros::Subscriber sub_detect_;
+    ros::Publisher pub_detect_;
 };
 
 }  // namespace practica2
