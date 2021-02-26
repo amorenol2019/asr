@@ -13,16 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PRACTICA2_DETECT_H
-#define PRACTICA2_DETECT_H
+#ifndef PRACTICA2_DETECTOR_H
+#define PRACTICA2_DETECTOR_H
 
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
 
-namespace practica2 // Para que sirve?
+namespace practica2
 {
 
-class Detect
+class Detector
 {
   public:
     Detector(): state_(GOING_FORWARD), pressed_(false);

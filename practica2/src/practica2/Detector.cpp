@@ -28,6 +28,7 @@ namespace practica2
 
   void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
+    msg->ranges[msg->ranges.size()/2];
     // pressed_ = (...);
 
     //  ...

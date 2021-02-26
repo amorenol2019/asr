@@ -23,7 +23,7 @@
 
 int main(int argc, char **argv)
 {
-  Detector detector;
+  practica2::Detector detector;
 
   ros::Rate loop_rate(20);
 
