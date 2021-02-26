@@ -32,8 +32,10 @@ class Detector
   private:
     ros::NodeHandle n_;
     static const int GOING_FORWARD   = 0;
-    static const int GOING_BACK   = 1;
-    static const int TURNING     = 2;
+    static const int GOING_BACK      = 1;
+    static const int TURNING_LEFT    = 2;
+    static const int TURNING_LEFT    = 3;
+
 
     stitic const float min_distance_ = 0.5;
 
