@@ -35,9 +35,13 @@ class Detector
     static const int GOING_BACK   = 1;
     static const int TURNING     = 2;
 
+    stitic const float min_distance_ = 0.5;
+
     int state_;
 
-    bool pressed_;
+    bool pressedFront_;
+    bool pressedRight_;
+    bool pressedLeft_;
 
     ros::Time press_ts_;
     ros::Time turn_ts_;
