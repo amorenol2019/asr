@@ -32,15 +32,15 @@ namespace practica2
     float right = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10];
     float left = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10];
 
-    if (front >= min_distance_)
+    if (front <= min_distance_)
     {
       pressedFront_ = true;
     }
-    if (right >= min_distance_)
+    if (right <= min_distance_)
     {
       pressedRight_ = true;
     }
-    if (left >= min_distance_)
+    if (left <= min_distance_)
     {
       pressedLeft_ = true;
     }
@@ -54,7 +54,7 @@ namespace practica2
     {
     case GOING_FORWARD:
 
-      if (pressed_)
+      if (pressedFront_)
       {
         press_ts_ = ros::Time::now();
         state_ = GOING_BACK;
@@ -67,12 +67,29 @@ namespace practica2
       if ((ros::Time::now() - press_ts_).toSec() > BACKING_TIME )
       {
         turn_ts_ = ros::Time::now();
-        state_ = TURNING;
-        ROS_INFO("GOING_BACK -> TURNING");
+        if (pressedLeft_)
+        {
+          state_ = TURNING_RIGHT;
+          ROS_INFO("GOING_BACK -> TURNING_RIGHT");
+        }
+        else
+        {
+          state = TURNING_LEFT;
+          ROS_INFO("GOING_BACK -> TURNING_LEFT");
+        }
       }
       break;
 
-    case TURNING:
+    case TURNING_LEFT:
+
+      if ((ros::Time::now()-turn_ts_).toSec() > TURNING_TIME )
+      {
+        state_ = GOING_FORWARD;
+        ROS_INFO("TURNING -> GOING_FORWARD");
+      }
+      break;
+
+    case TURNING_RIGHT:
 
       if ((ros::Time::now()-turn_ts_).toSec() > TURNING_TIME )
       {
