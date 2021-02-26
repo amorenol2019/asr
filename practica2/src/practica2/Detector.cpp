@@ -20,7 +20,6 @@
 
 namespace practica2
 {
-
   Detector(): state_(GOING_FORWARD), pressed_(false)
   {
     sub_detect = n_.subscribe("/scan",1,&Detector::detectorCallback, this);
