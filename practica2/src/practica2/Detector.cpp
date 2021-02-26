@@ -53,6 +53,7 @@ namespace practica2
     switch (state_)
     {
     case GOING_FORWARD:
+      cmd.linear.x =0.2;
 
       if (pressedFront_)
       {
@@ -63,6 +64,7 @@ namespace practica2
       break;
 
     case GOING_BACK:
+      cmd.linear.x = -0.2;
 
       if ((ros::Time::now() - press_ts_).toSec() > BACKING_TIME )
       {
@@ -81,6 +83,7 @@ namespace practica2
       break;
 
     case TURNING_LEFT:
+      cmd.angular.z = 0.2;
 
       if ((ros::Time::now()-turn_ts_).toSec() > TURNING_TIME )
       {
@@ -90,6 +93,7 @@ namespace practica2
       break;
 
     case TURNING_RIGHT:
+      cmd.angular.z = -0.2;
 
       if ((ros::Time::now()-turn_ts_).toSec() > TURNING_TIME )
       {
