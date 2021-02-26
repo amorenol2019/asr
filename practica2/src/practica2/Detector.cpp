@@ -28,10 +28,22 @@ namespace practica2
 
   void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
-    msg->ranges[msg->ranges.size()/2];
-    // pressed_ = (...);
+    float front =  msg->ranges[msg->ranges.size()/2];
+    float right = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10];
+    float left = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10];
 
-    //  ...
+    if (front >= min_distance_)
+    {
+      pressedFront_ = true;
+    }
+    if (right >= min_distance_)
+    {
+      pressedRight_ = true;
+    }
+    if (left >= min_distance_)
+    {
+      pressedLeft_ = true;
+    }
   }
 
   void step()
