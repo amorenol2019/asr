@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.0.2)
 project(practica2)
 
 find_package(catkin REQUIRED COMPONENTS
-  practica2 #se necesita?
   roscpp
 	geometry_msgs
   sensor_msgs
@@ -13,6 +12,7 @@ CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs
 )
 
 include_directories(
+  include
 	${catkin_INCLUDE_DIRS}
 )
 
