@@ -14,39 +14,40 @@
 // limitations under the License.
 
 #include "practica2/Detector.h"
+#include "ros/ros.h"
 
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
 
 namespace practica2
 {
-  Detector(): state_(GOING_FORWARD), pressed_(false)
+  Detector::Detector(): state_(GOING_FORWARD), pressedFront_(false)
   {
-    sub_detect = n_.subscribe("/scan",1,&Detector::detectorCallback, this);
-    pub_detect = n_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
+    sub_detect_ = n_.subscribe("/scan",1,&Detector::detectorCallback, this);
+    pub_detect_ = n_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
   }
 
-  void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
+  void Detector::detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
     float front =  msg->ranges[msg->ranges.size()/2];
     float right = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10];
     float left = msg->ranges[msg->ranges.size()/2 + msg->ranges.size()/10];
 
-    if (front <= min_distance_)
+    if (front <= MIN_DISTANCE)
     {
       pressedFront_ = true;
     }
-    if (right <= min_distance_)
+    if (right <= MIN_DISTANCE)
     {
       pressedRight_ = true;
     }
-    if (left <= min_distance_)
+    if (left <= MIN_DISTANCE)
     {
       pressedLeft_ = true;
     }
   }
 
-  void step()
+  void Detector::step()
   {
     geometry_msgs::Twist cmd;
 

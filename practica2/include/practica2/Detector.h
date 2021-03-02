@@ -16,41 +16,45 @@
 #ifndef PRACTICA2_DETECTOR_H
 #define PRACTICA2_DETECTOR_H
 
+#include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
 
 namespace practica2
 {
 
-class Detector
-{
-  public:
-    Detector(): state_(GOING_FORWARD), pressed_(false);
-    void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
-    void step();
-
-  private:
-    ros::NodeHandle n_;
-    static const int GOING_FORWARD   = 0;
-    static const int GOING_BACK      = 1;
-    static const int TURNING_LEFT    = 2;
-    static const int TURNING_RIGHT   = 3;
+  class Detector
+  {
+    public:
+      Detector();
+      void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
+      void step();
 
 
-    stitic const float min_distance_ = 0.5;
+      ros::NodeHandle n_;
+      static const int GOING_FORWARD   = 0;
+      static const int GOING_BACK      = 1;
+      static const int TURNING_LEFT    = 2;
+      static const int TURNING_RIGHT   = 3;
+      static const float MIN_DISTANCE = 0.5;  //Arreglar error con float
+      static const int TURNING_TIME = 5.0;
+      static const int BACKING_TIME = 3.0;
 
-    int state_;
+    private:
 
-    bool pressedFront_;
-    bool pressedRight_;
-    bool pressedLeft_;
 
-    ros::Time press_ts_;
-    ros::Time turn_ts_;
+      int state_;
 
-    ros::Subscriber sub_detect_;
-    ros::Publisher pub_detect_;
-};
+      bool pressedFront_;
+      bool pressedRight_;
+      bool pressedLeft_;
+
+      ros::Time press_ts_;
+      ros::Time turn_ts_;
+
+      ros::Subscriber sub_detect_;
+      ros::Publisher pub_detect_;
+  };
 
 }  // namespace practica2
 
