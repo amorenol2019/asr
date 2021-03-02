@@ -16,9 +16,9 @@ include_directories(
 	${catkin_INCLUDE_DIRS}
 )
 
-add_executable(bumpgo_laser.cpp
+add_executable(bumpgo_laser
 src/bumpgo_laser.cpp
-src/practica2/detetor.cpp)
+src/practica2/Detector.cpp)
 
 
 target_link_libraries(bumpgo_laser ${catkin_LIBRARIES})
