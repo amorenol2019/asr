@@ -30,19 +30,16 @@ namespace practica2
       void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
       void step();
 
-
       ros::NodeHandle n_;
       static const int GOING_FORWARD   = 0;
       static const int GOING_BACK      = 1;
       static const int TURNING_LEFT    = 2;
       static const int TURNING_RIGHT   = 3;
-      static const float MIN_DISTANCE = 0.5;  //Arreglar error con float
+      static const int MIN_DISTANCE = 0.5;
       static const int TURNING_TIME = 5.0;
       static const int BACKING_TIME = 3.0;
 
     private:
-
-
       int state_;
 
       bool pressedFront_;
