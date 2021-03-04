@@ -18,8 +18,8 @@
 
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
-#include "visualization_msgs/MarkerArray"
-#include "visualization_msgs/Marker"
+#include "visualization_msgs/MarkerArray.h"
+#include "visualization_msgs/Marker.h"
 
 namespace practica2
 {
@@ -53,15 +53,6 @@ namespace practica2
   void Detector::step()
   {
     geometry_msgs::Twist cmd;
-    //todo esto de los markers podria ir en una funcion (?)
-    visualization_msgs::Marker marker_front;
-    visualization_msgs::Marker marker_right;
-    visualization_msgs::Marker marker_left;
-    visualization_msgs::MarkerArray marker_arr;
-
-    marker_arr = visualize(marker_front,marker_right,marker_left);
-    pub_marker_.publish( marker_arr );
-
 
     switch (state_)
     {
@@ -121,8 +112,13 @@ namespace practica2
     }
   }
 
-  MarkerArray Detector::visualize(Marker marker_front,Marker marker_right,Marker marker_left)
+  void Detector::visualize()
   {
+    visualization_msgs::Marker marker_front;
+    visualization_msgs::Marker marker_right;
+    visualization_msgs::Marker marker_left;
+    visualization_msgs::MarkerArray marker_arr;
+
     marker_front.header.frame_id = "base_link"; // el frame debe estar dentro del robot
     marker_front.header.stamp = ros::Time();
     marker_front.ns = "my_namespace";
@@ -133,7 +129,7 @@ namespace practica2
     marker_front.pose.position.y = 1;
     marker_front.pose.position.z = 1;
     marker_front.pose.orientation.x = 0.0;
-    marker_front_front.pose.orientation.y = 0.0;
+    marker_front.pose.orientation.y = 0.0;
     marker_front.pose.orientation.z = 0.0;
     marker_front.pose.orientation.w = 1.0;
     marker_front.scale.x = 1;
@@ -149,18 +145,18 @@ namespace practica2
     marker_left = marker_front;
     //hay que cambiar la posicion de estos dos Markers
     //marker_left.x = nueva x  pi/5 = 36º -> 90-36=54º:
-    marker_left.x = sin(54);
+    marker_left.pose.position.x = sin(54);
     //marker_left.y = nueva y
-    marker_left.y = cos(54);
+    marker_left.pose.position.y = cos(54);
     marker_right = marker_left;
     //marker_right.y = nueva y
-    marker_right.y =-cos(54);
+    marker_right.pose.position.y =-cos(54);
 
-    marker_arr.Markers.pushback(marker_front);
-    marker_arr.Markers.pushback(marker_left);
-    marker_arr.Markers.pushback(marker_right);
+    marker_arr.markers.push_back(marker_front);
+    marker_arr.markers.push_back(marker_left);
+    marker_arr.markers.push_back(marker_right);
 
-    return marker_arr;
+    pub_marker_.publish(marker_arr);
   }
 
 } // namespace practica2
