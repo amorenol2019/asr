@@ -20,6 +20,9 @@
 #include "sensor_msgs/LaserScan.h"
 #include "visualization_msgs/MarkerArray.h"
 #include "visualization_msgs/Marker.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 namespace practica2
 {
@@ -53,6 +56,11 @@ namespace practica2
   void Detector::step()
   {
     geometry_msgs::Twist cmd;
+
+    srand(time(NULL));
+
+    turning_time_=rand()%(MAX_TURNING_TIME-MIN_TURNING_TIME);
+    turning_time_=turning_time_+MIN_TURNING_TIME;
 
     switch (state_)
     {
@@ -92,10 +100,10 @@ namespace practica2
 
       cmd.angular.z = 0.2;
 
-      if ((ros::Time::now() - turn_ts_).toSec() > TURNING_TIME )
+      if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
       {
         state_ = GOING_FORWARD;
-        ROS_INFO("TURNING -> GOING_FORWARD");
+        ROS_INFO("TURNING_LEFT -> GOING_FORWARD");
       }
       break;
 
@@ -103,10 +111,10 @@ namespace practica2
 
       cmd.angular.z = -0.2;
 
-      if ((ros::Time::now() - turn_ts_).toSec() > TURNING_TIME )
+      if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
       {
         state_ = GOING_FORWARD;
-        ROS_INFO("TURNING -> GOING_FORWARD");
+        ROS_INFO("TURNING_RIGHT -> GOING_FORWARD");
       }
       break;
     }
