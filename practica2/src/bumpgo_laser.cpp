@@ -15,10 +15,7 @@
 #include "practica2/Detector.h"
 #include "ros/ros.h"
 
-#include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Twist.h"
-#include "visualization_msgs/MarkerArray.h"
-#include "visualization_msgs/Marker.h"
 
 int main(int argc, char **argv)
 {
