@@ -40,7 +40,7 @@ namespace practica2
       static const int GOING_BACK      = 1;
       static const int TURNING_LEFT    = 2;
       static const int TURNING_RIGHT   = 3;
-      static const int BACKING_TIME = 3.0;
+      static const int BACKING_TIME = 1.0;
       static const int MAX_TURNING_TIME = 5.0;
       const int MIN_TURNING_TIME = 2.5;
       const float MIN_DISTANCE = 0.5;
