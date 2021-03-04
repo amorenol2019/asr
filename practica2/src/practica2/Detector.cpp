@@ -15,7 +15,6 @@
 
 #include "practica2/Detector.h"
 #include "ros/ros.h"
-
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
 #include "visualization_msgs/MarkerArray.h"
@@ -49,8 +48,7 @@ namespace practica2
 
     srand(time(NULL));
 
-    turning_time_ = rand()%(MAX_TURNING_TIME -  MIN_TURNING_TIME);
-    turning_time_ += MIN_TURNING_TIME;
+    turning_time_ = MIN_TURNING_TIME + rand()%(MAX_TURNING_TIME -  MIN_TURNING_TIME);
 
     switch (state_)
     {
@@ -145,15 +143,12 @@ namespace practica2
 
     marker_left = marker_front;
     marker_left.id = 1;
-    //hay que cambiar la posicion de estos dos Markers
-    //marker_left.x = nueva x  pi/5 = 36º -> 90-36=54º:
-    marker_left.pose.position.x = sin(54);
-    //marker_left.y = nueva y
-    marker_left.pose.position.y = cos(54);
+    marker_left.pose.position.x = cos(M_PI/5);
+    marker_left.pose.position.y = sin(M_PI/5);
+
     marker_right = marker_left;
     marker_right.id = 2;
-    //marker_right.y = nueva y
-    marker_right.pose.position.y =-cos(54);
+    marker_right.pose.position.y =-sin(M_PI/5);
 
     if (pressedFront_)
     {

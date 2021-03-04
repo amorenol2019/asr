@@ -14,7 +14,6 @@
 
 #include "practica2/Detector.h"
 #include "ros/ros.h"
-
 #include "geometry_msgs/Twist.h"
 
 int main(int argc, char **argv)
