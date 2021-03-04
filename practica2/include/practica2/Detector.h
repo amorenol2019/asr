@@ -36,7 +36,7 @@ namespace practica2
       static const int GOING_BACK      = 1;
       static const int TURNING_LEFT    = 2;
       static const int TURNING_RIGHT   = 3;
-      static const int MIN_DISTANCE = 0.5;
+      const float MIN_DISTANCE = 0.5f;  //Arreglar error con float (no deja que un flloat sea static(?))
       static const int TURNING_TIME = 5.0;
       static const int BACKING_TIME = 3.0;
 
