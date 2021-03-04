@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 namespace practica2
 {
@@ -36,8 +37,9 @@ namespace practica2
   void Detector::detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
     pressedFront_ =  msg->ranges[msg->ranges.size()/2] <= MIN_DISTANCE;
-    pressedRight_ = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10] <= MIN_DISTANCE;
-    pressedLeft_ = msg->ranges[msg->ranges.size()/2 + msg->ranges.size()/10] <= MIN_DISTANCE;
+    float posiciones = (M_PI/5) / msg->angle_increment;
+    pressedRight_ = msg->ranges[msg->ranges.size()/2 - posiciones] <= MIN_DISTANCE;
+    pressedLeft_ = msg->ranges[msg->ranges.size()/2 + posiciones] <= MIN_DISTANCE;
   }
 
   void Detector::step()
