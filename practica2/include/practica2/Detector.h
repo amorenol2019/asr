@@ -40,11 +40,13 @@ namespace practica2
       static const int GOING_BACK      = 1;
       static const int TURNING_LEFT    = 2;
       static const int TURNING_RIGHT   = 3;
-      const float MIN_DISTANCE = 0.5;  //Arreglar error con float (no deja que un flloat sea static(?))
-      static const int TURNING_TIME = 5.0;
+      static const int MAX_TURNING_TIME = 5.0;
       static const int BACKING_TIME = 3.0;
+      const int MIN_TURNING_TIME = 2.5;
+      const float MIN_DISTANCE = 0.5;
 
       int state_;
+      int turning_time_;
 
       bool pressedFront_;
       bool pressedRight_;
