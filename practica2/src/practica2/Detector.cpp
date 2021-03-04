@@ -42,15 +42,22 @@ namespace practica2
     if (front <= MIN_DISTANCE)
     {
       pressedFront_ = true;
+      //pressedRight_ = false;
+      //pressedLeft_ = false;
     }
     if (right <= MIN_DISTANCE)
     {
+      //pressedFront_ = false;
       pressedRight_ = true;
+      //pressedLeft_ = false;
     }
     if (left <= MIN_DISTANCE)
     {
+      //pressedFront_ = false;
+      //pressedRight_ = false;
       pressedLeft_ = true;
     }
+    
   }
 
   void Detector::step()
@@ -59,8 +66,8 @@ namespace practica2
 
     srand(time(NULL));
 
-    turning_time_=rand()%(MAX_TURNING_TIME-MIN_TURNING_TIME);
-    turning_time_=turning_time_+MIN_TURNING_TIME;
+    turning_time_ = rand()%(MAX_TURNING_TIME -  MIN_TURNING_TIME);
+    turning_time_ += MIN_TURNING_TIME;
 
     switch (state_)
     {
@@ -79,6 +86,7 @@ namespace practica2
     case GOING_BACK:
 
       cmd.linear.x = -0.2;
+      pressedFront_ = false;
 
       if ((ros::Time::now() - press_ts_).toSec() > BACKING_TIME )
       {
@@ -99,6 +107,7 @@ namespace practica2
     case TURNING_LEFT:
 
       cmd.angular.z = 0.2;
+      pressedRight_ = false;
 
       if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
       {
@@ -110,6 +119,7 @@ namespace practica2
     case TURNING_RIGHT:
 
       cmd.angular.z = -0.2;
+      pressedLeft_ = true;
 
       if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
       {
