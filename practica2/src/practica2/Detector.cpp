@@ -55,7 +55,7 @@ namespace practica2
     {
     case GOING_FORWARD:
 
-      cmd.linear.x =0.2;
+      cmd.linear.x = 0.2;
 
       if (pressedFront_)
       {
@@ -89,7 +89,7 @@ namespace practica2
 
       cmd.angular.z = 0.2;
 
-      if ((ros::Time::now()-turn_ts_).toSec() > TURNING_TIME )
+      if ((ros::Time::now() - turn_ts_).toSec() > TURNING_TIME )
       {
         state_ = GOING_FORWARD;
         ROS_INFO("TURNING -> GOING_FORWARD");
@@ -100,7 +100,7 @@ namespace practica2
 
       cmd.angular.z = -0.2;
 
-      if ((ros::Time::now()-turn_ts_).toSec() > TURNING_TIME )
+      if ((ros::Time::now() - turn_ts_).toSec() > TURNING_TIME )
       {
         state_ = GOING_FORWARD;
         ROS_INFO("TURNING -> GOING_FORWARD");
@@ -108,5 +108,4 @@ namespace practica2
       break;
     }
   }
-
-}
+} // namespace practica2
