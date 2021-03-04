@@ -29,6 +29,7 @@ namespace practica2
       Detector();
       void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
       void step();
+      MarkerArray visualize(Marker marker_front,Marker marker_right,Marker marker_left);
 
 
       ros::NodeHandle n_;
@@ -36,7 +37,7 @@ namespace practica2
       static const int GOING_BACK      = 1;
       static const int TURNING_LEFT    = 2;
       static const int TURNING_RIGHT   = 3;
-      static const float MIN_DISTANCE = 0.5;  //Arreglar error con float
+      const float MIN_DISTANCE = 0.5f;  //Arreglar error con float (no deja que un flloat sea static(?))
       static const int TURNING_TIME = 5.0;
       static const int BACKING_TIME = 3.0;
 
@@ -54,6 +55,7 @@ namespace practica2
 
       ros::Subscriber sub_detect_;
       ros::Publisher pub_detect_;
+      ros::Publisher pub_marker_;
   };
 
 }  // namespace practica2
