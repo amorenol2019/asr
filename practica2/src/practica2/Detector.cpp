@@ -18,6 +18,8 @@
 
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
+#include "visualization_msgs/MarkerArray"
+#include "visualization_msgs/Marker"
 
 namespace practica2
 {
@@ -25,6 +27,7 @@ namespace practica2
   {
     sub_detect_ = n_.subscribe("/scan",1,&Detector::detectorCallback, this);
     pub_detect_ = n_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
+    pub_marker_ = n_.advertise<visualization_msgs::MarkerArray>("visualization_msgs/Markers",1);
   }
 
   void Detector::detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
@@ -50,6 +53,15 @@ namespace practica2
   void Detector::step()
   {
     geometry_msgs::Twist cmd;
+    //todo esto de los markers podria ir en una funcion (?)
+    visualization_msgs::Marker marker_front;
+    visualization_msgs::Marker marker_right;
+    visualization_msgs::Marker marker_left;
+    visualization_msgs::MarkerArray marker_arr;
+
+    marker_arr = visualize(marker_front,marker_right,marker_left);
+    pub_marker_.publish( marker_arr );
+
 
     switch (state_)
     {
@@ -108,4 +120,5 @@ namespace practica2
       break;
     }
   }
+
 } // namespace practica2

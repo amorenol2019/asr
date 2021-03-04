@@ -29,6 +29,7 @@ namespace practica2
       Detector();
       void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
       void step();
+      MarkerArray visualize(Marker marker_front,Marker marker_right,Marker marker_left);
 
       ros::NodeHandle n_;
       static const int GOING_FORWARD   = 0;
@@ -51,6 +52,7 @@ namespace practica2
 
       ros::Subscriber sub_detect_;
       ros::Publisher pub_detect_;
+      ros::Publisher pub_marker_;
   };
 
 }  // namespace practica2
