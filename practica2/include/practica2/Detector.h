@@ -19,6 +19,9 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
+#include "visualization_msgs/Marker.h"
+#include "visualization_msgs/MarkerArray.h"
+
 
 namespace practica2
 {
@@ -29,18 +32,18 @@ namespace practica2
       Detector();
       void detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
       void step();
-      MarkerArray visualize(Marker marker_front,Marker marker_right,Marker marker_left);
+      void visualize();
 
+    private:
       ros::NodeHandle n_;
       static const int GOING_FORWARD   = 0;
       static const int GOING_BACK      = 1;
       static const int TURNING_LEFT    = 2;
       static const int TURNING_RIGHT   = 3;
-      const float MIN_DISTANCE = 0.5f;  //Arreglar error con float (no deja que un flloat sea static(?))
+      const float MIN_DISTANCE = 0.5;  //Arreglar error con float (no deja que un flloat sea static(?))
       static const int TURNING_TIME = 5.0;
       static const int BACKING_TIME = 3.0;
 
-    private:
       int state_;
 
       bool pressedFront_;
