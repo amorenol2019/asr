@@ -36,8 +36,9 @@ namespace practica2
 
   void Detector::detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
-    pressedFront_ =  msg->ranges[msg->ranges.size()/2] <= MIN_DISTANCE;
     float posiciones = (M_PI/5) / msg->angle_increment;
+
+    pressedFront_ =  msg->ranges[msg->ranges.size()/2] <= MIN_DISTANCE;
     pressedRight_ = msg->ranges[msg->ranges.size()/2 - posiciones] <= MIN_DISTANCE;
     pressedLeft_ = msg->ranges[msg->ranges.size()/2 + posiciones] <= MIN_DISTANCE;
   }
@@ -133,9 +134,9 @@ namespace practica2
     marker_front.pose.orientation.y = 0.0;
     marker_front.pose.orientation.z = 0.0;
     marker_front.pose.orientation.w = 1.0;
-    marker_front.scale.x = 0.3;
-    marker_front.scale.y = 0.3;
-    marker_front.scale.z = 0.3;
+    marker_front.scale.x = 0.25;
+    marker_front.scale.y = 0.25;
+    marker_front.scale.z = 0.25;
     marker_front.color.a = 1.0;
     marker_front.color.r = 0.0;
     marker_front.color.g = 1.0;
@@ -159,17 +160,16 @@ namespace practica2
       marker_front.color.g = 0.0;
       marker_front.color.r = 1.0;
     }
-    else if(pressedRight_)
+    if(pressedRight_)
     {
       marker_right.color.g = 0.0;
       marker_right.color.r = 1.0;
     }
-    else if(pressedLeft_)
+    if(pressedLeft_)
     {
       marker_left.color.g = 0.0;
       marker_left.color.r = 1.0;
     }
-
 
     marker_arr.markers.push_back(marker_front);
     marker_arr.markers.push_back(marker_left);
