@@ -35,29 +35,9 @@ namespace practica2
 
   void Detector::detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
-    float front =  msg->ranges[msg->ranges.size()/2];
-    float right = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10];
-    float left = msg->ranges[msg->ranges.size()/2 + msg->ranges.size()/10];
-
-    if (front <= MIN_DISTANCE)
-    {
-      pressedFront_ = true;
-      //pressedRight_ = false;
-      //pressedLeft_ = false;
-    }
-    if (right <= MIN_DISTANCE)
-    {
-      //pressedFront_ = false;
-      pressedRight_ = true;
-      //pressedLeft_ = false;
-    }
-    if (left <= MIN_DISTANCE)
-    {
-      //pressedFront_ = false;
-      //pressedRight_ = false;
-      pressedLeft_ = true;
-    }
-    
+    pressedFront_ =  msg->ranges[msg->ranges.size()/2] <= MIN_DISTANCE;
+    pressedRight_ = msg->ranges[msg->ranges.size()/2 - msg->ranges.size()/10] <= MIN_DISTANCE;
+    pressedLeft_ = msg->ranges[msg->ranges.size()/2 + msg->ranges.size()/10] <= MIN_DISTANCE;
   }
 
   void Detector::step()
@@ -138,7 +118,7 @@ namespace practica2
     visualization_msgs::Marker marker_left;
     visualization_msgs::MarkerArray marker_arr;
 
-    marker_front.header.frame_id = "odom"; // el frame debe estar dentro del robot
+    marker_front.header.frame_id = "base_link"; // el frame debe estar dentro del robot
     marker_front.header.stamp = ros::Time();
     marker_front.ns = "my_namespace";
     marker_front.id = 0;
@@ -151,16 +131,14 @@ namespace practica2
     marker_front.pose.orientation.y = 0.0;
     marker_front.pose.orientation.z = 0.0;
     marker_front.pose.orientation.w = 1.0;
-    marker_front.scale.x = 1;
-    marker_front.scale.y = 0.1;
-    marker_front.scale.z = 0.1;
+    marker_front.scale.x = 0.5;
+    marker_front.scale.y = 0.5;
+    marker_front.scale.z = 0.5;
     marker_front.color.a = 1.0; // Don't forget to set the alpha!
     marker_front.color.r = 0.0;
     marker_front.color.g = 1.0;
     marker_front.color.b = 0.0;
     marker_front.lifetime = ros::Duration(1.0);
-    //only if using a MESH_RESOURCE marker type:
-    marker_front.mesh_resource = "package://pr2_description/meshes/base_v0/base.dae";
 
     marker_left = marker_front;
     marker_left.id = 1;
