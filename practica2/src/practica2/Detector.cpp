@@ -55,7 +55,7 @@ namespace practica2
     {
     case GOING_FORWARD:
 
-      cmd.linear.x = 0.2;
+      cmd.linear.x = 0.3;
 
       if (pressedFront_)
       {
@@ -67,7 +67,7 @@ namespace practica2
 
     case GOING_BACK:
 
-      cmd.linear.x = -0.2;
+      cmd.linear.x = -0.3;
       pressedFront_ = false;
 
       if ((ros::Time::now() - press_ts_).toSec() > BACKING_TIME )
@@ -88,7 +88,7 @@ namespace practica2
 
     case TURNING_LEFT:
 
-      cmd.angular.z = 0.2;
+      cmd.angular.z = 0.3;
       pressedRight_ = false;
 
       if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
@@ -100,7 +100,7 @@ namespace practica2
 
     case TURNING_RIGHT:
 
-      cmd.angular.z = -0.2;
+      cmd.angular.z = -0.3;
       pressedLeft_ = true;
 
       if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
@@ -127,16 +127,16 @@ namespace practica2
     marker_front.type = visualization_msgs::Marker::SPHERE;
     marker_front.action = visualization_msgs::Marker::ADD;
     marker_front.pose.position.x = 1;
-    marker_front.pose.position.y = 1;
-    marker_front.pose.position.z = 1;
+    marker_front.pose.position.y = 0;
+    marker_front.pose.position.z = 0;
     marker_front.pose.orientation.x = 0.0;
     marker_front.pose.orientation.y = 0.0;
     marker_front.pose.orientation.z = 0.0;
     marker_front.pose.orientation.w = 1.0;
-    marker_front.scale.x = 0.5;
-    marker_front.scale.y = 0.5;
-    marker_front.scale.z = 0.5;
-    marker_front.color.a = 1.0; // Don't forget to set the alpha!
+    marker_front.scale.x = 0.3;
+    marker_front.scale.y = 0.3;
+    marker_front.scale.z = 0.3;
+    marker_front.color.a = 1.0;
     marker_front.color.r = 0.0;
     marker_front.color.g = 1.0;
     marker_front.color.b = 0.0;
@@ -153,6 +153,23 @@ namespace practica2
     marker_right.id = 2;
     //marker_right.y = nueva y
     marker_right.pose.position.y =-cos(54);
+
+    if (pressedFront_)
+    {
+      marker_front.color.g = 0.0;
+      marker_front.color.r = 1.0;
+    }
+    else if(pressedRight_)
+    {
+      marker_right.color.g = 0.0;
+      marker_right.color.r = 1.0;
+    }
+    else if(pressedLeft_)
+    {
+      marker_left.color.g = 0.0;
+      marker_left.color.r = 1.0;
+    }
+
 
     marker_arr.markers.push_back(marker_front);
     marker_arr.markers.push_back(marker_left);
