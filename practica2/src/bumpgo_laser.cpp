@@ -17,9 +17,8 @@
 
 #include "sensor_msgs/LaserScan.h"
 #include "geometry_msgs/Twist.h"
-
-#define TURNING_TIME 5.0
-#define BACKING_TIME 3.0
+#include "visualization_msgs/MarkerArray.h"
+#include "visualization_msgs/Marker.h"
 
 int main(int argc, char **argv)
 {
@@ -31,6 +30,7 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     detector.step();
+    detector.visualize();
 
     ros::spinOnce();
     loop_rate.sleep();

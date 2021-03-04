@@ -110,6 +110,7 @@ namespace practica2
       }
       break;
     }
+    pub_detect_.publish(cmd);
   }
 
   void Detector::visualize()
@@ -119,7 +120,7 @@ namespace practica2
     visualization_msgs::Marker marker_left;
     visualization_msgs::MarkerArray marker_arr;
 
-    marker_front.header.frame_id = "base_link"; // el frame debe estar dentro del robot
+    marker_front.header.frame_id = "odom"; // el frame debe estar dentro del robot
     marker_front.header.stamp = ros::Time();
     marker_front.ns = "my_namespace";
     marker_front.id = 0;
@@ -139,16 +140,19 @@ namespace practica2
     marker_front.color.r = 0.0;
     marker_front.color.g = 1.0;
     marker_front.color.b = 0.0;
+    marker_front.lifetime = ros::Duration(1.0);
     //only if using a MESH_RESOURCE marker type:
     marker_front.mesh_resource = "package://pr2_description/meshes/base_v0/base.dae";
 
     marker_left = marker_front;
+    marker_left.id = 1;
     //hay que cambiar la posicion de estos dos Markers
     //marker_left.x = nueva x  pi/5 = 36º -> 90-36=54º:
     marker_left.pose.position.x = sin(54);
     //marker_left.y = nueva y
     marker_left.pose.position.y = cos(54);
     marker_right = marker_left;
+    marker_right.id = 2;
     //marker_right.y = nueva y
     marker_right.pose.position.y =-cos(54);
 
