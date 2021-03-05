@@ -34,16 +34,16 @@ namespace practica2
 
     private:
       ros::NodeHandle n_;
-      static const int GOING_FORWARD   = 0;
-      static const int GOING_BACK      = 1;
-      static const int TURNING_LEFT    = 2;
-      static const int TURNING_RIGHT   = 3;
-      static const int BACKING_TIME = 1.0;
+      static const int GOING_FORWARD = 0;
+      static const int GOING_BACK    = 1;
+      static const int TURNING_LEFT  = 2;
+      static const int TURNING_RIGHT = 3;
+      static const int BACKING_TIME     = 1.0;
       static const int MAX_TURNING_TIME = 5.0; // 90º
-      const int MIN_TURNING_TIME = 2.5; // 45º
-      const float MIN_DISTANCE = 0.5;
-      const float VELOCITY = 0.3;
-      const float ANGLE = M_PI/5;
+      static const int MIN_TURNING_TIME = 2.5; // 45º
+      static const float MIN_DISTANCE   = 0.5;
+      static constexpr float VELOCITY   = 0.3;
+      static constexpr float ANGLE   = M_PI/5;
 
       int state_;
       int turning_time_;
