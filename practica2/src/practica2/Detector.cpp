@@ -28,18 +28,18 @@ namespace practica2
 {
   Detector::Detector(): state_(GOING_FORWARD), pressedFront_(false)
   {
-    sub_detect_ = n_.subscribe("/scan",1,&Detector::detectorCallback, this);
+    sub_detect_ = n_.subscribe("/scan", 1, &Detector::detectorCallback, this);
     pub_detect_ = n_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
-    pub_marker_ = n_.advertise<visualization_msgs::MarkerArray>("visualization_msgs/Markers",1);
+    pub_marker_ = n_.advertise<visualization_msgs::MarkerArray>("visualization_msgs/Markers", 1);
   }
 
   void Detector::detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
-    float posiciones = (ANGLE) / msg->angle_increment; // Diferencia de posiciones en 'ranges' correspondientes a pi/5
+    float posiciones = ANGLE / msg->angle_increment; // Diferencia de posiciones en 'ranges' correspondientes a pi/5
 
-    pressedFront_ =  msg->ranges[msg->ranges.size()/2] <= MIN_DISTANCE;
-    pressedRight_ = msg->ranges[msg->ranges.size()/2 - posiciones] <= MIN_DISTANCE;
-    pressedLeft_ = msg->ranges[msg->ranges.size()/2 + posiciones] <= MIN_DISTANCE;
+    pressedFront_ = msg->ranges[msg->ranges.size() / 2] < MIN_DISTANCE;
+    pressedRight_ = msg->ranges[msg->ranges.size() / 2 - posiciones] < MIN_DISTANCE;
+    pressedLeft_ = msg->ranges[msg->ranges.size() / 2 + posiciones] < MIN_DISTANCE;
   }
 
   void Detector::step()
@@ -147,7 +147,7 @@ namespace practica2
 
     marker_right = marker_left;
     marker_right.id = 2;
-    marker_right.pose.position.y =-sin(ANGLE);
+    marker_right.pose.position.y = - sin(ANGLE);
 
     if (pressedFront_)
     {
