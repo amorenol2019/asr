@@ -35,7 +35,7 @@ namespace practica2
 
   void Detector::detectorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
   {
-    float posiciones = (M_PI/5) / msg->angle_increment;
+    float posiciones = (ANGLE) / msg->angle_increment; // Diferencia de posiciones en 'ranges' correspondientes a pi/5
 
     pressedFront_ =  msg->ranges[msg->ranges.size()/2] <= MIN_DISTANCE;
     pressedRight_ = msg->ranges[msg->ranges.size()/2 - posiciones] <= MIN_DISTANCE;
@@ -47,14 +47,13 @@ namespace practica2
     geometry_msgs::Twist cmd;
 
     srand(time(NULL));
-
-    turning_time_ = MIN_TURNING_TIME + rand()%(MAX_TURNING_TIME -  MIN_TURNING_TIME);
+    turning_time_ = MIN_TURNING_TIME + rand()%(MAX_TURNING_TIME - MIN_TURNING_TIME);
 
     switch (state_)
     {
     case GOING_FORWARD:
 
-      cmd.linear.x = 0.3;
+      cmd.linear.x = VELOCITY;
 
       if (pressedFront_)
       {
@@ -66,7 +65,7 @@ namespace practica2
 
     case GOING_BACK:
 
-      cmd.linear.x = -0.3;
+      cmd.linear.x = - VELOCITY;
       pressedFront_ = false;
 
       if ((ros::Time::now() - press_ts_).toSec() > BACKING_TIME )
@@ -87,7 +86,7 @@ namespace practica2
 
     case TURNING_LEFT:
 
-      cmd.angular.z = 0.3;
+      cmd.angular.z = VELOCITY;
       pressedRight_ = false;
 
       if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
@@ -99,8 +98,8 @@ namespace practica2
 
     case TURNING_RIGHT:
 
-      cmd.angular.z = -0.3;
-      pressedLeft_ = true;
+      cmd.angular.z = - VELOCITY;
+      pressedLeft_ = false;
 
       if ((ros::Time::now() - turn_ts_).toSec() > turning_time_ )
       {
@@ -143,12 +142,12 @@ namespace practica2
 
     marker_left = marker_front;
     marker_left.id = 1;
-    marker_left.pose.position.x = cos(M_PI/5);
-    marker_left.pose.position.y = sin(M_PI/5);
+    marker_left.pose.position.x = cos(ANGLE);
+    marker_left.pose.position.y = sin(ANGLE);
 
     marker_right = marker_left;
     marker_right.id = 2;
-    marker_right.pose.position.y =-sin(M_PI/5);
+    marker_right.pose.position.y =-sin(ANGLE);
 
     if (pressedFront_)
     {

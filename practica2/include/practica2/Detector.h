@@ -19,9 +19,7 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
-#include "visualization_msgs/Marker.h"
-#include "visualization_msgs/MarkerArray.h"
-
+#include <math.h>
 
 namespace practica2
 {
@@ -41,9 +39,11 @@ namespace practica2
       static const int TURNING_LEFT    = 2;
       static const int TURNING_RIGHT   = 3;
       static const int BACKING_TIME = 1.0;
-      static const int MAX_TURNING_TIME = 5.0;
-      const int MIN_TURNING_TIME = 2.5;
+      static const int MAX_TURNING_TIME = 5.0; // 90º
+      const int MIN_TURNING_TIME = 2.5; // 45º
       const float MIN_DISTANCE = 0.5;
+      const float VELOCITY = 0.3;
+      const float ANGLE = M_PI/5;
 
       int state_;
       int turning_time_;
