@@ -26,7 +26,7 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     detector.step();
-    detector.visualize();
+    detector.visualize(); // Markers
 
     ros::spinOnce();
     loop_rate.sleep();
