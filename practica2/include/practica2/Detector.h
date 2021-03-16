@@ -41,7 +41,7 @@ namespace practica2
       static const int BACKING_TIME     = 1.0;
       static const int MAX_TURNING_TIME = 5.0; // 90º
       static const int MIN_TURNING_TIME = 2.5; // 45º
-      static const float MIN_DISTANCE   = 0.5;
+      static constexpr float MIN_DISTANCE   = 0.5;
       static constexpr float VELOCITY   = 0.3;
       static constexpr float ANGLE   = M_PI/5;
 
