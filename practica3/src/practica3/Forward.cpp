@@ -13,7 +13,7 @@ namespace practica3
 
   void Forward::detect(const sensor_msgs::Image::ConstPtr& msg)
   {
-    cv_bridge::CvImagePtr cv_ptr, cv_imageout;
+    cv_bridge::CvImagePtr copy, result;
     // Copiamos en 'copy' la imagen que se recibe
     copy = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
 
