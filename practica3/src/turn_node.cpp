@@ -13,7 +13,7 @@ int main (int argc, cahr **argv)
 
   int count = 0;
 
-  while(Turn.ok())
+  while(turn.ok())
   {
     turn.step();
 
