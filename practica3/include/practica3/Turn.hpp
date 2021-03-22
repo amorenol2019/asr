@@ -17,6 +17,7 @@ public:
 private:
   ros::NodeHandle nh_;
   ros::Publisher vel_pub_;
+  const double TURNING_TIME = 0.5;//por ejemplo
 };
 
 } // practica3
