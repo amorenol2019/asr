@@ -42,6 +42,7 @@ namespace practica3
     // Bola:
     if(counter > 0){
           ROS_INFO("Ball at %d %d", x / counter, y / counter);
+          //create_transform(x,y,z,"ball")
     } else{
       ROS_INFO("No ball found");
     }
@@ -54,6 +55,28 @@ namespace practica3
     }
 
   }
+
+//crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
+  void create_transform(int x, int y ,int z,string object)
+  {
+    tf2_ros::StaticTransformBroadcaster br; //queremos que las transformadas sean estaticas
+
+    tf2::Stamped<tf2::Transform> bf2object;
+    bf2object.frame_id_ = "base_footprint"; //las transformadas iran desde el robot hacia los objetos
+    bf2object.stamp_ = ros::Time::now();
+
+    bf2object.setOrigin(tf2::Vector3(x, y, z));
+
+    tf2::Quaternion q;
+    q.setRPY(ax, ay, az);
+    bf2object.setRotation(q);
+
+    geometry_msgs::TransformStamped bf2object_msg = tf2::toMsg(bf2object);
+    bf2object_msg.child_frame_id = object ; //habra que sustituir object dependiendo de cada objeto a detectar
+    br.sendTransform(bf2object_msg);
+
+  }
+
 
   void Forward::step()
   {
