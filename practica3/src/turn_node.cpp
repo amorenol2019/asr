@@ -1,0 +1,24 @@
+#include "practica3/Turn.hpp"
+
+#include "ros/ros.h"
+
+int main (int argc, cahr **argv)
+{
+  ros::init(argc, argv, "turn");
+  ros::NodeHandle n;
+
+  practica3::Turn turn;
+
+  ros::Rate loop_rate(20);
+
+  int count = 0;
+
+  while(Turn.ok())
+  {
+    turn.step();
+
+    ros::spinOnce();
+    loop_rate.sleep();
+  }
+  return 0;
+}
