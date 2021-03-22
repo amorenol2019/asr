@@ -12,6 +12,7 @@ class Turn : public bica::Component
 public:
   Turn();
 
+  void detect();
   void step();
 
 private:

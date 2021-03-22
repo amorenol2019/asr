@@ -13,7 +13,7 @@ int main (int argc, cahr **argv)
 
   int count = 0;
 
-  while(Forward.ok())
+  while(forward.ok())
   {
     forward.step();
 
