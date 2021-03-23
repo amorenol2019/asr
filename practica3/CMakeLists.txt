@@ -12,31 +12,44 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
 )
 
+find_package (OpenCV)
+
 catkin_package(
-  #CATKIN_DEPENDS bica roscpp std_msgs kobuki_msgs sensor_msgs image_transport cv_bridge
+  CATKIN_DEPENDS bica roscpp std_msgs kobuki_msgs sensor_msgs image_transport cv_bridge
 )
 
 include_directories(
   include
-  ${cOpenCV_INCLUDE_DIRS}
+  fsm
+  ${OpenCV_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library( ${PROJECT_NAME}
+add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/Turn.cpp
-   src/${PROJECT_NAME}/Forward.cpp
+   fsm/practica_3impl.cpp
 )
 
-add_dependencies(practica3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-add_executable(forward_node src/forward_node.cpp)
-add_dependencies(forward_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(forward_node ${catkin_LIBRARIES})
 
-add_executable(turn_node src/turn_node.cpp)
-add_dependencies(turn_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+##add_executable(forward_node src/forward_node.cpp)
+##add_dependencies(forward_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+##target_link_libraries(forward_node ${catkin_LIBRARIES})
+
+add_executable(turn_node
+  src/practica3/Turn.cpp
+  src/practica3/Practica3Impl.cpp
+  src/turn_node.cpp
+)
+
 target_link_libraries(turn_node ${catkin_LIBRARIES})
 
+roslint_cpp(
+  src/turn_node.cpp
+  include/practica3/Practica3Impl.hpp src/practica3/Practica3Impl.cpp
+  include/practica3/Turn.hpp src/practica3/Turn.cpp
+)
 
 
 #############
