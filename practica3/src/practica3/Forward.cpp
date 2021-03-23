@@ -57,7 +57,7 @@ namespace practica3
   }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
-  void create_transform(int x, int y ,int z,string object)
+  void create_transform(float x, float y ,string object)
   {
      //queremos que las transformadas sean estaticas
      geometry_msg::TransformStamped odom2bf_msg;
@@ -67,10 +67,8 @@ namespace practica3
      tf2::fromMsg(odom2bf_msg,odom2bf);
 
      tf2::Stamped<tf2::Transform> bf2object;
-     bf2object.setOrigin(tf2::Vector(x,y,0));
-     tf2::Quaternion q;
-     q.setRPY(0, 0, 0, 1);
-     odom2object.setRotation(q);
+     bf2object.setOrigin(tf2::Vector3(x,y,0));
+     bf2object.setRotation(tf2::Quaternion(0, 0, 0, 1));
 
      tf2::Transform odom2object = odom2bf * bf2object;
 
