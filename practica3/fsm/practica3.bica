@@ -1,0 +1,24 @@
+<component id="practica3">
+ <state x="-709" initial="false" id="ToYellGoal" y="-302">
+  <activation id="Forward"/>
+  <activation id="Perception"/>
+ </state>
+ <state x="-851" initial="false" id="ToBlueGoal" y="-448">
+  <activation id="Forward"/>
+  <activation id="Perception"/>
+ </state>
+ <state x="-865" initial="false" id="Turn" y="-184">
+  <activation id="Turn"/>
+ </state>
+ <state x="-1010" initial="true" id="ToBall" y="-294">
+  <activation id="Perception"/>
+  <activation id="Forward"/>
+ </state>
+ <component x="-1139" id="Forward" y="-514"/>
+ <component x="-760" id="Turn" y="-125"/>
+ <component x="-549" id="Perception" y="-483"/>
+ <transition src="Turn" dst="ToBall"/>
+ <transition src="ToBlueGoal" dst="ToYellGoal"/>
+ <transition src="ToBall" dst="ToBlueGoal"/>
+ <transition src="ToYellGoal" dst="Turn"/>
+</component>
