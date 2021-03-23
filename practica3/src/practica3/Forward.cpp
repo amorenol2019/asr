@@ -61,20 +61,19 @@ namespace practica3
   {
      //queremos que las transformadas sean estaticas
 
-    tf2::Stamped<tf2::Transform> bf2object;
-    bf2object.frame_id_ = "base_footprint"; //las transformadas iran desde el robot hacia los objetos
-    bf2object.stamp_ = ros::Time::now();
+    tf2::Stamped<tf2::Transform> odom2object;
+    odom2object.frame_id_ = "odom"; //las transformadas iran desde el centro hacia los objetos
+    odom2object.stamp_ = ros::Time::now();
 
-    bf2object.setOrigin(tf2::Vector3(x, y, z));
+    odom2object.setOrigin(tf2::Vector3(x, y, z));
 
     tf2::Quaternion q;
-    q.setRPY(ax, ay, az);
-    bf2object.setRotation(q);
+    q.setRPY(0, 0, 0, 1);
+    odom2object.setRotation(q);
 
-    geometry_msgs::TransformStamped bf2object_msg = tf2::toMsg(bf2object);
-    bf2object_msg.child_frame_id = object ; //habra que sustituir object dependiendo de cada objeto a detectar
-    br_.sendTransform(bf2object_msg);
-
+    geometry_msgs::TransformStamped odom2object_msg = tf2::toMsg(odom2object);
+    odom2object_msg.child_frame_id = object ; //habra que sustituir object dependiendo de cada objeto a detectar
+    br_.sendTransform(odom2object_msg);
   }
 
 
