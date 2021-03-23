@@ -1,13 +1,13 @@
 #include "bica/Component.h"
 #include "geometry_msgs/Twist.h"
 #include "ros/ros.h"
-#include "Forward.hpp"
+#include "practica3/Forward.hpp"
 
 namespace practica3
 {
   Forward::Forward()
   {
-    vel_pub_ = pub_detect_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
+    vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
     image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Forward::detect, this);
   }
 
@@ -87,7 +87,7 @@ namespace practica3
   {
     geometry_msgs::Twist vel;
 
-    vel.linear.x = ;
+    vel.linear.x = 0.3;
 
     vel_pub_.publish(vel);
   }
