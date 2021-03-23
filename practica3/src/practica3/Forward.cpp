@@ -60,20 +60,28 @@ namespace practica3
   void create_transform(int x, int y ,int z,string object)
   {
      //queremos que las transformadas sean estaticas
+     geometry_msg::TransformStamped odom2bf_msg;
+     odom2bf_msg = buffer_.lookupTransform("odom","base_footprint",ros::Time(0));
 
-    tf2::Stamped<tf2::Transform> odom2object;
-    odom2object.frame_id_ = "odom"; //las transformadas iran desde el centro hacia los objetos
-    odom2object.stamp_ = ros::Time::now();
+     tf2::Stamped<tf2::Transform> odom2bf;
+     tf2::fromMsg(odom2bf_msg,odom2bf);
 
-    odom2object.setOrigin(tf2::Vector3(x, y, z));
+     tf2::Stamped<tf2::Transform> bf2object;
+     bf2object.setOrigin(tf2::Vector(x,y,0));
+     tf2::Quaternion q;
+     q.setRPY(0, 0, 0, 1);
+     odom2object.setRotation(q);
 
-    tf2::Quaternion q;
-    q.setRPY(0, 0, 0, 1);
-    odom2object.setRotation(q);
+     tf2::Transform odom2object = odom2bf * bf2object;
 
-    geometry_msgs::TransformStamped odom2object_msg = tf2::toMsg(odom2object);
-    odom2object_msg.child_frame_id = object ; //habra que sustituir object dependiendo de cada objeto a detectar
-    br_.sendTransform(odom2object_msg);
+     geometry_msgs::TransformStamped odom2object_msg ;
+     odom2object_msg.header.frame_id_ = "odom";
+     odom2object_msg.child_frame_id_ = object;
+     odom2object_msg.header.stamp_ = ros::Time::now();
+
+     odom2object_msg.transform = tf2::toMsg(odom2object);
+
+     br_.sendTransform(odom2object_msg);
   }
 
 
