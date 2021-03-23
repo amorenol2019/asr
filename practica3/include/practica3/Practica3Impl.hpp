@@ -2,7 +2,6 @@
 #define PRACTICA3IMPL_H_
 
 #include <ros/ros.h>
-#include "practica_3impl"
 
 namespace practica_3impl
 {
