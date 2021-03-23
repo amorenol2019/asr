@@ -18,12 +18,12 @@
 *      contributors may be used to endorse or promote products derived
 *      from this software without specific prior written permission.
 
-*   THIS SOFTWARE IS PROVPractica3ImplED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+*   THIS SOFTWARE IS PROVpractica_3implED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
 *   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
 *   COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-*   INCPractica3ImplENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+*   INCpractica_3implENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 *   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 *   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
@@ -36,33 +36,33 @@
 
 /* Mantainer: Francisco Martín fmrico@gmail.com */
 
-#include "Practica3Impl.h"
+#include "practica_3impl.h"
 
 namespace bica
 {
-Practica3Impl::Practica3Impl() : state_(FORWARD_BALL), myBaseId_("Practica3Impl")
+practica_3impl::practica_3impl() : state_(TOBALL), myBaseId_("practica_3impl")
 {
   state_ts_ = ros::Time::now();
   state_pub_ = nh_.advertise<std_msgs::String>("/" + myBaseId_ + "/state", 1, false);
 }
 
-Practica3Impl::~Practica3Impl()
+practica_3impl::~practica_3impl()
 {
 }
 
-void Practica3Impl::activateCode()
+void practica_3impl::activateCode()
 {
   	deactivateAllDeps();
 
-	state_ = FORWARD_BALL;
+	state_ = TOBALL;
 	state_ts_ = ros::Time::now();
 
-	forward_ball_activateDeps();
-	forward_ball_code_once();
+	ToBall_activateDeps();
+	ToBall_code_once();
 
 }
 
-bool Practica3Impl::ok()
+bool practica_3impl::ok()
 {
   if (active_)
   {
@@ -70,12 +70,69 @@ bool Practica3Impl::ok()
 
     switch (state_)
     {
-      	case FORWARD_YELLOW:
+      	case TURN:
 
-	forward_yellow_code_iterative();
+	Turn_code_iterative();
 
-	msg.data = "forward_yellow";
-	if(forward_yellow_2_turn())
+	msg.data = "Turn";
+	if(Turn_2_ToBall())
+	{
+
+	deactivateAllDeps();
+
+	state_ = TOBALL;
+	state_ts_ = ros::Time::now();
+
+	ToBall_activateDeps();
+	ToBall_code_once();
+	}
+	state_pub_.publish(msg);
+	break;
+
+	case TOBLUEGOAL:
+
+	ToBlueGoal_code_iterative();
+
+	msg.data = "ToBlueGoal";
+	if(ToBlueGoal_2_ToYellGoal())
+	{
+
+	deactivateAllDeps();
+
+	state_ = TOYELLGOAL;
+	state_ts_ = ros::Time::now();
+
+	ToYellGoal_activateDeps();
+	ToYellGoal_code_once();
+	}
+	state_pub_.publish(msg);
+	break;
+
+	case TOBALL:
+
+	ToBall_code_iterative();
+
+	msg.data = "ToBall";
+	if(ToBall_2_ToBlueGoal())
+	{
+
+	deactivateAllDeps();
+
+	state_ = TOBLUEGOAL;
+	state_ts_ = ros::Time::now();
+
+	ToBlueGoal_activateDeps();
+	ToBlueGoal_code_once();
+	}
+	state_pub_.publish(msg);
+	break;
+
+	case TOYELLGOAL:
+
+	ToYellGoal_code_iterative();
+
+	msg.data = "ToYellGoal";
+	if(ToYellGoal_2_Turn())
 	{
 
 	deactivateAllDeps();
@@ -83,65 +140,8 @@ bool Practica3Impl::ok()
 	state_ = TURN;
 	state_ts_ = ros::Time::now();
 
-	turn_activateDeps();
-	turn_code_once();
-	}
-	state_pub_.publish(msg);
-	break;
-
-	case FORWARD_BALL:
-
-	forward_ball_code_iterative();
-
-	msg.data = "forward_ball";
-	if(forward_ball_2_forward_blue())
-	{
-
-	deactivateAllDeps();
-
-	state_ = FORWARD_BLUE;
-	state_ts_ = ros::Time::now();
-
-	forward_blue_activateDeps();
-	forward_blue_code_once();
-	}
-	state_pub_.publish(msg);
-	break;
-
-	case FORWARD_BLUE:
-
-	forward_blue_code_iterative();
-
-	msg.data = "forward_blue";
-	if(forward_blue_2_forward_yellow())
-	{
-
-	deactivateAllDeps();
-
-	state_ = FORWARD_YELLOW;
-	state_ts_ = ros::Time::now();
-
-	forward_yellow_activateDeps();
-	forward_yellow_code_once();
-	}
-	state_pub_.publish(msg);
-	break;
-
-	case TURN:
-
-	turn_code_iterative();
-
-	msg.data = "turn";
-	if(turn_2_forward_ball())
-	{
-
-	deactivateAllDeps();
-
-	state_ = FORWARD_BALL;
-	state_ts_ = ros::Time::now();
-
-	forward_ball_activateDeps();
-	forward_ball_code_once();
+	Turn_activateDeps();
+	Turn_code_once();
 	}
 	state_pub_.publish(msg);
 	break;
@@ -154,34 +154,38 @@ bool Practica3Impl::ok()
 }
 
 void
-Practica3Impl::deactivateAllDeps()
+practica_3impl::deactivateAllDeps()
 {
 	removeDependency("Turn");
 	removeDependency("Forward");
+	removeDependency("Perception");
 };
 
 void
-Practica3Impl::forward_yellow_activateDeps()
-{
-	addDependency("Forward");
-}
-
-void
-Practica3Impl::forward_ball_activateDeps()
-{
-	addDependency("Forward");
-}
-
-void
-Practica3Impl::forward_blue_activateDeps()
-{
-	addDependency("Forward");
-}
-
-void
-Practica3Impl::turn_activateDeps()
+practica_3impl::Turn_activateDeps()
 {
 	addDependency("Turn");
+}
+
+void
+practica_3impl::ToBlueGoal_activateDeps()
+{
+	addDependency("Perception");
+	addDependency("Forward");
+}
+
+void
+practica_3impl::ToBall_activateDeps()
+{
+	addDependency("Forward");
+	addDependency("Perception");
+}
+
+void
+practica_3impl::ToYellGoal_activateDeps()
+{
+	addDependency("Perception");
+	addDependency("Forward");
 }
 
 
