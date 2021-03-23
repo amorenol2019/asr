@@ -2,7 +2,7 @@
 
 #include "ros/ros.h"
 
-int main (int argc, cahr **argv)
+int main (int argc, char **argv)
 {
   ros::init(argc, argv, "turn");
   ros::NodeHandle n;
