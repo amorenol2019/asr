@@ -28,7 +28,12 @@ private:
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
 
-  void create_transform(int x, int y ,int z,string object); 
+  tf2_ros::Buffer buffer_;
+  tf2_ros::Transformlistener listener_;
+  tf2_ros::StaticTransformBroadcaster br_;
+
+
+  void create_transform(int x, int y ,int z,string object);
 };
 
 } // practica3

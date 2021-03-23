@@ -59,7 +59,7 @@ namespace practica3
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
   void create_transform(int x, int y ,int z,string object)
   {
-    tf2_ros::StaticTransformBroadcaster br; //queremos que las transformadas sean estaticas
+     //queremos que las transformadas sean estaticas
 
     tf2::Stamped<tf2::Transform> bf2object;
     bf2object.frame_id_ = "base_footprint"; //las transformadas iran desde el robot hacia los objetos
@@ -73,7 +73,7 @@ namespace practica3
 
     geometry_msgs::TransformStamped bf2object_msg = tf2::toMsg(bf2object);
     bf2object_msg.child_frame_id = object ; //habra que sustituir object dependiendo de cada objeto a detectar
-    br.sendTransform(bf2object_msg);
+    br_.sendTransform(bf2object_msg);
 
   }
 
