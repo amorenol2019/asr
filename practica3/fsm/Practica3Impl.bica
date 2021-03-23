@@ -1,0 +1,20 @@
+<component id="Practica3Impl">
+ <state y="-216" x="-358" initial="false" id="forward_yellow">
+  <activation id="Forward"/>
+ </state>
+ <state y="-208" x="-628" initial="true" id="forward_ball">
+  <activation id="Forward"/>
+ </state>
+ <state y="-344" x="-490" initial="false" id="forward_blue">
+  <activation id="Forward"/>
+ </state>
+ <state y="-86" x="-484" initial="false" id="turn">
+  <activation id="Turn"/>
+ </state>
+ <component y="-54" x="-351" id="Turn"/>
+ <component y="-486" x="-491" id="Forward"/>
+ <transition dst="turn" src="forward_yellow"/>
+ <transition dst="forward_yellow" src="forward_blue"/>
+ <transition dst="forward_ball" src="turn"/>
+ <transition dst="forward_blue" src="forward_ball"/>
+</component>
