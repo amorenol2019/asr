@@ -47,8 +47,8 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   cv::Mat hsv;
   cv::cvtColor(cv_ptr->image, hsv, CV_RGB2HSV);
 
+  width = cv_ptr->image.cols;
   int height = cv_ptr->image.rows;
-  int width = cv_ptr->image.cols;
   int step = cv_ptr->image.step;
   int channels = 3;  // RGB
 
@@ -83,9 +83,9 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
         printf("Número de píxeles: %d\n", counter);
         ROS_INFO("Object at %d %d", x / counter, y / counter);
 
-        if ( orient_2object( x/counter , y/counter ) )
+        if ( orient_2object( x / counter , y / counter ) )
         {
-          //si el objeto esta centrado en x => y = 0 
+          //si el objeto esta centrado en x => y = 0
         }
   } else{
     ROS_INFO("No object found");
@@ -108,10 +108,10 @@ std_msgs::Bool orient_2object(const int x ,const int y) //devuelve true si el ob
 
   geometry_msgs::Twist cmd;
 
-  if( x > width/2 )
-    { cmd.angular.z = TURNING_V; }    //gira hacia la derecha
-  else if (x < width/2)
-    { cmd.angular.z = -TURNING_V; }
+  if( x > width / 2 )
+    { cmd.angular.z = - TURNING_V; }    //gira hacia la derecha
+  else if (x < width / 2)
+    { cmd.angular.z = TURNING_V; }
   else
     { centered = true; }
 
