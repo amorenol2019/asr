@@ -1,13 +1,14 @@
 #include "practica3/Practica3Impl.hpp"
 
 #include "std_msgs/Bool.h"
+#include "std_msgs/String"
 #include "ros/ros.h"
 
 namespace practica3
 {
 Practica3Impl::Practica3Impl()
 {
-  object_pub_ = nh_.advertise<std_msgs::string>("/object", 1);
+  object_pub_ = nh_.advertise<std_msgs::String>("/object", 1);
   state_ts_ = ros::Time::now();
 }
 
@@ -45,22 +46,22 @@ bool Practica3Impl::Turn_2_ToBall()
 
 
 
-void ToYellGoal_code_iterative()
+void Practica3Impl::ToYellGoal_code_iterative()
 {
   object_pub_.publish("yellow");
 }
 
-void void ToBlueGoal_code_iterative()
+void Practica3Impl::ToBlueGoal_code_iterative()
 {
   object_pub_.publish("blue");
 }
 
-void ToBall_code_iterative()
+void Practica3Impl::ToBall_code_iterative()
 {
   object_pub_.publish("ball");
 }
 
-void Turn_code_iterative()
+void Practica3Impl::Turn_code_iterative()
 {
   object_pub_.publish("Turn");
 }
