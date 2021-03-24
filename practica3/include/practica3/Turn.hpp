@@ -13,11 +13,11 @@ class Turn : public bica::Component
 {
 public:
   Turn();
-
   void step();
 
 private:
-
+  ros::NodeHandle nh_;
+  ros::Publisher vel_pub_;
 };
 
 } // practica3

@@ -11,7 +11,7 @@ namespace practica3
 class Practica3Impl : public practica3
 {
 public:
-  Practica3Impl() {}
+    Practica3Impl() ;
 
   bool ToBall_2_ToBlueGoal() ;
   bool ToBlueGoal_2_ToYellGoal();
@@ -27,10 +27,10 @@ private:
   const float FORWARD_TIME = 30.0;
   const float TURNING_TIME = 5.0;
 
-  string object_;
+  std::string object_;
 
 };
 
-} // practica3
+}; // practica3
 
 #endif // PRACTICA3__PRACTICA_3_IMPL_HPP__
