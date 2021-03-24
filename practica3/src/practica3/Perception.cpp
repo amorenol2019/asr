@@ -13,7 +13,7 @@
 
 namespace practica3
 {
-Perception(): it_(nh_)
+Perception::Perception(): it_(nh_)
 {
   object_ = "ball";
   image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Perception::imageCb, this);
@@ -21,7 +21,7 @@ Perception(): it_(nh_)
   object_pub_ = nh_.advertise<std_msgs::Bool>("object", 1);
 }
 
-void imageCb(const sensor_msgs::Image::ConstPtr& msg)
+void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
   if(object_ == "ball"){
     h_min = BALL_HMIN;
