@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package (OpenCV)
 
 catkin_package(
-  CATKIN_DEPENDS bica roscpp std_msgs kobuki_msgs sensor_msgs image_transport cv_bridge
+  #CATKIN_DEPENDS bica roscpp std_msgs kobuki_msgs sensor_msgs image_transport cv_bridge
 )
 
 include_directories(
@@ -27,29 +27,42 @@ include_directories(
 
 add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/Turn.cpp
+   src/${PROJECT_NAME}/Perception.cpp
+   src/${PROJECT_NAME}/Forward.cpp
+   src/${PROJECT_NAME}/Practica3Impl.cpp
    fsm/practica3.cpp
 )
 
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 
-##add_executable(forward_node src/forward_node.cpp)
-##add_dependencies(forward_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-##target_link_libraries(forward_node ${catkin_LIBRARIES})
+add_executable(forward_node src/forward_node.cpp)
+add_dependencies(forward_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(forward_node ${catkin_LIBRARIES})
 
-add_executable(turn_node
-  src/practica3/Turn.cpp
-  src/practica3/Practica3Impl.cpp
-  src/turn_node.cpp
-)
-
+add_executable(turn_node src/turn_node.cpp)
+add_dependencies(turn_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(turn_node ${catkin_LIBRARIES})
 
-roslint_cpp(
-  src/turn_node.cpp
-  include/practica3/Practica3Impl.hpp src/practica3/Practica3Impl.cpp
-  include/practica3/Turn.hpp src/practica3/Turn.cpp
-)
+add_executable(perception_node src/perception_node.cpp)
+add_dependencies(perception_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(perception_node ${catkin_LIBRARIES})
+
+add_executable(practica3_node src/practica3_node.cpp)
+add_dependencies(practica3_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(practica3_node ${catkin_LIBRARIES})
+
+
+#roslint_cpp(
+#  src/turn_node.cpp
+#  src/perception_node.cpp
+#  src/forward_node.cpp
+#  src/practica3_node.cpp
+#  include/practica3/Practica3Impl.hpp src/practica3/Practica3Impl.cpp
+#  include/practica3/Turn.hpp src/practica3/Turn.cpp
+#  include/practica3/Perception.hpp src/practica3/Perception.cpp
+#  include/practica3/Forward.hpp src/practica3/Forward.cpp
+#)
 
 
 #############

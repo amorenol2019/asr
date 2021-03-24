@@ -15,7 +15,8 @@ public:
   void step();
 
 private:
-
+  ros::Publisher vel_pub_;
+  ros::NodeHandle nh_;
 };
 
 } // practica3

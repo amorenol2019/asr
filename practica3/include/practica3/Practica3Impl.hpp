@@ -8,7 +8,7 @@
 
 namespace practica3
 {
-class Practica3Impl : public practica3
+class Practica3Impl : public bica::practica3
 {
 public:
     Practica3Impl() ;

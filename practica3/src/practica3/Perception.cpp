@@ -3,7 +3,7 @@
 #include "bica/Component.h"
 #include "geometry_msgs/Twist.h"
 #include "ros/ros.h"
-
+#include <std_msgs/Bool.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
@@ -13,7 +13,7 @@
 
 namespace practica3
 {
-Perception(): it_(nh_)
+Perception::Perception(): it_(nh_)
 {
   object_ = "ball";
   image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Perception::imageCb, this);
@@ -21,7 +21,7 @@ Perception(): it_(nh_)
   object_pub_ = nh_.advertise<std_msgs::Bool>("object", 1);
 }
 
-void imageCb(const sensor_msgs::Image::ConstPtr& msg)
+void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
   if(object_ == "ball"){
     h_min = BALL_HMIN;
@@ -106,7 +106,7 @@ Perception::step()
   // Que queremos publicar? la distancia? el objeto?
   // Publicar la distancia:
   std_msgs::Bool msg;
-  msg.data = object_;
+  msg.data = false; //Tenemos que poner un boolean y no object_
   object_pub_.publish(msg);
 }
 
