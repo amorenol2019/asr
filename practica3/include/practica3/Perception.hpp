@@ -55,6 +55,8 @@ private:
   int distance_;
 
   const int TURNING_V = 0.1;
+  int width;
+
 
 };
 
