@@ -1,31 +1,35 @@
-
 #include "practica3/Perception.hpp"
 
-#include "bica/Component.h"
 #include "geometry_msgs/Twist.h"
+
+#include <geometry_msgs/TransformStamped.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>
+#include "tf2/transform_datatypes.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+
+
 #include "ros/ros.h"
-#include <std_msgs/Bool.h>
+#include <string>
+//#include "std_msgs/Bool"
+
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include <std_msgs/Float32.h>
 
-  // ESTAN COMENTADAS LAS LINEAS PARA PUBLICAR LA IMAGEN FILTRADA
-
-namespace practica3
-{
-Perception::Perception(): it_(nh_)
+Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 {
   image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Perception::imageCb, this);
   object_sub_ = nh_.subscribe("/object", 1, &Perception::objectCb, this);
-  // image_pub_ = it_.advertise("/hsv/image_filtered", 1);
 }
 
-void Perception::objectCb(const std_msgs::String::ConstPtr& msg)
+void Perception::objectCb(const std_msgs::Float32::ConstPtr& msg)
 {
-  object_ = msg;
+  object_ = "ball";
+  //msg;
 }
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
@@ -56,7 +60,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   cv::Mat hsv;
   cv::cvtColor(cv_ptr->image, hsv, CV_RGB2HSV);
 
-  width = cv_ptr->image.cols;
+  width_ = cv_ptr->image.cols;
   int height = cv_ptr->image.rows;
   int step = cv_ptr->image.step;
   int channels = 3;  // RGB
@@ -66,7 +70,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   int counter = 0;
 
   for (int i = 0; i < height; i++ ){
-    for (int j = 0; j < width; j++ ){
+    for (int j = 0; j < width_; j++ ){
       int posdata = i * step + j * channels;
 
       if((hsv.data[posdata] >= h_min) &&
@@ -80,17 +84,12 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
         y += i;
         counter++;
       }
-      //else{
-        //cv_imageout->image.data[posdata] = 0;
-        //cv_imageout->image.data[posdata + 1] = 0;
-        //cv_imageout->image.data[posdata + 2] = 0;
-      //}
     }
   }
 
   if(counter > 0)
   {
-    if(orient_2object(x / counter, y / counter))
+    if(orient_2object(x / counter, y / counter) == 1)
     {
       if(counter < 40)
       {
@@ -128,45 +127,39 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     ROS_INFO("No object found");
   }
 
-  // Mostrar imagen filtrada
-  // cv::imshow("Imagen Fuente", cv_ptr->image);
-  // cv::imshow("Imagen filtrada", cv_imageout->image);
-  // cv::waitKey(3);
-
-  // image_pub_.publish(cv_imageout->toImageMsg());
 }
 
-std_msgs::Bool orient_2object(const int x ,const int y) //devuelve true si el objeto esta centrado en x
+int Perception::orient_2object(const int x ,const int y) //devuelve true si el objeto esta centrado en x
 {
-  std_msgs::Bool centered = false;
+  int centered = 0;
 
   geometry_msgs::Twist cmd;
 
-  if( x > width / 2 )
+  if( x > width_ / 2 )
     { cmd.angular.z = - TURNING_V; }    //gira hacia la derecha
-  else if (x < width / 2)
+  else if (x < width_ / 2)
     { cmd.angular.z = TURNING_V; }
   else
     {
-      cmd.sngular.z = 0;
-      centered = true;
+      cmd.angular.z = 0;
+      centered = 1;
     }
 
   return centered;
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
-void create_transform(float x, float y ,std::string object)
+void Perception::create_transform(float x, float y ,std::string object)
 {
-  geometry_msg::TransformStamped odom2bf_msg;
+  geometry_msgs::TransformStamped odom2bf_msg;
   odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
 
   tf2::Stamped<tf2::Transform> odom2bf;
   tf2::fromMsg(odom2bf_msg, odom2bf);
 
   tf2::Stamped<tf2::Transform> bf2object;
-  bf2object.setOrigin(tf2::Vector3(x, y, 0));
-  bf2object.setRotation(tf2::Quaternion(0, 0, 0, 1));
+  bf2object.setOrigin(tf2::Vector3(x*1.0, y*1.0, 0));
+  bf2object.setRotation(tf2::Quaternion(0.0, 0.0, 0.0, 1.0));
 
   tf2::Transform odom2object = odom2bf * bf2object;
 
@@ -188,5 +181,3 @@ Perception::step()
 
   create_transform(distance_, 0, object_);
 }
-
-} // practica3

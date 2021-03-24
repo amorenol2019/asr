@@ -6,7 +6,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "perception");
   ros::NodeHandle n;
 
-  practica3::Perception perception;
+  Perception perception;
 
   ros::Rate loop_rate(10);
 
