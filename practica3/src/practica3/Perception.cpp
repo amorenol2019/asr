@@ -19,11 +19,17 @@ Perception::Perception(): it_(nh_)
   object_ = "ball";
   image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Perception::imageCb, this);
   image_pub_ = it_.advertise("/hsv/image_filtered", 1);
-  object_pub_ = nh_.advertise<std_msgs::Bool>("object", 1);
+  object_sub_ = nh_.subscribe("/object", 1, &Perception::objectCb, this);
 }
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
+  object_ = msg;
+}
+
+void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
+{
+
   if(object_ == "ball"){
     h_min = BALL_HMIN;
     h_max = BALL_HMAX;
