@@ -40,6 +40,7 @@ private:
   std::string object_;
   int distance_;
   int width_;
+  double angle_;
   const int TURNING_V = 0.1;
 
   // Rangos H:

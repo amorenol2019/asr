@@ -26,13 +26,15 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
   object_sub_ = nh_.subscribe("/object", 1, &Perception::objectCb, this);
 }
 
-void Perception::objectCb(const std_msgs::Float32::ConstPtr& msg)
+void
+Perception::objectCb(const std_msgs::Float32::ConstPtr& msg)
 {
   object_ = "ball";
   //msg;
 }
 
-void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
+void
+Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
   if(object_ == "ball")
   {
@@ -129,7 +131,8 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 
 }
 
-int Perception::orient_2object(const int x ,const int y) //devuelve true si el objeto esta centrado en x
+int
+Perception::orient_2object(const int x ,const int y) //devuelve true si el objeto esta centrado en x
 {
   int centered = 0;
 
@@ -149,10 +152,16 @@ int Perception::orient_2object(const int x ,const int y) //devuelve true si el o
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
-void Perception::create_transform(float x, float y ,std::string object)
+void
+Perception::create_transform(float x, float y ,std::string object)
 {
   geometry_msgs::TransformStamped odom2bf_msg;
-  odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
+  try{
+    odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
+  }   catch (std::exception & e)
+  {
+      return ;
+  }
 
   tf2::Stamped<tf2::Transform> odom2bf;
   tf2::fromMsg(odom2bf_msg, odom2bf);
@@ -170,6 +179,17 @@ void Perception::create_transform(float x, float y ,std::string object)
   odom2object_msg.transform = tf2::toMsg(odom2object);
 
   br_.sendTransform(odom2object_msg);
+
+  geometry_msgs::TransformStamped bf2obj_msg;
+  try {
+      bf2obj_msg = buffer_.lookupTransform( "base_footprint", "object", ros::Time(0));
+  } catch (std::exception & e)
+  {
+      return;
+  }
+
+  //angulo del robot respecto a la pelota
+  angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
 }
 
 void
