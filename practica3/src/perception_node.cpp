@@ -1,14 +1,14 @@
 #include "practica3/Perception.hpp"
 #include "ros/ros.h"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   ros::init(argc, argv, "perception");
   ros::NodeHandle n;
 
   practica3::Perception perception;
 
-  ros::Rate loop_rate
+  ros::Rate loop_rate(10);
 
   int count = 0;
 

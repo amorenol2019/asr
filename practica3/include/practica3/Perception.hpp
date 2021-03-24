@@ -50,7 +50,7 @@ private:
   const int V_MIN = 0;
   const int V_MAX = 360;
 
-  string object_;
+  std::string object_;
   int distance_;
 };
 
