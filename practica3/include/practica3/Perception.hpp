@@ -5,15 +5,19 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 
+#include <geometry_msgs/TransformStamped.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>
+
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <std_msgs/Float32.h>
+#include <std_msgs/String.h>
 
-namespace practica3
-{
 class Perception : public bica::Component
 {
 public:
@@ -23,20 +27,19 @@ public:
 
 private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
-  void objectCb(const std_msgs::String::ConstPtr& msg);
+  void objectCb(const std_msgs::Float32::ConstPtr& msg);
   void create_transform(float x, float y ,std::string object);
-  std_msgs::Bool orient_2object(const int x,const int y);
+  int orient_2object(const int x,const int y);
 
   ros::NodeHandle nh_;
-  ros::Publisher object_pub_;
+  ros::Subscriber object_sub_;
 
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
-  // image_transport::Publisher image_pub_;
 
   std::string object_;
-  int width;
   int distance_;
+  int width_;
   const int TURNING_V = 0.1;
 
   // Rangos H:
@@ -57,8 +60,9 @@ private:
   const int V_MIN = 0;
   const int V_MAX = 360;
 
+  tf2_ros::Buffer buffer_;
+  tf2_ros::TransformBroadcaster br_;
+  tf2_ros::TransformListener listener_;
 };
-
-} // practica3
 
 #endif // PRACTICA3__FORWARD_HPP__
