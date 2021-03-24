@@ -25,6 +25,7 @@ private:
   // Analiza lo que le llega de la camara, lo filtra y calcula distancia aproximada:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
   std_msgs::Bool orient_2object(const int x,const int y);
+  void create_transform(float x, float y ,std::string object);
 
   ros::NodeHandle nh_;
   ros::Publisher object_pub_;

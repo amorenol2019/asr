@@ -124,6 +124,30 @@ std_msgs::Bool orient_2object(const int x ,const int y) //devuelve true si el ob
   return centered;
 }
 
+//crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
+void create_transform(float x, float y ,std::string object)
+  {
+     //queremos que las transformadas sean estaticas
+   geometry_msg::TransformStamped odom2bf_msg;
+   odom2bf_msg = buffer_.lookupTransform("odom","base_footprint",ros::Time(0));
+
+   tf2::Stamped<tf2::Transform> odom2bf;
+   tf2::fromMsg(odom2bf_msg,odom2bf);
+
+   tf2::Stamped<tf2::Transform> bf2object;
+   bf2object.setOrigin(tf2::Vector3(x,y,0));
+   bf2object.setRotation(tf2::Quaternion(0, 0, 0, 1));
+
+   tf2::Transform odom2object = odom2bf * bf2object;
+
+   geometry_msgs::TransformStamped odom2object_msg ;
+   odom2object_msg.header.frame_id = "odom";
+   odom2object_msg.child_frame_id = object;
+   odom2object_msg.header.stamp = ros::Time::now();
+
+   odom2object_msg.transform = tf2::toMsg(odom2object);
+   br_.sendTransform(odom2object_msg);
+}
 
 void
 Perception::step()
