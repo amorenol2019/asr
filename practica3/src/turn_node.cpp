@@ -13,12 +13,13 @@ int main (int argc, char **argv)
 
   int count = 0;
 
-  while(turn.ok())
+  while (turn.ok())
   {
     turn.step();
 
     ros::spinOnce();
     loop_rate.sleep();
   }
+  
   return 0;
 }
