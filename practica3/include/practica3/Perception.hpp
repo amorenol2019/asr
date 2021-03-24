@@ -22,17 +22,22 @@ public:
   void step();
 
 private:
-  // Analiza lo que le llega de la camara, lo filtra y calcula distancia aproximada:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
-  std_msgs::Bool orient_2object(const int x,const int y);
+  void objectCb(const std_msgs::String::ConstPtr& msg);
   void create_transform(float x, float y ,std::string object);
+  std_msgs::Bool orient_2object(const int x,const int y);
 
   ros::NodeHandle nh_;
   ros::Publisher object_pub_;
 
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
-  image_transport::Publisher image_pub_;
+  // image_transport::Publisher image_pub_;
+
+  std::string object_;
+  int width;
+  int distance_;
+  const int TURNING_V = 0.1;
 
   // Rangos H:
   int h_min;
@@ -51,13 +56,6 @@ private:
   // Rangos V:
   const int V_MIN = 0;
   const int V_MAX = 360;
-
-  std::string object_;
-  int distance_;
-
-  const int TURNING_V = 0.1;
-  int width;
-
 
 };
 

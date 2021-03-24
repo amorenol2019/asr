@@ -12,18 +12,6 @@ Practica3Impl::Practica3Impl()
   state_ts_ = ros::Time::now();
 }
 
-void
-Practica3Impl::object_callback(const std_msgs::Bool::ConstPtr msg)
-{
-  // Segun lo que recibamos: distancia, objeto...
-  // if msg es de la bola:    msg->data o algo asi
-  object_ = "ball";
-  // else if msg es de la p azul
-  // object_ = "blue";
-  // else if msg es de la p amarilla
-  // object_ = "yellow";
-}
-
 bool Practica3Impl::ToBall_2_ToBlueGoal()
 {
   return (ros::Time::now() - state_ts_).toSec() > FORWARD_TIME;
@@ -45,7 +33,6 @@ bool Practica3Impl::Turn_2_ToBall()
 }
 
 
-
 void Practica3Impl::ToYellGoal_code_iterative()
 {
   object_pub_.publish("yellow");
@@ -65,11 +52,6 @@ void Practica3Impl::Turn_code_iterative()
 {
   object_pub_.publish("Turn");
 }
-
-
-
-
-
 
 
 } // practica3

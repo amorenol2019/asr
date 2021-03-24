@@ -27,12 +27,10 @@ private:
   void object_callback(const std_msgs::Bool::ConstPtr msg);
 
   ros::NodeHandle nh_;
-  ros::Publisher object_pub_; 
+  ros::Publisher object_pub_;
 
   const float FORWARD_TIME = 30.0;
   const float TURNING_TIME = 5.0;
-
-  std::string object_;
 
 };
 
