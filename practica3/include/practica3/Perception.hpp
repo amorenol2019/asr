@@ -24,6 +24,7 @@ public:
 private:
   // Analiza lo que le llega de la camara, lo filtra y calcula distancia aproximada:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
+  std_msgs::Bool orient_2object(const int x,const int y);
 
   ros::NodeHandle nh_;
   ros::Publisher object_pub_;
@@ -52,6 +53,9 @@ private:
 
   std::string object_;
   int distance_;
+
+  const int TURNING_V = 0.1;
+
 };
 
 } // practica3

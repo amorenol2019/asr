@@ -1,4 +1,5 @@
-#include "practica3/Forward.hpp"
+
+#include "practica3/Perception.hpp"
 
 #include "bica/Component.h"
 #include "geometry_msgs/Twist.h"
@@ -81,6 +82,11 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   if(counter > 0){
         printf("Número de píxeles: %d\n", counter);
         ROS_INFO("Object at %d %d", x / counter, y / counter);
+
+        if ( orient_2object( x/counter , y/counter ) )
+        {
+          //si el objeto esta centrado en x => y = 0 
+        }
   } else{
     ROS_INFO("No object found");
   }
@@ -95,6 +101,23 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 
   image_pub_.publish(cv_imageout->toImageMsg());
 }
+
+std_msgs::Bool orient_2object(const int x ,const int y) //devuelve true si el objeto esta centrado en x
+{
+  std_msgs::Bool centered = false;
+
+  geometry_msgs::Twist cmd;
+
+  if( x > width/2 )
+    { cmd.angular.z = TURNING_V; }    //gira hacia la derecha
+  else if (x < width/2)
+    { cmd.angular.z = -TURNING_V; }
+  else
+    { centered = true; }
+
+  return centered;
+}
+
 
 void
 Perception::step()
