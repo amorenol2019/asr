@@ -27,7 +27,7 @@ private:
   void object_callback(const std_msgs::Bool::ConstPtr msg);
 
   ros::NodeHandle nh_;
-  ros::Subscriber object_sub_; // Suscriptor a lo que produce Perception
+  ros::Publisher object_pub_; 
 
   const float FORWARD_TIME = 30.0;
   const float TURNING_TIME = 5.0;
