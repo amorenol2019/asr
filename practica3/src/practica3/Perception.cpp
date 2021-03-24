@@ -119,7 +119,10 @@ std_msgs::Bool orient_2object(const int x ,const int y) //devuelve true si el ob
   else if (x < width / 2)
     { cmd.angular.z = TURNING_V; }
   else
-    { centered = true; }
+    {
+      cmd.sngular.z = 0; 
+      centered = true;
+    }
 
   return centered;
 }
