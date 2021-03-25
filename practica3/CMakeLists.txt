@@ -52,4 +52,4 @@ target_link_libraries(turn_node ${catkin_LIBRARIES})
 
 add_executable(practica3_node src/practica3_node.cpp src/practica3/Practica3Impl.cpp)
 add_dependencies(practica3_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(practica3_node ${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(practica3_node ${catkin_LIBRARIES})

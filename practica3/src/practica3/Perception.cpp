@@ -111,11 +111,11 @@ int Perception::orient_2object(const int x, const int y)
   {
     v_turning_ = 0.05;
 
-    if(x > width_ / 2 +20)
+    if(x > width_ / 2 + 20)
     {
       ROS_INFO("esta en DER\n");
       cmd_.angular.z = -v_turning_;
-    } else if (x < width_ / 2 -20 )
+    } else if (x < width_ / 2 - 20)
     {
       ROS_INFO("esta en IZQ\n");
       cmd_.angular.z = v_turning_;
@@ -125,7 +125,6 @@ int Perception::orient_2object(const int x, const int y)
       cmd_.angular.z = 0;
       centered = 1;
     }
-
   } else
   {
     v_turning_ = 0.3;
@@ -140,7 +139,6 @@ int Perception::orient_2object(const int x, const int y)
       cmd_.angular.z = v_turning_;
     }
   }
-
   vel_pub_.publish(cmd_);
 
   return centered;
@@ -192,9 +190,8 @@ Perception::create_transform(const float x, const float y, const int object)
 void
 Perception::step()
 {
-  if(!isActive()){ //} || object_pub_.getNumSubscribers() == 0){
+  if(!isActive() || object_pub_.getNumSubscribers() == 0){
     return;
-    //ROS_INFO("NOT ACTIVE");
   }
 
   distance_ = 0.0;
@@ -207,12 +204,8 @@ Perception::step()
 
   else
   {
-    ROS_INFO("!!!!counter222: %d \n",counter);
-    ROS_INFO("counter>0\n");
-
     if(orient_2object(x / counter, y / counter) == 1)
     {
-      ROS_INFO("ORIENTADO");
       if(object_ == 1)
       {
         distance_ = 10.52 - 1.44*logf(counter);
@@ -221,21 +214,12 @@ Perception::step()
       {
         distance_ = 16.09 - 1.45*logf(counter);
       }
-      ROS_INFO("distance_: %f\n", distance_);
-
-      //ROS_INFO("Object at %d, %d\n", x / counter, y / counter);
-    }
-    else {
-      ROS_INFO("No centrado \n");
     }
   }
 
   std_msgs::Float32 msg;
   msg.data = distance_;
   object_pub_.publish(msg);
-  ROS_INFO("distance_: %f\n",distance_);
-
-
 
   //create_transform(distance_, Y_CENTRED, object_);
 }
