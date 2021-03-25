@@ -101,27 +101,40 @@ int Perception::orient_2object(const int x, const int y)
 { // devuelve 1 si el objeto esta centrado en la imagen
 
   int centered = 0;
-  if(x < width_ / 2 + 10 && x > width_ / 2 - 10)
+  if(x < width_ / 2 + 50 && x > width_ / 2 - 50)
   {
-    v_turning_ = 0.1;
+    v_turning_ = 0.05;
+
+    if(x > width_ / 2 +10)
+    {
+      ROS_INFO("esta en DER\n");
+      cmd_.angular.z = -v_turning_;
+    } else if (x < width_ / 2 )
+    {
+      ROS_INFO("esta en IZQ\n");
+      cmd_.angular.z = v_turning_;
+    } else
+    {
+      ROS_INFO("esta en CENT\n");
+      cmd_.angular.z = 0;
+      centered = 1;
+    }
+
   } else
   {
     v_turning_ = 0.3;
+
+    if(x > width_ / 2 +50)
+    {
+      ROS_INFO("esta en DER\n");
+      cmd_.angular.z = -v_turning_;
+    } else 
+    {
+      ROS_INFO("esta en IZQ\n");
+      cmd_.angular.z = v_turning_;
+    }
   }
-  if(x > width_ / 2 + 10)
-  {
-    ROS_INFO("esta en DER\n");
-    cmd_.angular.z = -v_turning_;
-  } else if (x < width_ / 2 - 10)
-  {
-    ROS_INFO("esta en IZQ\n");
-    cmd_.angular.z = v_turning_;
-  } else
-  {
-    ROS_INFO("esta en CENT\n");
-    cmd_.angular.z = 0;
-    centered = 1;
-  }
+
   vel_pub_.publish(cmd_);
 
   return centered;
