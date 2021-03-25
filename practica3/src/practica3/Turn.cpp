@@ -9,15 +9,15 @@ namespace practica3
 
 Turn::Turn()
 {
-  vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
+  vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 }
 
 void
 Turn::step()
 {
-  //if(!isActive() || vel_pub_.getNumSubscribers() == 0){
-    //return;
-  //}
+  if(!isActive()){ //} || vel_pub_.getNumSubscribers() == 0){
+    return;
+  }
 
   vel.angular.z = VELOCITY;
   vel_pub_.publish(vel);

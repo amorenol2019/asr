@@ -9,7 +9,7 @@ namespace practica3
 {
 Practica3Impl::Practica3Impl()
 {
-  object_pub_ = nh_.advertise<std_msgs::Int64>("/object", 1);
+  object_pub_ = nh_.advertise<std_msgs::Int64>("/object", 10);
   state_ts_ = ros::Time::now();
 }
 
