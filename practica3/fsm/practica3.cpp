@@ -70,7 +70,26 @@ bool practica3::ok()
 
     switch (state_)
     {
-      	case TOYELLGOAL:
+      	case TOBALL:
+
+	ToBall_code_iterative();
+
+	msg.data = "ToBall";
+	if(ToBall_2_ToBlueGoal())
+	{
+
+	deactivateAllDeps();
+
+	state_ = TOBLUEGOAL;
+	state_ts_ = ros::Time::now();
+
+	ToBlueGoal_activateDeps();
+	ToBlueGoal_code_once();
+	}
+	state_pub_.publish(msg);
+	break;
+
+	case TOYELLGOAL:
 
 	ToYellGoal_code_iterative();
 
@@ -85,25 +104,6 @@ bool practica3::ok()
 
 	Turn_activateDeps();
 	Turn_code_once();
-	}
-	state_pub_.publish(msg);
-	break;
-
-	case TOBLUEGOAL:
-
-	ToBlueGoal_code_iterative();
-
-	msg.data = "ToBlueGoal";
-	if(ToBlueGoal_2_ToYellGoal())
-	{
-
-	deactivateAllDeps();
-
-	state_ = TOYELLGOAL;
-	state_ts_ = ros::Time::now();
-
-	ToYellGoal_activateDeps();
-	ToYellGoal_code_once();
 	}
 	state_pub_.publish(msg);
 	break;
@@ -127,21 +127,21 @@ bool practica3::ok()
 	state_pub_.publish(msg);
 	break;
 
-	case TOBALL:
+	case TOBLUEGOAL:
 
-	ToBall_code_iterative();
+	ToBlueGoal_code_iterative();
 
-	msg.data = "ToBall";
-	if(ToBall_2_ToBlueGoal())
+	msg.data = "ToBlueGoal";
+	if(ToBlueGoal_2_ToYellGoal())
 	{
 
 	deactivateAllDeps();
 
-	state_ = TOBLUEGOAL;
+	state_ = TOYELLGOAL;
 	state_ts_ = ros::Time::now();
 
-	ToBlueGoal_activateDeps();
-	ToBlueGoal_code_once();
+	ToYellGoal_activateDeps();
+	ToYellGoal_code_once();
 	}
 	state_pub_.publish(msg);
 	break;
@@ -156,36 +156,36 @@ bool practica3::ok()
 void
 practica3::deactivateAllDeps()
 {
-	removeDependency("Forward");
-	removeDependency("Turn");
-	removeDependency("Perception");
+	removeDependency("perception");
+	removeDependency("forward");
+	removeDependency("turn");
 };
+
+void
+practica3::ToBall_activateDeps()
+{
+	addDependency("perception");
+	addDependency("forward");
+}
 
 void
 practica3::ToYellGoal_activateDeps()
 {
-	addDependency("Forward");
-	addDependency("Perception");
-}
-
-void
-practica3::ToBlueGoal_activateDeps()
-{
-	addDependency("Forward");
-	addDependency("Perception");
+	addDependency("perception");
+	addDependency("forward");
 }
 
 void
 practica3::Turn_activateDeps()
 {
-	addDependency("Turn");
+	addDependency("turn");
 }
 
 void
-practica3::ToBall_activateDeps()
+practica3::ToBlueGoal_activateDeps()
 {
-	addDependency("Perception");
-	addDependency("Forward");
+	addDependency("forward");
+	addDependency("perception");
 }
 
 
