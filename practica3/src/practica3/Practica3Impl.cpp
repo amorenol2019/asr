@@ -62,6 +62,8 @@ void Practica3Impl::ToBall_code_iterative()
 void Practica3Impl::Turn_code_iterative()
 {
   ROS_INFO("\nturn\n");
+  msg_.data = 4; //"ball";
+  object_pub_.publish(msg_);
 }
 
 } // practica3
