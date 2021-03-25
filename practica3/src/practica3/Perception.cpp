@@ -91,9 +91,9 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 
   if(x == 0 && y == 0)
   {
-        cmd_.angular.z = TURNING_V;
+        cmd_.angular.z = 0.3;
         vel_pub_.publish(cmd_);
-  }   //else cmd_.angular.z=0;
+  }
 
   if(counter > 0)
   {
@@ -107,19 +107,16 @@ int Perception::orient_2object(const int x, const int y)
 { // devuelve 1 si el objeto esta centrado en la imagen
 
   int centered = 0;
-  ROS_INFO("orientando\n");
-  ROS_INFO("width/2: %d x:%d y:%d\n ", width_, x, y);
 
-  if(x > width_ / 2)
+  if(x > width_ / 2 +10)
   {
     ROS_INFO("esta en DER\n");
-
-    cmd_.angular.z = -TURNING_V;
+    cmd_.angular.z = -TURNING_V_4orientation;
   }
-  else if (x < width_ / 2)
+  else if (x < width_ / 2 -10)
   {
     ROS_INFO("esta en IZQ\n");
-    cmd_.angular.z = TURNING_V;
+    cmd_.angular.z = TURNING_V_4orientation;
 
   }
   else

@@ -59,7 +59,7 @@ private:
   float distance_;
   double angle_;
   const int Y_CENTRED = 0;
-  const int TURNING_V = 0.2;
+  const float TURNING_V_4orientation = 0.1;
 
   // Rangos H:
   int h_min;
