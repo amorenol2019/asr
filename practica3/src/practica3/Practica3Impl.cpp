@@ -42,21 +42,21 @@ void Practica3Impl::ToYellGoal_code_iterative()
 {
   ROS_INFO("\nYellow\n");
   msg_.data = 3; // "yellow";
-  object_pub_.publish(msg);
+  object_pub_.publish(msg_);
 }
 
 void Practica3Impl::ToBlueGoal_code_iterative()
 {
   ROS_INFO("\nBLue\n");
   msg_.data = 2; // "blue";
-  object_pub_.publish(msg);
+  object_pub_.publish(msg_);
 }
 
 void Practica3Impl::ToBall_code_iterative()
 {
   ROS_INFO("\nball\n");
   msg_.data = 1; //"ball";
-  object_pub_.publish(msg);
+  object_pub_.publish(msg_);
 }
 
 void Practica3Impl::Turn_code_iterative()
