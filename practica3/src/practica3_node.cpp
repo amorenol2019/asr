@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 
   practica3::Practica3Impl practica3;
 
-  ros::Rate loop_rate(5);
+  ros::Rate loop_rate(10);
 
   int count = 0;
 

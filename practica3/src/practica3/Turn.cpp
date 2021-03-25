@@ -15,9 +15,9 @@ Turn::Turn()
 void
 Turn::step()
 {
-  if(!isActive() || vel_pub_.getNumSubscribers() == 0){
-    return;
-  }
+  //if(!isActive() || vel_pub_.getNumSubscribers() == 0){
+    //return;
+  //}
 
   vel.angular.z = VELOCITY;
   vel_pub_.publish(vel);

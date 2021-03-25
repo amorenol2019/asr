@@ -12,6 +12,7 @@
 
 #include "ros/ros.h"
 #include <string>
+#include "std_msgs/Int64.h"
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -27,30 +28,32 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
   object_sub_ = nh_.subscribe("/object", 1, &Perception::objectCb, this);
 
   object_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 1);
+  vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
 }
 
-void Perception::objectCb(const std_msgs::String::ConstPtr& msg)
+void Perception::objectCb(const std_msgs::Int64::ConstPtr& msg)
 {
-  object_ = msg->data;
+  object_ = msg->data;//str->data;
 }
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
-  if(object_ == "ball")
+  if(object_ == 1)//ball
   {
     h_min = BALL_HMIN;
     h_max = BALL_HMAX;
   }
-  else if(object_ == "blue")
+  else if(object_ == 2)//blue
   {
     h_min = BLUE_HMIN;
     h_max = BLUE_HMAX;
   }
-  else if(object_ == "yellow")
+  else if(object_ == 3)//yellow
   {
     h_min = YELLOW_HMIN;
     h_max = YELLOW_HMAX;
   }
+
 
   // Crear copia de la imagen
   cv_bridge::CvImagePtr cv_ptr;
@@ -87,40 +90,60 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     }
   }
 
+  if(x==0 && y==0)
+  {
+        cmd.angular.z = 0.2;
+        vel_pub_.publish(cmd);
+  }   //else cmd.angular.z=0;
+
+
+  ROS_INFO("x : %d , y: %d",x/counter,y/counter);
+  ROS_INFO("counter1111: %d",counter);
+
 }
 
 int Perception::orient_2object(const int x, const int y)
 { // devuelve 1 si el objeto esta centrado en la imagen
-  int centered = 0;
 
-  geometry_msgs::Twist cmd;
+  int centered = 0;
+  ROS_INFO("orientando");
+  ROS_INFO("width/2 :%d x:%d y:%d ", width_);
+
 
   if(x > width_ / 2)
   {
-    cmd.angular.z = - TURNING_V;
+    ROS_INFO("esta en DER");
+
+    cmd.angular.z = -TURNING_V;
   }
   else if (x < width_ / 2)
   {
+    ROS_INFO("esta en IZQ");
     cmd.angular.z = TURNING_V;
+
   }
   else
   {
+    ROS_INFO("esta en CENT");
     cmd.angular.z = 0;
     centered = 1;
   }
+  vel_pub_.publish(cmd);
 
+  //vel_pub_.publish(cmd);
   return centered;
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
 void
-Perception::create_transform(const float x, const float y, const std::string object)
+Perception::create_transform(const float x, const float y, const int object)
 {
   geometry_msgs::TransformStamped odom2bf_msg;
   try{
     odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
   }   catch (std::exception & e)
   {
+    ROS_INFO("odom2bf_msg not found");
     return ;
   }
 
@@ -135,7 +158,7 @@ Perception::create_transform(const float x, const float y, const std::string obj
 
   geometry_msgs::TransformStamped odom2object_msg ;
   odom2object_msg.header.frame_id = "odom";
-  odom2object_msg.child_frame_id = object;
+  odom2object_msg.child_frame_id = "ball";//object;
   odom2object_msg.header.stamp = ros::Time::now();
   odom2object_msg.transform = tf2::toMsg(odom2object);
 
@@ -146,6 +169,7 @@ Perception::create_transform(const float x, const float y, const std::string obj
       bf2obj_msg = buffer_.lookupTransform( "base_footprint", "object", ros::Time(0));
   } catch (std::exception & e)
   {
+    ROS_INFO("bf2obj not found");
     return;
   }
 
@@ -156,15 +180,23 @@ Perception::create_transform(const float x, const float y, const std::string obj
 void
 Perception::step()
 {
-  if(!isActive() || object_pub_.getNumSubscribers() == 0){
-    return;
-  }
+  //if(!isActive() || object_pub_.getNumSubscribers() == 0){
+    //return;
+    //ROS_INFO("NOT ACTIVE");
+  //}
 
-  distance_ = 0;
-  if(counter > 0)
+  distance_ = 0.0;
+
+
+  if(counter > 0 && width_ > 0)
   {
+    ROS_INFO("!!!!counter222: %d",counter);
+    ROS_INFO("counter>0");
+
     if(orient_2object(x / counter, y / counter) == 1)
     {
+      ROS_INFO("ORIENTADO");
+
       if(counter < 40)
       {
         distance_ = 6;
@@ -191,6 +223,11 @@ Perception::step()
       }
       printf("Número de píxeles: %d\n", counter);
       ROS_INFO("Object at %d %d", x / counter, y / counter);
+
+      std_msgs::Float32 msg;
+      msg.data = distance_;
+      object_pub_.publish(msg);
+
     }
     else {
       ROS_INFO("No centrado");
@@ -199,12 +236,8 @@ Perception::step()
   else {
     ROS_INFO("No object found");
   }
-
-  std_msgs::Float32 msg;
-  msg.data = distance_;
-  object_pub_.publish(msg);
-
-  create_transform(distance_, Y_CENTRED, object_);
+  ROS_INFO("distance_: %f",distance_);
+  //create_transform(distance_, Y_CENTRED, object_);
 }
 
 } // practica3
