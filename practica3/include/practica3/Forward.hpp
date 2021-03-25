@@ -24,7 +24,7 @@ private:
   ros::Subscriber dist_sub_;
   geometry_msgs::Twist vel;
 
-  int distance_;
+  float distance_;
   int velocity_;
 
 };

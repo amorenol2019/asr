@@ -16,7 +16,6 @@ Forward::Forward()
 void Forward::distanceCb(const std_msgs::Float32::ConstPtr& msg)
 {
   distance_ = msg->data;
-  ROS_INFO("msg->data: %f",msg->data);
 }
 
 void
@@ -27,12 +26,14 @@ Forward::step()
   //}
   ROS_INFO("distance_: %f",distance_);
   // Hacer pruebas para ajustarlo
-  if(distance_ < 1)
+  if(distance_ < 1.0)
   {
+    ROS_INFO("bla");
     velocity_ = 0.1;
   }
   else
   {
+    ROS_INFO("BLAAAA");
     velocity_ = 0.3;
   }
 
