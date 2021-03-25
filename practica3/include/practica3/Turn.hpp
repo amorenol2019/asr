@@ -21,7 +21,7 @@ private:
   ros::Publisher vel_pub_;
   geometry_msgs::Twist vel;
 
-  const float VELOCITY = 0.6;
+  const float VELOCITY = 0.4;
 
 };
 

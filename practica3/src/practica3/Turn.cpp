@@ -20,6 +20,8 @@ Turn::step()
   }
 
   vel.angular.z = VELOCITY;
+  //vel.linear.x = 0;
+
   vel_pub_.publish(vel);
 }
 

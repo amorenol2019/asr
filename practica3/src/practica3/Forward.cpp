@@ -26,17 +26,13 @@ void Forward::step()
   ROS_INFO("distance_: %f", distance_);
 
   // Hacer pruebas para ajustarlo
-  if(distance_ > 1.0)
+  if(distance_ != 0.0)
   {
-    velocity_ = distance_ * 0.5;
+    velocity_ = 0.2; // distance_ * 0.5;
+    // cmd_.angular.z = 0;
+    cmd_.linear.x = velocity_;
+    vel_pub_.publish(cmd_);
   }
-  else
-  {
-    velocity_ = 0.2;
-  }
-
-  cmd_.linear.x = velocity_;
-  vel_pub_.publish(cmd_);
 }
 
 } // practica3

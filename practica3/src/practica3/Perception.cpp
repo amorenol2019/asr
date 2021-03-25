@@ -103,10 +103,10 @@ int Perception::orient_2object(const int x, const int y)
   int centered = 0;
   if(x < width_ / 2 + 10 && x > width_ / 2 - 10)
   {
-    v_turning_ = 0.2;
+    v_turning_ = 0.1;
   } else
   {
-    v_turning_ = 0.6;
+    v_turning_ = 0.3;
   }
   if(x > width_ / 2 + 10)
   {
@@ -179,13 +179,14 @@ Perception::step()
   }
 
   distance_ = 0.0;
+
   if (counter == 0)
   {
-    cmd_.angular.z = 0.6;
+    cmd_.angular.z = 0.3;
     vel_pub_.publish(cmd_);
   }
 
-  if(counter > 0 && width_ > 0)
+  else
   {
     ROS_INFO("!!!!counter222: %d \n",counter);
     ROS_INFO("counter>0\n");
@@ -193,42 +194,23 @@ Perception::step()
     if(orient_2object(x / counter, y / counter) == 1)
     {
       ROS_INFO("ORIENTADO");
+      if(object_ == 1)
+      {
+        distance_ = 10.52 - 1.44*logf(counter);
+      }
+      else if(object_ == 2 || object_ == 3)
+      {
+        distance_ = 16.09 - 1.45*logf(counter);
+      }
+      ROS_INFO("distance_: %f\n", distance_);
 
-      if(counter < 40)
-      {
-        distance_ = 6.0;
-      }
-      else if(counter < 55)
-      {
-        distance_ = 5.0;
-      }
-      else if(counter < 80)
-      {
-        distance_ = 4.0;
-      }
-      else if(counter < 125)
-      {
-        distance_ = 3.0;
-      }
-      else if(counter < 500)
-      {
-        distance_ = 2.0;
-      }
-      else if(counter < 940)
-      {
-        distance_ = 1.0;
-      }
-
-      ROS_INFO("Object at %d, %d\n", x / counter, y / counter);
-
+      //ROS_INFO("Object at %d, %d\n", x / counter, y / counter);
     }
     else {
       ROS_INFO("No centrado \n");
     }
   }
-  else {
-    ROS_INFO("No object found\n");
-  }
+
   std_msgs::Float32 msg;
   msg.data = distance_;
   object_pub_.publish(msg);
