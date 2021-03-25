@@ -23,29 +23,20 @@ void Forward::step()
   //if(!isActive() || vel_pub_.getNumSubscribers() == 0){ // Ahorrar procesamiento innecesario
     //return;
   //}
-  ROS_INFO("distance_: %f",distance_);
+  ROS_INFO("distance_: %f", distance_);
 
-    // Hacer pruebas para ajustarlo
-    //if(distance_ < 1.0)
-    //{
-      //ROS_INFO("bla");
-      //velocity_ = 0.1;
-      //}
-      //else
-      //{
-      //ROS_INFO("BLAAAA");
-      //velocity_ = 0.3;
-      //}
-
-  if(distance_ > 1)
+  // Hacer pruebas para ajustarlo
+  if(distance_ > 1.0)
   {
-    velocity_ = distance_*0.1;
+    velocity_ = distance_ * 0.1;
   }
-  else velocity_ = 0.001;
+  else
+  {
+    velocity_ = 0.01;
+  }
 
-  velocity_ = 0.4;
-  vel.linear.x = velocity_;
-  vel_pub_.publish(vel);
+  cmd_.linear.x = velocity_;
+  vel_pub_.publish(cmd_);
 }
 
 } // practica3

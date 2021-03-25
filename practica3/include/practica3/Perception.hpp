@@ -18,7 +18,7 @@
 
 #include <std_msgs/Float32.h>
 #include <std_msgs/String.h>
-#include "std_msgs/Int64.h"
+#include <std_msgs/Int64.h>
 
 
 namespace practica3
@@ -48,6 +48,8 @@ private:
   tf2_ros::TransformBroadcaster br_;
   tf2_ros::TransformListener listener_;
 
+  geometry_msgs::Twist cmd_;
+
   int object_;
 
   int width_;
@@ -75,8 +77,6 @@ private:
   // Rangos V:
   const int V_MIN = 0;
   const int V_MAX = 360;
-
-  geometry_msgs::Twist cmd;
 
 };
 

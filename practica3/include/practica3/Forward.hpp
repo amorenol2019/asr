@@ -22,11 +22,11 @@ private:
 
   ros::Publisher vel_pub_;
   ros::Subscriber dist_sub_;
-  
-  geometry_msgs::Twist vel;
+
+  geometry_msgs::Twist cmd_;
 
   float distance_;
-  int velocity_;
+  float velocity_;
 
 };
 
