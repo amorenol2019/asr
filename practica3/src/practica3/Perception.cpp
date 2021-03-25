@@ -194,6 +194,7 @@ Perception::look4_TF(void)
 
   double roll, pitch, yaw;
   tf2::Matrix3x3(bf2object.getRotation()).getRPY(roll, pitch, yaw);
+  ROS_INFO("yaw: %D\n",yaw);
 
   //angulo del robot respecto a la pelota
   //angle_ = atan2(odom2obj_msg.transform.translation.y, odom2obj_msg.transform.translation.x);
