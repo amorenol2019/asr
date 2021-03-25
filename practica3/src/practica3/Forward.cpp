@@ -29,7 +29,7 @@ void Forward::step()
   if(distance_ != 0.0)
   {
     velocity_ = 0.2; // distance_ * 0.5;
-    // cmd_.angular.z = 0;
+    cmd_.angular.z = 0;
     cmd_.linear.x = velocity_;
     vel_pub_.publish(cmd_);
   }
