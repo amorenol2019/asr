@@ -1,11 +1,12 @@
 #ifndef PRACTICA3__PRACTICA_3_IMPL_HPP__
 #define PRACTICA3__PRACTICA_3_IMPL_HPP__
 
-#include "std_msgs/Bool.h"
 #include <bica/Component.h>
 #include "practica3.h"
-
 #include "ros/ros.h"
+
+#include "std_msgs/Bool.h"
+#include "std_msgs/Int64.h"
 
 namespace practica3
 {
@@ -25,12 +26,12 @@ public:
   void ToYellGoal_code_iterative();
 
 private:
-  void object_callback(const std_msgs::Bool::ConstPtr msg);
+  //void object_callback(const std_msgs::Bool::ConstPtr msg);
 
   ros::NodeHandle nh_;
   ros::Publisher object_pub_;
 
-  std_msgs::String msg_;
+  std_msgs::Int64 msg_; //String msg_;
 
   const float FORWARD_TIME = 30.0;
   const float TURNING_TIME = 5.0;

@@ -9,10 +9,10 @@
 #include "tf2/transform_datatypes.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
-
 #include "ros/ros.h"
 #include <string>
-#include "std_msgs/Int64.h"
+#include <std_msgs/Int64.h>
+#include <std_msgs/Float32.h>
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -33,27 +33,26 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 
 void Perception::objectCb(const std_msgs::Int64::ConstPtr& msg)
 {
-  object_ = msg->data;//str->data;
+  object_ = msg->data; //str->data;
 }
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
-  if(object_ == 1)//ball
+  if(object_ == 1) //ball
   {
     h_min = BALL_HMIN;
     h_max = BALL_HMAX;
   }
-  else if(object_ == 2)//blue
+  else if(object_ == 2) //blue
   {
     h_min = BLUE_HMIN;
     h_max = BLUE_HMAX;
   }
-  else if(object_ == 3)//yellow
+  else if(object_ == 3) //yellow
   {
     h_min = YELLOW_HMIN;
     h_max = YELLOW_HMAX;
   }
-
 
   // Crear copia de la imagen
   cv_bridge::CvImagePtr cv_ptr;
@@ -90,15 +89,17 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     }
   }
 
-  if(x==0 && y==0)
+  if(x == 0 && y == 0)
   {
-        cmd.angular.z = 0.2;
-        vel_pub_.publish(cmd);
-  }   //else cmd.angular.z=0;
+        cmd_.angular.z = TURNING_V;
+        vel_pub_.publish(cmd_);
+  }   //else cmd_.angular.z=0;
 
-
-  ROS_INFO("x : %d , y: %d",x/counter,y/counter);
-  ROS_INFO("counter1111: %d",counter);
+  if(counter > 0)
+  {
+    ROS_INFO("x : %d , y: %d \n",x / counter,y / counter);
+    ROS_INFO("counter1111: %d \n",counter);
+  }
 
 }
 
@@ -106,31 +107,29 @@ int Perception::orient_2object(const int x, const int y)
 { // devuelve 1 si el objeto esta centrado en la imagen
 
   int centered = 0;
-  ROS_INFO("orientando");
-  ROS_INFO("width/2 :%d x:%d y:%d ", width_);
-
+  ROS_INFO("orientando\n");
+  ROS_INFO("width/2: %d x:%d y:%d\n ", width_, x, y);
 
   if(x > width_ / 2)
   {
-    ROS_INFO("esta en DER");
+    ROS_INFO("esta en DER\n");
 
-    cmd.angular.z = -TURNING_V;
+    cmd_.angular.z = -TURNING_V;
   }
   else if (x < width_ / 2)
   {
-    ROS_INFO("esta en IZQ");
-    cmd.angular.z = TURNING_V;
+    ROS_INFO("esta en IZQ\n");
+    cmd_.angular.z = TURNING_V;
 
   }
   else
   {
-    ROS_INFO("esta en CENT");
-    cmd.angular.z = 0;
+    ROS_INFO("esta en CENT\n");
+    cmd_.angular.z = 0;
     centered = 1;
   }
-  vel_pub_.publish(cmd);
+  vel_pub_.publish(cmd_);
 
-  //vel_pub_.publish(cmd);
   return centered;
 }
 
@@ -164,17 +163,17 @@ Perception::create_transform(const float x, const float y, const int object)
 
   br_.sendTransform(odom2object_msg);
 
-  geometry_msgs::TransformStamped bf2obj_msg;
-  try {
-      bf2obj_msg = buffer_.lookupTransform( "base_footprint", "object", ros::Time(0));
-  } catch (std::exception & e)
-  {
-    ROS_INFO("bf2obj not found");
-    return;
-  }
+  //geometry_msgs::TransformStamped bf2obj_msg;
+  //try {
+    //  bf2obj_msg = buffer_.lookupTransform( "base_footprint", "object", ros::Time(0));
+  //} catch (std::exception & e)
+  //{
+    //ROS_INFO("bf2obj not found");
+    //return;
+  //}
 
   //angulo del robot respecto a la pelota
-  angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
+  //angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
 }
 
 void
@@ -187,11 +186,10 @@ Perception::step()
 
   distance_ = 0.0;
 
-
   if(counter > 0 && width_ > 0)
   {
-    ROS_INFO("!!!!counter222: %d",counter);
-    ROS_INFO("counter>0");
+    ROS_INFO("!!!!counter222: %d \n",counter);
+    ROS_INFO("counter>0\n");
 
     if(orient_2object(x / counter, y / counter) == 1)
     {
@@ -199,44 +197,45 @@ Perception::step()
 
       if(counter < 40)
       {
-        distance_ = 6;
+        distance_ = 6.0;
       }
       else if(counter < 55)
       {
-        distance_ = 5;
+        distance_ = 5.0;
       }
       else if(counter < 80)
       {
-        distance_ = 4;
-  	   }
+        distance_ = 4.0;
+      }
       else if(counter < 125)
       {
-        distance_ = 3;
+        distance_ = 3.0;
       }
       else if(counter < 500)
       {
-        distance_ = 2;
+        distance_ = 2.0;
       }
       else if(counter < 940)
       {
-        distance_ = 1;
+        distance_ = 1.0;
       }
       printf("Número de píxeles: %d\n", counter);
-      ROS_INFO("Object at %d %d", x / counter, y / counter);
-
-      std_msgs::Float32 msg;
-      msg.data = distance_;
-      object_pub_.publish(msg);
+      ROS_INFO("Object at %d, %d\n", x / counter, y / counter);
 
     }
     else {
-      ROS_INFO("No centrado");
+      ROS_INFO("No centrado \n");
     }
   }
   else {
-    ROS_INFO("No object found");
+    ROS_INFO("No object found\n");
   }
-  ROS_INFO("distance_: %f",distance_);
+  ROS_INFO("distance_: %f\n",distance_);
+
+  std_msgs::Float32 msg;
+  msg.data = distance_;
+  object_pub_.publish(msg);
+
   //create_transform(distance_, Y_CENTRED, object_);
 }
 
