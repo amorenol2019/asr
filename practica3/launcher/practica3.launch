@@ -1,4 +1,3 @@
-
 <launch>
 
 	<node pkg="practica3" type="forward_node" name="forward" />

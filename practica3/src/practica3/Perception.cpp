@@ -24,11 +24,11 @@ namespace practica3
 {
 Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 {
-  image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Perception::imageCb, this);
-  object_sub_ = nh_.subscribe("/object", 1, &Perception::objectCb, this);
+  image_sub_ = it_.subscribe("/hsv/image_filtered", 10, &Perception::imageCb, this);
+  object_sub_ = nh_.subscribe("/object", 10, &Perception::objectCb, this);
 
-  object_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 1);
-  vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
+  object_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
+  vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 }
 
 void Perception::objectCb(const std_msgs::Int64::ConstPtr& msg)
@@ -176,10 +176,10 @@ Perception::create_transform(const float x, const float y, const int object)
 void
 Perception::step()
 {
-  //if(!isActive() || object_pub_.getNumSubscribers() == 0){
-    //return;
+  if(!isActive()){ //} || object_pub_.getNumSubscribers() == 0){
+    return;
     //ROS_INFO("NOT ACTIVE");
-  //}
+  }
 
   distance_ = 0.0;
 
