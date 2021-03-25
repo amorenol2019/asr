@@ -18,6 +18,8 @@
 
 #include <std_msgs/Float32.h>
 #include <std_msgs/String.h>
+#include "std_msgs/Int64.h"
+
 
 namespace practica3
 {
@@ -29,14 +31,15 @@ public:
 
 private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
-  void objectCb(const std_msgs::String::ConstPtr& msg);
+  void objectCb(const std_msgs::Int64::ConstPtr& msg);
 
   int orient_2object(const int x, const int y);
-  void create_transform(const float x, const float y, const std::string object);
+  void create_transform(const float x, const float y, const int object);
 
   ros::NodeHandle nh_;
   ros::Subscriber object_sub_;
   ros::Publisher object_pub_;
+  ros::Publisher vel_pub_;
 
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
@@ -45,16 +48,16 @@ private:
   tf2_ros::TransformBroadcaster br_;
   tf2_ros::TransformListener listener_;
 
-  std::string object_;
+  int object_;
 
   int width_;
   int x;
   int y;
   int counter;
-  int distance_;
+  float distance_;
   double angle_;
   const int Y_CENTRED = 0;
-  const int TURNING_V = 0.5;
+  const int TURNING_V = 0.2;
 
   // Rangos H:
   int h_min;
@@ -72,6 +75,8 @@ private:
   // Rangos V:
   const int V_MIN = 0;
   const int V_MAX = 360;
+
+  geometry_msgs::Twist cmd;
 
 };
 

@@ -16,15 +16,16 @@ Forward::Forward()
 void Forward::distanceCb(const std_msgs::Float32::ConstPtr& msg)
 {
   distance_ = msg->data;
+  ROS_INFO("msg->data: %f",msg->data);
 }
 
 void
 Forward::step()
 {
-  if(!isActive() || vel_pub_.getNumSubscribers() == 0){ // Ahorrar procesamiento innecesario
-    return;
-  }
-
+  //if(!isActive() || vel_pub_.getNumSubscribers() == 0){ // Ahorrar procesamiento innecesario
+    //return;
+  //}
+  ROS_INFO("distance_: %f",distance_);
   // Hacer pruebas para ajustarlo
   if(distance_ < 1)
   {
