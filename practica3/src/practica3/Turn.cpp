@@ -15,13 +15,11 @@ Turn::Turn()
 void
 Turn::step()
 {
-  if(!isActive()){ //} || vel_pub_.getNumSubscribers() == 0){
+  if(!isActive() || vel_pub_.getNumSubscribers() == 0){
     return;
   }
-
+  
   vel.angular.z = VELOCITY;
-  //vel.linear.x = 0;
-
   vel_pub_.publish(vel);
 }
 

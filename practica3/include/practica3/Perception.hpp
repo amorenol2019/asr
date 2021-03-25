@@ -20,7 +20,6 @@
 #include <std_msgs/String.h>
 #include <std_msgs/Int64.h>
 
-
 namespace practica3
 {
 class Perception : public bica::Component
@@ -34,7 +33,7 @@ private:
   void objectCb(const std_msgs::Int64::ConstPtr& msg);
 
   int orient_2object(const int x, const int y);
-  void create_transform(const float x, const float y, const int object);
+  void create_transform(const float x, const float y, const std::string name);
 
   ros::NodeHandle nh_;
   ros::Subscriber object_sub_;
@@ -56,11 +55,10 @@ private:
   int x;
   int y;
   int counter;
+  std::string name_;
   float distance_;
   float v_turning_;
   double angle_;
-  const int Y_CENTRED = 0;
-  const float TURNING_V_4orientation = 0.4;
 
   // Filtrado de colores:
   int h_min;
@@ -79,7 +77,6 @@ private:
   const int YELLOW_HMAX = 91;
   const int YELLOW_SMIN = 113;
   const int YELLOW_VMIN = 62;
-
 
   // Rangos S generales:
   const int S_MIN = 0;
