@@ -1,24 +1,24 @@
 <component id="practica3">
- <state x="-709" initial="false" id="ToYellGoal" y="-302">
-  <activation id="Forward"/>
-  <activation id="Perception"/>
+ <state initial="true" x="-902" id="ToBall" y="-348">
+  <activation id="perception"/>
+  <activation id="forward"/>
  </state>
- <state x="-851" initial="false" id="ToBlueGoal" y="-448">
-  <activation id="Forward"/>
-  <activation id="Perception"/>
+ <state initial="false" x="-543" id="ToYellGoal" y="-372">
+  <activation id="perception"/>
+  <activation id="forward"/>
  </state>
- <state x="-865" initial="false" id="Turn" y="-184">
-  <activation id="Turn"/>
+ <state initial="false" x="-704" id="Turn" y="-244">
+  <activation id="turn"/>
  </state>
- <state x="-1010" initial="true" id="ToBall" y="-294">
-  <activation id="Perception"/>
-  <activation id="Forward"/>
+ <state initial="false" x="-729" id="ToBlueGoal" y="-510">
+  <activation id="forward"/>
+  <activation id="perception"/>
  </state>
- <component x="-1139" id="Forward" y="-514"/>
- <component x="-760" id="Turn" y="-125"/>
- <component x="-549" id="Perception" y="-483"/>
- <transition src="Turn" dst="ToBall"/>
- <transition src="ToBlueGoal" dst="ToYellGoal"/>
- <transition src="ToBall" dst="ToBlueGoal"/>
+ <component x="-398" id="perception" y="-580"/>
+ <component x="-1037" id="forward" y="-594"/>
+ <component x="-542" id="turn" y="-213"/>
  <transition src="ToYellGoal" dst="Turn"/>
+ <transition src="ToBall" dst="ToBlueGoal"/>
+ <transition src="ToBlueGoal" dst="ToYellGoal"/>
+ <transition src="Turn" dst="ToBall"/>
 </component>
