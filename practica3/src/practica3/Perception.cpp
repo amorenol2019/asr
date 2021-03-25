@@ -12,30 +12,29 @@
 
 #include "ros/ros.h"
 #include <string>
-//#include "std_msgs/Bool"
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+
 namespace practica3
 {
 Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 {
   image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Perception::imageCb, this);
   object_sub_ = nh_.subscribe("/object", 1, &Perception::objectCb, this);
+
+  object_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 1);
 }
 
-void
-Perception::objectCb(const std_msgs::Float32::ConstPtr& msg)
+void Perception::objectCb(const std_msgs::String::ConstPtr& msg)
 {
-  object_ = "ball";//msg;
-
+  object_ = msg->data;
 }
 
-void
-Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
+void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
   if(object_ == "ball")
   {
@@ -53,11 +52,9 @@ Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     h_max = YELLOW_HMAX;
   }
 
-  // Crear copias de la imagen
-  cv_bridge::CvImagePtr cv_ptr; //, cv_imageout;
-
+  // Crear copia de la imagen
+  cv_bridge::CvImagePtr cv_ptr;
   cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
-  // cv_imageout = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
 
   // Convertir a HSV:
   cv::Mat hsv;
@@ -66,11 +63,11 @@ Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   width_ = cv_ptr->image.cols;
   int height = cv_ptr->image.rows;
   int step = cv_ptr->image.step;
-  int channels = 3;  // RGB
+  int channels = 3;
 
-  int x = 0;
-  int y = 0;
-  int counter = 0;
+  x = 0;
+  y = 0;
+  counter = 0;
 
   for (int i = 0; i < height; i++ ){
     for (int j = 0; j < width_; j++ ){
@@ -90,87 +87,48 @@ Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     }
   }
 
-  if(counter > 0)
-  {
-    //yo aqui guardaria en un atributo la x , la y y counter
-
-    if(orient_2object(x / counter, y / counter) == 1)
-    {
-      if(counter < 40)
-      {
-        distance_ = 6;
-      }
-      else if(counter < 55)
-      {
-        distance_ = 5;
-      }
-      else if(counter < 80)
-      {
-        distance_ = 4;
-	    }
-      else if(counter < 125)
-      {
-        distance_ = 3;
-      }
-      else if(counter < 500)
-      {
-        distance_ = 2;
-      }
-      else if(counter < 940)
-      {
-        distance_ = 1;
-      }
-
-      printf("Número de píxeles: %d\n", counter);
-      ROS_INFO("Object at %d %d", x / counter, y / counter);
-    }
-    else {
-      ROS_INFO("No centrado");
-    }
-  }
-  else {
-    ROS_INFO("No object found");
-  }
-
 }
 
-int
-Perception::orient_2object(const int x ,const int y) //devuelve true si el objeto esta centrado en x
-{
+int Perception::orient_2object(const int x, const int y)
+{ // devuelve 1 si el objeto esta centrado en la imagen
   int centered = 0;
 
   geometry_msgs::Twist cmd;
 
-  if( x > width_ / 2 )
-    { cmd.angular.z = - TURNING_V; }    //gira hacia la derecha
+  if(x > width_ / 2)
+  {
+    cmd.angular.z = - TURNING_V;
+  }
   else if (x < width_ / 2)
-    { cmd.angular.z = TURNING_V; }
+  {
+    cmd.angular.z = TURNING_V;
+  }
   else
-    {
-      cmd.angular.z = 0;
-      centered = 1;
-    }
+  {
+    cmd.angular.z = 0;
+    centered = 1;
+  }
 
   return centered;
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
 void
-Perception::create_transform(float x, float y ,std::string object)
+Perception::create_transform(const float x, const float y, const std::string object)
 {
   geometry_msgs::TransformStamped odom2bf_msg;
   try{
     odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
   }   catch (std::exception & e)
   {
-      return ;
+    return ;
   }
 
   tf2::Stamped<tf2::Transform> odom2bf;
   tf2::fromMsg(odom2bf_msg, odom2bf);
 
   tf2::Stamped<tf2::Transform> bf2object;
-  bf2object.setOrigin(tf2::Vector3(x*1.0, y*1.0, 0));
+  bf2object.setOrigin(tf2::Vector3(x * 1.0, y * 1.0, 0));
   bf2object.setRotation(tf2::Quaternion(0.0, 0.0, 0.0, 1.0));
 
   tf2::Transform odom2object = odom2bf * bf2object;
@@ -188,7 +146,7 @@ Perception::create_transform(float x, float y ,std::string object)
       bf2obj_msg = buffer_.lookupTransform( "base_footprint", "object", ros::Time(0));
   } catch (std::exception & e)
   {
-      return;
+    return;
   }
 
   //angulo del robot respecto a la pelota
@@ -198,11 +156,55 @@ Perception::create_transform(float x, float y ,std::string object)
 void
 Perception::step()
 {
-  if(!isActive()) {
+  if(!isActive() || object_pub_.getNumSubscribers() == 0){
     return;
   }
-  //asi aqui haria lo de orient to object y calcularia la distancia y la publicaria
 
-  create_transform(distance_, 0, object_);
+  distance_ = 0;
+  if(counter > 0)
+  {
+    if(orient_2object(x / counter, y / counter) == 1)
+    {
+      if(counter < 40)
+      {
+        distance_ = 6;
+      }
+      else if(counter < 55)
+      {
+        distance_ = 5;
+      }
+      else if(counter < 80)
+      {
+        distance_ = 4;
+  	   }
+      else if(counter < 125)
+      {
+        distance_ = 3;
+      }
+      else if(counter < 500)
+      {
+        distance_ = 2;
+      }
+      else if(counter < 940)
+      {
+        distance_ = 1;
+      }
+      printf("Número de píxeles: %d\n", counter);
+      ROS_INFO("Object at %d %d", x / counter, y / counter);
+    }
+    else {
+      ROS_INFO("No centrado");
+    }
+  }
+  else {
+    ROS_INFO("No object found");
+  }
+
+  std_msgs::Float32 msg;
+  msg.data = distance_;
+  object_pub_.publish(msg);
+
+  create_transform(distance_, Y_CENTRED, object_);
 }
-}
+
+} // practica3

@@ -40,24 +40,27 @@ bool Practica3Impl::Turn_2_ToBall()
 void Practica3Impl::ToYellGoal_code_iterative()
 {
   ROS_INFO("\nYellow\n");
-  object_pub_.publish("yellow");
+  msg_.data = "yellow";
+  object_pub_.publish(msg);
 }
 
 void Practica3Impl::ToBlueGoal_code_iterative()
 {
   ROS_INFO("\nBLue\n");
-  object_pub_.publish("blue");
+  msg_.data = "blue";
+  object_pub_.publish(msg);
 }
 
 void Practica3Impl::ToBall_code_iterative()
 {
   ROS_INFO("\nball\n");
-  object_pub_.publish("ball");
+  msg_.data = "ball";
+  object_pub_.publish(msg);
 }
 
 void Practica3Impl::Turn_code_iterative()
 {
   ROS_INFO("\nturn\n");
-  object_pub_.publish("Turn");
 }
-}
+
+} // practica3

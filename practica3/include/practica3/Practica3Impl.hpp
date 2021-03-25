@@ -30,11 +30,13 @@ private:
   ros::NodeHandle nh_;
   ros::Publisher object_pub_;
 
+  std_msgs::String msg_;
+
   const float FORWARD_TIME = 30.0;
   const float TURNING_TIME = 5.0;
 
 };
 
-}
+} // practica3
 
 #endif // PRACTICA3__PRACTICA_3_IMPL_HPP__

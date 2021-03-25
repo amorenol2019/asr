@@ -3,31 +3,39 @@
 #include "bica/Component.h"
 #include "geometry_msgs/Twist.h"
 #include "ros/ros.h"
-
+#include <std_msgs/Float32.h>
 
 namespace practica3
 {
-
 Forward::Forward()
 {
-    vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1); // Tamaño de cola 1 o 10?
-    //dist_sub_ = nh_.subscribe<std_msg::int>("/distance",1, &Forward::distanceCb, this);
+    vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1);
+    dist_sub_ = nh_.subscribe<std_msgs::Float32>("/distance", 1, &Forward::distanceCb, this);
 }
-//void Forward::distanceCb(const std_msgs::int::ConstPtr& msg)
-//{
-//  distance_ = msg;
-//}
+
+void Forward::distanceCb(const std_msgs::Float32::ConstPtr& msg)
+{
+  distance_ = msg->data;
+}
 
 void
 Forward::step()
 {
-  if(!isActive()){ // Componente de BICA
+  if(!isActive() || vel_pub_.getNumSubscribers() == 0){ // Ahorrar procesamiento innecesario
     return;
   }
 
-  //implementar una funcion que haga que la velocidad disminuya en funcion a la distancia a la que este
+  // Hacer pruebas para ajustarlo
+  if(distance_ < 1)
+  {
+    velocity_ = 0.1;
+  }
+  else
+  {
+    velocity_ = 0.3;
+  }
 
-  vel.linear.x = 0.3;
+  vel.linear.x = velocity_;
   vel_pub_.publish(vel);
 }
 

@@ -18,32 +18,42 @@
 
 #include <std_msgs/Float32.h>
 #include <std_msgs/String.h>
+
 namespace practica3
 {
 class Perception : public bica::Component
 {
 public:
   Perception();
-
   void step();
 
 private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
-  void objectCb(const std_msgs::Float32::ConstPtr& msg);
+  void objectCb(const std_msgs::String::ConstPtr& msg);
 
-  void create_transform(float x, float y ,std::string object);
-  int orient_2object(const int x,const int y);
+  int orient_2object(const int x, const int y);
+  void create_transform(const float x, const float y, const std::string object);
 
   ros::NodeHandle nh_;
   ros::Subscriber object_sub_;
+  ros::Publisher object_pub_;
 
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
 
+  tf2_ros::Buffer buffer_;
+  tf2_ros::TransformBroadcaster br_;
+  tf2_ros::TransformListener listener_;
+
   std::string object_;
-  int distance_;
+
   int width_;
+  int x;
+  int y;
+  int counter;
+  int distance_;
   double angle_;
+  const int Y_CENTRED = 0;
   const int TURNING_V = 0.5;
 
   // Rangos H:
@@ -56,7 +66,6 @@ private:
   const int BLUE_HMAX = 45;
   const int YELLOW_HMIN = 86;
   const int YELLOW_HMAX = 91;
-
   // Rangos S:
   const int S_MIN = 0;
   const int S_MAX = 360;
@@ -64,9 +73,6 @@ private:
   const int V_MIN = 0;
   const int V_MAX = 360;
 
-  tf2_ros::Buffer buffer_;
-  tf2_ros::TransformBroadcaster br_;
-  tf2_ros::TransformListener listener_;
 };
 
 }
