@@ -34,6 +34,7 @@ private:
 
   int orient_2object(const int x, const int y);
   void create_transform(const float x, const float y, const std::string name);
+  float look4_TF(void);
 
   ros::NodeHandle nh_;
   ros::Subscriber object_sub_;

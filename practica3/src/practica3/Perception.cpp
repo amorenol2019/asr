@@ -168,6 +168,48 @@ Perception::create_transform(const float x, const float y, const std::string nam
   br_.sendTransform(odom2object_msg);
 }
 
+float
+Perception::look4_TF(void)
+{
+  float v;
+
+  geometry_msgs::TransformStamped bf2odom_msg;
+  geometry_msgs::TransformStamped odom2obj_msg;
+
+  try {
+      odom2obj_msg = buffer_.lookupTransform("odom", "object", ros::Time(0));
+      bf2odom_msg = buffer_.lookupTransform("base_footprint", "odom" ,ros::Time(0));
+  }
+  catch (std::exception & e)
+  {
+    return  0.3; //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
+  }
+  tf2::Stamped<tf2::Transform> odom2obj;
+  tf2::fromMsg(odom2obj_msg, odom2obj);
+
+  tf2::Stamped<tf2::Transform> bf2odom;
+  tf2::fromMsg(bf2odom_msg, bf2odom);
+
+  tf2::Transform bf2object = bf2odom * odom2obj;
+
+  double roll, pitch, yaw;
+  tf2::Matrix3x3(bf2object.getRotation()).getRPY(roll, pitch, yaw);
+
+  //angulo del robot respecto a la pelota
+  //angle_ = atan2(odom2obj_msg.transform.translation.y, odom2obj_msg.transform.translation.x);
+
+  if( yaw > 0)
+  {
+    v = 0.3;
+  }
+  else
+  {
+    v = -0.3;
+  }
+  return v;
+
+}
+
 void
 Perception::step()
 {
@@ -179,30 +221,8 @@ Perception::step()
 
   if (counter == 0)
   {
-    geometry_msgs::TransformStamped bf2obj_msg;
-
-    try {
-        odom2obj_msg = buffer_.lookupTransform("odom", "object", ros::Time(0));
-        tf2::Stamped<tf2::Transform> odom2obj;
-        tf2::fromMsg(odom2obj_msg, odom2obj);
-
-        bf2odom_msg = buffer_.lookupTransform("base_footprint", "odom" ros::Time(0));
-        tf2::Stamped<tf2::Transform> bf2odom;
-        tf2::fromMsg(bf2odom_msg, bf2odom);
-
-        tf2::Transform bf2object = bf2odom * odom2obj;
-
-        double roll, pitch, yaw;
-        tf2::Matrix3x3(bf2object.getRotation()).getRPY(roll, pitch, yaw);
-
-        //angulo del robot respecto a la pelota
-        //angle_ = atan2(odom2obj_msg.transform.translation.y, odom2obj_msg.transform.translation.x);
-    } catch (std::exception & e)
-    {
-      cmd_.angular.z = 0.3;
-    }
+    cmd_.angular.z =  look4_TF();
     vel_pub_.publish(cmd_);
-
   }
 
   else
