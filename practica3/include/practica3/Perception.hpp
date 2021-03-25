@@ -6,7 +6,7 @@
 #include "geometry_msgs/Twist.h"
 
 #include <geometry_msgs/TransformStamped.h>
-#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer.h>
 
@@ -45,7 +45,7 @@ private:
   image_transport::Subscriber image_sub_;
 
   tf2_ros::Buffer buffer_;
-  tf2_ros::TransformBroadcaster br_;
+  static tf2_ros::StaticTransformBroadcaster br_;
   tf2_ros::TransformListener listener_;
 
   geometry_msgs::Twist cmd_;
