@@ -33,27 +33,33 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 
 void Perception::objectCb(const std_msgs::Int64::ConstPtr& msg)
 {
-  object_ = msg->data; //str->data;
+  object_ = msg->data;
 }
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
-  if(object_ == 1) //ball
+  if(object_ == 1) // ball
   {
+    name_ = "ball";
+
     h_min = BALL_HMIN;
     h_max = BALL_HMAX;
     s_min = S_MIN;
     v_min = V_MIN;
   }
-  else if(object_ == 2) //blue
+  else if(object_ == 2) // blue
   {
+    name_ = "blue";
+
     h_min = BLUE_HMIN;
     h_max = BLUE_HMAX;
     s_min = BLUE_SMIN;
     v_min = V_MIN;
   }
-  else if(object_ == 3) //yellow
+  else if(object_ == 3) // yellow
   {
+    name_ = "yellow";
+
     h_min = YELLOW_HMIN;
     h_max = YELLOW_HMAX;
     s_min = YELLOW_SMIN;
@@ -94,13 +100,6 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
       }
     }
   }
-
-  if(counter > 0)
-  {
-    ROS_INFO("x : %d , y: %d \n",x / counter,y / counter);
-    ROS_INFO("counter1111: %d \n",counter);
-  }
-
 }
 
 int Perception::orient_2object(const int x, const int y)
@@ -111,36 +110,29 @@ int Perception::orient_2object(const int x, const int y)
   {
     v_turning_ = 0.05;
 
-    if(x > width_ / 2 +20)
+    if(x > width_ / 2 + 20)
     {
-      ROS_INFO("esta en DER\n");
       cmd_.angular.z = -v_turning_;
-    } else if (x < width_ / 2 -20 )
+    } else if (x < width_ / 2 - 20)
     {
-      ROS_INFO("esta en IZQ\n");
       cmd_.angular.z = v_turning_;
     } else
     {
-      ROS_INFO("esta en CENT\n");
       cmd_.angular.z = 0;
       centered = 1;
     }
-
   } else
   {
     v_turning_ = 0.3;
 
-    if(x > width_ / 2 +50)
+    if(x > width_ / 2 + 50)
     {
-      ROS_INFO("esta en DER\n");
       cmd_.angular.z = -v_turning_;
     } else
     {
-      ROS_INFO("esta en IZQ\n");
       cmd_.angular.z = v_turning_;
     }
   }
-
   vel_pub_.publish(cmd_);
 
   return centered;
@@ -148,14 +140,13 @@ int Perception::orient_2object(const int x, const int y)
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
 void
-Perception::create_transform(const float x, const float y, const int object)
+Perception::create_transform(const float x, const float y, const std::string name)
 {
   geometry_msgs::TransformStamped odom2bf_msg;
   try{
     odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
-  }   catch (std::exception & e)
+  } catch (std::exception & e)
   {
-    ROS_INFO("odom2bf_msg not found");
     return ;
   }
 
@@ -170,20 +161,18 @@ Perception::create_transform(const float x, const float y, const int object)
 
   geometry_msgs::TransformStamped odom2object_msg ;
   odom2object_msg.header.frame_id = "odom";
-  odom2object_msg.child_frame_id = "ball";//object;
+  odom2object_msg.child_frame_id = name;
   odom2object_msg.header.stamp = ros::Time::now();
   odom2object_msg.transform = tf2::toMsg(odom2object);
 
   br_.sendTransform(odom2object_msg);
-
 }
 
 void
 Perception::step()
 {
-  if(!isActive()){ //} || object_pub_.getNumSubscribers() == 0){
+  if(!isActive() || object_pub_.getNumSubscribers() == 0){
     return;
-    //ROS_INFO("NOT ACTIVE");
   }
 
   distance_ = 0.0;
@@ -193,52 +182,49 @@ Perception::step()
     geometry_msgs::TransformStamped bf2obj_msg;
 
     try {
-        bf2obj_msg = buffer_.lookupTransform( "base_footprint", "object", ros::Time(0));
-        //angulo del robot respecto a la pelota
-        angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
+        odom2obj_msg = buffer_.lookupTransform("odom", "object", ros::Time(0));
+        tf2::Stamped<tf2::Transform> odom2obj;
+        tf2::fromMsg(odom2obj_msg, odom2obj);
 
+        bf2odom_msg = buffer_.lookupTransform("base_footprint", "odom" ros::Time(0));
+        tf2::Stamped<tf2::Transform> bf2odom;
+        tf2::fromMsg(bf2odom_msg, bf2odom);
+
+        tf2::Transform bf2object = bf2odom * odom2obj;
+
+        double roll, pitch, yaw;
+        tf2::Matrix3x3(bf2object.getRotation()).getRPY(roll, pitch, yaw);
+
+        //angulo del robot respecto a la pelota
+        //angle_ = atan2(odom2obj_msg.transform.translation.y, odom2obj_msg.transform.translation.x);
     } catch (std::exception & e)
     {
-      //ROS_INFO("bf2obj not found");
       cmd_.angular.z = 0.3;
     }
-    
     vel_pub_.publish(cmd_);
+
   }
 
   else
   {
-    ROS_INFO("!!!!counter222: %d \n",counter);
-    ROS_INFO("counter>0\n");
-
     if(orient_2object(x / counter, y / counter) == 1)
     {
-      ROS_INFO("ORIENTADO");
       if(object_ == 1)
       {
-        distance_ = 10.52 - 1.44*logf(counter);
+        distance_ = 10.52 - 1.44 * logf(counter);
       }
       else if(object_ == 2 || object_ == 3)
       {
-        distance_ = 16.09 - 1.45*logf(counter);
+        distance_ = 16.09 - 1.45 * logf(counter);
       }
-      ROS_INFO("distance_: %f\n", distance_);
-
-      //ROS_INFO("Object at %d, %d\n", x / counter, y / counter);
-    }
-    else {
-      ROS_INFO("No centrado \n");
     }
   }
 
   std_msgs::Float32 msg;
   msg.data = distance_;
   object_pub_.publish(msg);
-  ROS_INFO("distance_: %f\n",distance_);
 
-
-
-  //create_transform(distance_, Y_CENTRED, object_);
+  create_transform(distance_, 0, name_);
 }
 
 } // practica3

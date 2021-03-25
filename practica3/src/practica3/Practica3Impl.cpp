@@ -15,54 +15,45 @@ Practica3Impl::Practica3Impl()
 
 bool Practica3Impl::ToBall_2_ToBlueGoal()
 {
-  ROS_INFO("\ntransicion\n");
   return (ros::Time::now() - state_ts_).toSec() > FORWARD_TIME;
 }
 
 bool Practica3Impl::ToBlueGoal_2_ToYellGoal()
 {
-  ROS_INFO("\ntransicion\n");
   return (ros::Time::now() - state_ts_).toSec() > FORWARD_TIME;
 }
 
 bool Practica3Impl::ToYellGoal_2_Turn()
 {
-  ROS_INFO("\ntransicion\n");
   return (ros::Time::now() - state_ts_).toSec() > FORWARD_TIME;
 }
 
 bool Practica3Impl::Turn_2_ToBall()
 {
-  ROS_INFO("\ntransicion\n");
   return (ros::Time::now() - state_ts_).toSec() > TURNING_TIME;
 }
 
-
 void Practica3Impl::ToYellGoal_code_iterative()
 {
-  ROS_INFO("\nYellow\n");
-  msg_.data = 3; // "yellow";
+  msg_.data = 3;
   object_pub_.publish(msg_);
 }
 
 void Practica3Impl::ToBlueGoal_code_iterative()
 {
-  ROS_INFO("\nBLue\n");
-  msg_.data = 2; // "blue";
+  msg_.data = 2;
   object_pub_.publish(msg_);
 }
 
 void Practica3Impl::ToBall_code_iterative()
 {
-  ROS_INFO("\nball\n");
-  msg_.data = 1; //"ball";
+  msg_.data = 1;
   object_pub_.publish(msg_);
 }
 
 void Practica3Impl::Turn_code_iterative()
 {
-  ROS_INFO("\nturn\n");
-  msg_.data = 4; //"ball";
+  msg_.data = 4;
   object_pub_.publish(msg_);
 }
 

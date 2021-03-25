@@ -22,7 +22,6 @@ private:
   geometry_msgs::Twist vel;
 
   const float VELOCITY = 0.4;
-
 };
 
 } // practica3

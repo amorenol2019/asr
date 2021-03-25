@@ -26,16 +26,13 @@ public:
   void ToBall_code_iterative();
 
 private:
-  //void object_callback(const std_msgs::Bool::ConstPtr msg);
-
   ros::NodeHandle nh_;
   ros::Publisher object_pub_;
 
-  std_msgs::Int64 msg_; //String msg_;
+  std_msgs::Int64 msg_;
 
   const float FORWARD_TIME = 30.0;
   const float TURNING_TIME = 5.0;
-
 };
 
 } // practica3
