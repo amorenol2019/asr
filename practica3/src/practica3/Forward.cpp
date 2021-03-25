@@ -28,11 +28,11 @@ void Forward::step()
   // Hacer pruebas para ajustarlo
   if(distance_ > 1.0)
   {
-    velocity_ = distance_ * 0.1;
+    velocity_ = distance_ * 0.5;
   }
   else
   {
-    velocity_ = 0.01;
+    velocity_ = 0.2;
   }
 
   cmd_.linear.x = velocity_;

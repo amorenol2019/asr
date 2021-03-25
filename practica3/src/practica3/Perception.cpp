@@ -89,12 +89,6 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     }
   }
 
-  if(x == 0 && y == 0)
-  {
-        cmd_.angular.z = 0.3;
-        vel_pub_.publish(cmd_);
-  }
-
   if(counter > 0)
   {
     ROS_INFO("x : %d , y: %d \n",x / counter,y / counter);
@@ -107,19 +101,22 @@ int Perception::orient_2object(const int x, const int y)
 { // devuelve 1 si el objeto esta centrado en la imagen
 
   int centered = 0;
-
-  if(x > width_ / 2 +10)
+  if(x < width_ / 2 + 10 && x > width_ / 2 - 10)
+  {
+    v_turning_ = 0.2;
+  } else
+  {
+    v_turning_ = 0.6;
+  }
+  if(x > width_ / 2 + 10)
   {
     ROS_INFO("esta en DER\n");
-    cmd_.angular.z = -TURNING_V_4orientation;
-  }
-  else if (x < width_ / 2 -10)
+    cmd_.angular.z = -v_turning_;
+  } else if (x < width_ / 2 - 10)
   {
     ROS_INFO("esta en IZQ\n");
-    cmd_.angular.z = TURNING_V_4orientation;
-
-  }
-  else
+    cmd_.angular.z = v_turning_;
+  } else
   {
     ROS_INFO("esta en CENT\n");
     cmd_.angular.z = 0;
@@ -182,6 +179,11 @@ Perception::step()
   }
 
   distance_ = 0.0;
+  if (counter == 0)
+  {
+    cmd_.angular.z = 0.6;
+    vel_pub_.publish(cmd_);
+  }
 
   if(counter > 0 && width_ > 0)
   {
@@ -216,7 +218,7 @@ Perception::step()
       {
         distance_ = 1.0;
       }
-      printf("Número de píxeles: %d\n", counter);
+
       ROS_INFO("Object at %d, %d\n", x / counter, y / counter);
 
     }
@@ -227,11 +229,12 @@ Perception::step()
   else {
     ROS_INFO("No object found\n");
   }
-  ROS_INFO("distance_: %f\n",distance_);
-
   std_msgs::Float32 msg;
   msg.data = distance_;
   object_pub_.publish(msg);
+  ROS_INFO("distance_: %f\n",distance_);
+
+
 
   //create_transform(distance_, Y_CENTRED, object_);
 }

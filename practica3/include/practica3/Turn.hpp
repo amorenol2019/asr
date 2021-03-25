@@ -9,7 +9,7 @@
 
 namespace practica3
 {
-  
+
 class Turn : public bica::Component
 {
 public:
@@ -21,7 +21,7 @@ private:
   ros::Publisher vel_pub_;
   geometry_msgs::Twist vel;
 
-  const float VELOCITY = 0.3;
+  const float VELOCITY = 0.6;
 
 };
 
