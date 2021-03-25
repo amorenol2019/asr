@@ -18,25 +18,32 @@ void Forward::distanceCb(const std_msgs::Float32::ConstPtr& msg)
   distance_ = msg->data;
 }
 
-void
-Forward::step()
+void Forward::step()
 {
   //if(!isActive() || vel_pub_.getNumSubscribers() == 0){ // Ahorrar procesamiento innecesario
     //return;
   //}
   ROS_INFO("distance_: %f",distance_);
-  // Hacer pruebas para ajustarlo
-  if(distance_ < 1.0)
-  {
-    ROS_INFO("bla");
-    velocity_ = 0.1;
-  }
-  else
-  {
-    ROS_INFO("BLAAAA");
-    velocity_ = 0.3;
-  }
 
+    // Hacer pruebas para ajustarlo
+    //if(distance_ < 1.0)
+    //{
+      //ROS_INFO("bla");
+      //velocity_ = 0.1;
+      //}
+      //else
+      //{
+      //ROS_INFO("BLAAAA");
+      //velocity_ = 0.3;
+      //}
+
+  if(distance_ > 1)
+  {
+    velocity_ = distance_*0.1;
+  }
+  else velocity_ = 0.001;
+
+  velocity_ = 0.4;
   vel.linear.x = velocity_;
   vel_pub_.publish(vel);
 }

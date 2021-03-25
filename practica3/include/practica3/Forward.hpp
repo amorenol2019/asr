@@ -22,6 +22,7 @@ private:
 
   ros::Publisher vel_pub_;
   ros::Subscriber dist_sub_;
+  
   geometry_msgs::Twist vel;
 
   float distance_;
