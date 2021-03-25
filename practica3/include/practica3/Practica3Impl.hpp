@@ -1,8 +1,9 @@
 #ifndef PRACTICA3__PRACTICA_3_IMPL_HPP__
 #define PRACTICA3__PRACTICA_3_IMPL_HPP__
 
-#include "practica3.h"
 #include "std_msgs/Bool.h"
+#include <bica/Component.h>
+#include "practica3.h"
 
 #include "ros/ros.h"
 
@@ -11,7 +12,7 @@ namespace practica3
 class Practica3Impl : public bica::practica3
 {
 public:
-    Practica3Impl() ;
+  Practica3Impl() ;
 
   bool ToBall_2_ToBlueGoal() ;
   bool ToBlueGoal_2_ToYellGoal();
@@ -34,6 +35,6 @@ private:
 
 };
 
-}; // practica3
+}
 
 #endif // PRACTICA3__PRACTICA_3_IMPL_HPP__

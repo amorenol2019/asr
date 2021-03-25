@@ -19,7 +19,8 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-
+namespace practica3
+{
 Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 {
   image_sub_ = it_.subscribe("/hsv/image_filtered", 1, &Perception::imageCb, this);
@@ -29,8 +30,8 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 void
 Perception::objectCb(const std_msgs::Float32::ConstPtr& msg)
 {
-  object_ = "ball";
-  //msg;
+  object_ = "ball";//msg;
+
 }
 
 void
@@ -91,6 +92,8 @@ Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 
   if(counter > 0)
   {
+    //yo aqui guardaria en un atributo la x , la y y counter
+
     if(orient_2object(x / counter, y / counter) == 1)
     {
       if(counter < 40)
@@ -198,6 +201,8 @@ Perception::step()
   if(!isActive()) {
     return;
   }
+  //asi aqui haria lo de orient to object y calcularia la distancia y la publicaria
 
   create_transform(distance_, 0, object_);
+}
 }

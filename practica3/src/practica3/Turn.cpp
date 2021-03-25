@@ -18,8 +18,6 @@ Turn::step()
   if(!isActive()){
     return;
   }
-
-  geometry_msgs::Twist vel;
   vel.angular.z = 0.3;
   vel_pub_.publish(vel);
 }
