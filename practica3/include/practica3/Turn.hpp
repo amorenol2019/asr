@@ -18,6 +18,8 @@ public:
 private:
   ros::NodeHandle nh_;
   ros::Publisher vel_pub_;
+  geometry_msgs::Twist vel;
+
 };
 
 } // practica3

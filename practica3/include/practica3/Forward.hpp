@@ -15,8 +15,14 @@ public:
   void step();
 
 private:
-  ros::Publisher vel_pub_;
   ros::NodeHandle nh_;
+
+  ros::Publisher vel_pub_;
+  ros::Subscriber dist_sub_;
+
+  geometry_msgs::Twist vel;
+  //int distance_;
+
 };
 
 } // practica3

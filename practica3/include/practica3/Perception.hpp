@@ -15,9 +15,11 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+
 #include <std_msgs/Float32.h>
 #include <std_msgs/String.h>
-
+namespace practica3
+{
 class Perception : public bica::Component
 {
 public:
@@ -28,6 +30,7 @@ public:
 private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
   void objectCb(const std_msgs::Float32::ConstPtr& msg);
+
   void create_transform(float x, float y ,std::string object);
   int orient_2object(const int x,const int y);
 
@@ -41,7 +44,7 @@ private:
   int distance_;
   int width_;
   double angle_;
-  const int TURNING_V = 0.1;
+  const int TURNING_V = 0.5;
 
   // Rangos H:
   int h_min;
@@ -66,4 +69,5 @@ private:
   tf2_ros::TransformListener listener_;
 };
 
+}
 #endif // PRACTICA3__FORWARD_HPP__
