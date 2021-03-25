@@ -42,16 +42,22 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   {
     h_min = BALL_HMIN;
     h_max = BALL_HMAX;
+    s_min = S_MIN;
+    v_min = V_MIN;
   }
   else if(object_ == 2) //blue
   {
     h_min = BLUE_HMIN;
     h_max = BLUE_HMAX;
+    s_min = BLUE_SMIN;
+    v_min = V_MIN;
   }
   else if(object_ == 3) //yellow
   {
     h_min = YELLOW_HMIN;
     h_max = YELLOW_HMAX;
+    s_min = YELLOW_SMIN;
+    v_min = YELLOW_VMIN;
   }
 
   // Crear copia de la imagen
@@ -77,9 +83,9 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 
       if((hsv.data[posdata] >= h_min) &&
         (hsv.data[posdata] <= h_max) &&
-        (hsv.data[posdata + 1] >= S_MIN) &&
+        (hsv.data[posdata + 1] >= s_min) &&
         (hsv.data[posdata + 1] <= S_MAX) &&
-        (hsv.data[posdata + 2] >= V_MIN) &&
+        (hsv.data[posdata + 2] >= v_min) &&
         (hsv.data[posdata + 2] <= V_MAX))
       {
         x += j;
@@ -105,11 +111,11 @@ int Perception::orient_2object(const int x, const int y)
   {
     v_turning_ = 0.05;
 
-    if(x > width_ / 2 +10)
+    if(x > width_ / 2 +20)
     {
       ROS_INFO("esta en DER\n");
       cmd_.angular.z = -v_turning_;
-    } else if (x < width_ / 2 )
+    } else if (x < width_ / 2 -20 )
     {
       ROS_INFO("esta en IZQ\n");
       cmd_.angular.z = v_turning_;
@@ -128,7 +134,7 @@ int Perception::orient_2object(const int x, const int y)
     {
       ROS_INFO("esta en DER\n");
       cmd_.angular.z = -v_turning_;
-    } else 
+    } else
     {
       ROS_INFO("esta en IZQ\n");
       cmd_.angular.z = v_turning_;

@@ -62,20 +62,29 @@ private:
   const int Y_CENTRED = 0;
   const float TURNING_V_4orientation = 0.4;
 
-  // Rangos H:
+  // Filtrado de colores:
   int h_min;
   int h_max;
+  int s_min;
+  int v_min;
 
   const int BALL_HMIN = 93;
   const int BALL_HMAX = 148;
-  const int BLUE_HMIN = 16;
+
+  const int BLUE_HMIN = 12;
   const int BLUE_HMAX = 45;
+  const int BLUE_SMIN = 31;
+
   const int YELLOW_HMIN = 86;
   const int YELLOW_HMAX = 91;
-  // Rangos S:
+  const int YELLOW_SMIN = 113;
+  const int YELLOW_VMIN = 62;
+
+
+  // Rangos S generales:
   const int S_MIN = 0;
   const int S_MAX = 360;
-  // Rangos V:
+  // Rangos V generales:
   const int V_MIN = 0;
   const int V_MAX = 360;
 
