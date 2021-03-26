@@ -16,6 +16,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <std_msgs/Float64.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Int64.h>
@@ -39,6 +40,7 @@ private:
   ros::NodeHandle nh_;
   ros::Subscriber object_sub_;
   ros::Publisher object_pub_;
+  ros::Publisher pub_;
   ros::Publisher vel_pub_;
 
   image_transport::ImageTransport it_;
