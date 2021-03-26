@@ -34,7 +34,7 @@ private:
 
   int orient_2object(const int x, const int y);
   void create_transform(const float x, const float y, const std::string name);
-  float look4_TF(void);
+  float look4_TF(const std::string name);
 
   ros::NodeHandle nh_;
   ros::Subscriber object_sub_;
@@ -45,7 +45,7 @@ private:
   image_transport::Subscriber image_sub_;
 
   tf2_ros::Buffer buffer_;
-  static tf2_ros::StaticTransformBroadcaster br_;
+  tf2_ros::StaticTransformBroadcaster br_;
   tf2_ros::TransformListener listener_;
 
   geometry_msgs::Twist cmd_;

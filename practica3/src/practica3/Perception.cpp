@@ -169,15 +169,16 @@ Perception::create_transform(const float x, const float y, const std::string nam
 }
 
 float
-Perception::look4_TF(void)
+Perception::look4_TF(const std::string name)
 {
   float v;
 
-  geometry_msgs::TransformStamped bf2odom_msg;
   geometry_msgs::TransformStamped odom2obj_msg;
+  geometry_msgs::TransformStamped bf2odom_msg;
+
 
   try {
-      odom2obj_msg = buffer_.lookupTransform("odom", "object", ros::Time(0));
+      odom2obj_msg = buffer_.lookupTransform("odom", name, ros::Time(0));
       bf2odom_msg = buffer_.lookupTransform("base_footprint", "odom" ,ros::Time(0));
   }
   catch (std::exception & e)
@@ -194,19 +195,19 @@ Perception::look4_TF(void)
 
   double roll, pitch, yaw;
   tf2::Matrix3x3(bf2object.getRotation()).getRPY(roll, pitch, yaw);
-  ROS_INFO("yaw: %D\n",yaw);
 
   //angulo del robot respecto a la pelota
   //angle_ = atan2(odom2obj_msg.transform.translation.y, odom2obj_msg.transform.translation.x);
-
-  if( yaw > 0)
+  //ROS_INFO("angulo: %f", angle_);
+  if(yaw < 0)
   {
     v = 0.3;
   }
   else
   {
-    v = -0.3;
+    v = - 0.3;
   }
+
   return v;
 
 }
@@ -222,7 +223,7 @@ Perception::step()
 
   if (counter == 0)
   {
-    cmd_.angular.z =  look4_TF();
+    cmd_.angular.z = 0.3; //  look4_TF(name_);
     vel_pub_.publish(cmd_);
   }
 

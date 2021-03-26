@@ -24,7 +24,7 @@ void Forward::step()
     return;
   }
 
-  if(distance_ != 0.0)
+  if(distance_ > 0.05)
   {
     velocity_ = distance_ * 0.5;
     cmd_.angular.z = 0;
