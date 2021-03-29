@@ -28,8 +28,11 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
   image_sub_ = it_.subscribe("/hsv/image_filtered", 10, &Perception::imageCb, this);
   object_sub_ = nh_.subscribe("/object", 10, &Perception::objectCb, this);
 
-  object_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
-  vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
+  distance_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
+  angle_pub_ = nh_.advertise<std_msgs::Float64>("/angle", 10);
+  position_pub_ = nh_.advertise<std_msgs::Int64MultiArray>("position",10);
+
+  //vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10); este no  lo necesitamos porque en el perception no nos vamos a mover
 }
 
 void Perception::objectCb(const std_msgs::Int64::ConstPtr& msg)
@@ -101,42 +104,13 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
       }
     }
   }
-}
+  std_msgs::Int64MultiArray array;
+  array.data.clear();
+  array.data.push_back(x);
+  array.data.push_back(y);
+  array.data.push_back(width);
 
-int Perception::orient_2object(const int x, const int y)
-{ // devuelve 1 si el objeto esta centrado en la imagen
-
-  int centered = 0;
-  if(x < width_ / 2 + 50 && x > width_ / 2 - 50)
-  {
-    v_turning_ = 0.05;
-
-    if(x > width_ / 2 + 20)
-    {
-      cmd_.angular.z = -v_turning_;
-    } else if (x < width_ / 2 - 20)
-    {
-      cmd_.angular.z = v_turning_;
-    } else
-    {
-      cmd_.angular.z = 0;
-      centered = 1;
-    }
-  } else
-  {
-    v_turning_ = 0.3;
-
-    if(x > width_ / 2 + 50)
-    {
-      cmd_.angular.z = -v_turning_;
-    } else
-    {
-      cmd_.angular.z = v_turning_;
-    }
-  }
-  vel_pub_.publish(cmd_);
-
-  return centered;
+  position_pub_.publish(array); //publica la posicion x,y
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
@@ -169,37 +143,27 @@ Perception::create_transform(const float x, const float y, const std::string nam
   br_.sendTransform(odom2object_msg);
 }
 
-//float
-//Perception::look4_TF(const std::string name)
-//{
-//  float v;
+void
+Perception::look4_TF(const std::string name)
+{
+  float angle;
 
-//  geometry_msgs::TransformStamped odom2obj_msg;
+  geometry_msgs::TransformStamped bf2obj_msg;
+  try {
+      bf2obj_msg = buffer_.lookupTransform("base_footprint", name, ros::Time(0));
+  }
+  catch (std::exception & e)
+  {
+    ??; //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
+  }
 
-//  try {
-//      odom2obj_msg = buffer_.lookupTransform("odom", name, ros::Time(0));
-//  }
-//  catch (std::exception & e)
-//  {
-//    return  0.3; //si no se encuentran transformadas se sale de la funcion con una velocidad arbitraria
-//  }
+  //angulo del robot respecto a la pelota
+  angle = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
 
-//  angle_ = atan2(odom2obj_msg.transform.translation.y, odom2obj_msg.transform.translation.x);
-//  std_msgs::Float64 msg2;
-//  msg2.data = distance_;
-//  pub_.publish(msg2);
-
-//  if(angle_ < 0)
-//  {
-//    v = 0.3;
-//  }
-//  else
-//  {
-//    v = - 0.3;
-//  }
-
-//  return v;
-//}
+  std_msgs::Float64 msg2;
+  msg2.data = angle;
+  angle_pub_.publish(msg2);
+}
 
 void
 Perception::step()
@@ -212,12 +176,10 @@ Perception::step()
 
   if (counter == 0)
   {
-    //cmd_.angular.z = look4_TF(name_);
-    cmd_.angular.z = 0.3;
-    vel_pub_.publish(cmd_);
+    look4_TF(name_);
   }
 
-  else
+  else //aqui no se que poner porque realmente no se si se deberia calcular aqui la distancia y el orient2object esta en el forward
   {
     if(orient_2object(x / counter, y / counter) == 1)
     {
