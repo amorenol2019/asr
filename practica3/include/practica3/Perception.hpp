@@ -35,31 +35,30 @@ private:
 
   int orient_2object(const int x, const int y);
   void create_transform(const float x, const float y, const std::string name);
-  //float look4_TF(const std::string name);
+  void look4_TF(const std::string name);
 
-  ros::NodeHandle nh_;
-  ros::Subscriber object_sub_;
-  ros::Publisher object_pub_;
-  ros::Publisher vel_pub_;
+    ros::NodeHandle nh_;
+    ros::Subscriber object_sub_;
 
-  image_transport::ImageTransport it_;
-  image_transport::Subscriber image_sub_;
+    ros::Publisher distance_pub_;
+    ros::Publisher angle_pub_;
+    ros::Publisher vel_pub_;
 
-  tf2_ros::Buffer buffer_;
-  tf2_ros::StaticTransformBroadcaster br_;
-  tf2_ros::TransformListener listener_;
+    image_transport::ImageTransport it_;
+    image_transport::Subscriber image_sub_;
 
-  geometry_msgs::Twist cmd_;
+    tf2_ros::Buffer buffer_;
+    tf2_ros::StaticTransformBroadcaster br_;
+    tf2_ros::TransformListener listener_;
+
+    geometry_msgs::Twist cmd_;
+
 
   int object_;
 
-  int width_;
-  int x;
-  int y;
   int counter;
   std::string name_;
   float distance_;
-  float v_turning_;
 
   // Filtrado de colores:
   int h_min;

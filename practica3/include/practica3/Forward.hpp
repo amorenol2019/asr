@@ -17,6 +17,7 @@ public:
 
 private:
   void distanceCb(const std_msgs::Float32::ConstPtr& msg);
+  int orient_2object();
 
   ros::NodeHandle nh_;
 
@@ -28,6 +29,12 @@ private:
   float distance_;
   float velocity_;
 
+  int x_;
+  int y_;
+  int width_;
+
+  float v_turning_;
+  float angle_2obj_;
 };
 
 } // practica3
