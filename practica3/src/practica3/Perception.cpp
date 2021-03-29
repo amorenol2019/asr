@@ -26,7 +26,7 @@ namespace practica3
 Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 {
   image_sub_ = it_.subscribe("/hsv/image_filtered", 10, &Perception::imageCb, this);
-  state_sub_ = nh_.subscribe("/" + myBaseId_ + "/state", 10, &Perception::objectCb, this);
+  state_sub_ = nh_.subscribe("/practica3/state", 10, &Perception::stateCb, this);
 
   distance_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
   angle_pub_ = nh_.advertise<std_msgs::Float64>("/angle", 10);
@@ -40,7 +40,7 @@ void Perception::stateCb(const std_msgs::String::ConstPtr& msg)
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
-  if(state_ == "ToBall")
+  if(state_.compare("ToBall"))
   {
     name_ = "ball";
 
@@ -49,7 +49,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = S_MIN;
     v_min = V_MIN;
   }
-  else if(state_ == "ToBlueGoal")
+  else if(state_.compare("ToBlueGoal"))
   {
     name_ = "blue";
 
@@ -58,7 +58,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = BLUE_SMIN;
     v_min = V_MIN;
   }
-  else if(state_ == "ToYellGoal")
+  else if(state_.compare("ToYellGoal"))
   {
     name_ = "yellow";
 
@@ -144,8 +144,6 @@ Perception::create_transform(const float x, const float y, const std::string nam
 void
 Perception::look4_TF(const std::string name)
 {
-  float angle;
-
   geometry_msgs::TransformStamped bf2obj_msg;
   try {
       bf2obj_msg = buffer_.lookupTransform("base_footprint", name, ros::Time(0));
@@ -158,7 +156,7 @@ Perception::look4_TF(const std::string name)
 
   tf_founded_ = true;
   //angulo del robot respecto a la pelota
-  angle = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
+  angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
 }
 
 void
@@ -176,16 +174,16 @@ Perception::step()
     look4_TF(name_); // da valor a angle si encuentra la transformada
     if(tf_founded_ == false)
     {
-      angle = -1 // valor aleatorio
+      angle_ = -1; // valor aleatorio
     }
   }
   else // calcula distancia con el número de pixeles
   {
-    if(state_ == "To Ball")
+    if(state_.compare("To Ball"))
     {
       distance_ = 10.52 - 1.44 * logf(counter_);
     }
-    else if(state_ == "ToBlueGoal" || state_ == "ToYellGoal")
+    else if(state_.compare("ToBlueGoal") || state_.compare("ToYellGoal"))
     {
       distance_ = 16.09 - 1.45 * logf(counter_);
     }
@@ -197,7 +195,7 @@ Perception::step()
   }
 
   std_msgs::Float64 msg, msg2;
-  msg.data = angle;
+  msg.data = angle_;
   angle_pub_.publish(msg);
   msg2.data = distance_;
   distance_pub_.publish(msg2);
