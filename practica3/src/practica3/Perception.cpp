@@ -30,9 +30,7 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 
   distance_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
   angle_pub_ = nh_.advertise<std_msgs::Float64>("/angle", 10);
-  position_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("position",10);
-
-  //vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10); este no  lo necesitamos porque en el perception no nos vamos a mover
+  position_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("/position",10);
 }
 
 void Perception::stateCb(const std_msgs::String::ConstPtr& msg)
@@ -85,7 +83,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 
   x_ = 0;
   y_ = 0;
-  counter = 0;
+  counter_ = 0;
 
   for (int i = 0; i < height; i++ ){
     for (int j = 0; j < width_; j++ ){
@@ -100,7 +98,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
       {
         x_ += j;
         y_ += i;
-        counter++;
+        counter_++;
       }
     }
   }
@@ -122,7 +120,7 @@ Perception::create_transform(const float x, const float y, const std::string nam
     odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
   } catch (std::exception & e)
   {
-    return ;
+    return;
   }
 
   tf2::Stamped<tf2::Transform> odom2bf;
@@ -155,50 +153,55 @@ Perception::look4_TF(const std::string name)
   catch (std::exception & e)
   {
     ROS_INFO("No se ha encontrado transformada"); //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
+    return;
   }
 
+  tf_founded_ = true;
   //angulo del robot respecto a la pelota
   angle = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
-
-  std_msgs::Float64 msg2;
-  msg2.data = angle;
-  angle_pub_.publish(msg2);
 }
 
 void
 Perception::step()
 {
-  if(!isActive() || distance_pub_.getNumSubscribers() == 0){
+  if(!isActive() || distance_pub_.getNumSubscribers() == 0 || angle_pub_.getNumSubscribers() == 0){
     return;
   }
 
   distance_ = 0.0;
+  tf_founded_ = false;
 
-  if(counter == 0)
+  if(counter_ == 0)
   {
-    look4_TF(name_);
-  }
-
-  else //aqui no se que poner porque realmente no se si se deberia calcular aqui la distancia y el orient2object esta en el forward
-  {
-    if(orient_2object(x_ / counter, y_ / counter) == 1)
+    look4_TF(name_); // da valor a angle si encuentra la transformada
+    if(tf_founded_ == false)
     {
-      if(object_ == 1)
-      {
-        distance_ = 10.52 - 1.44 * logf(counter);
-      }
-      else if(object_ == 2 || object_ == 3)
-      {
-        distance_ = 16.09 - 1.45 * logf(counter);
-      }
+      angle = -1 // valor aleatorio
+    }
+  }
+  else // calcula distancia con el número de pixeles
+  {
+    if(state_ == "To Ball")
+    {
+      distance_ = 10.52 - 1.44 * logf(counter_);
+    }
+    else if(state_ == "ToBlueGoal" || state_ == "ToYellGoal")
+    {
+      distance_ = 16.09 - 1.45 * logf(counter_);
     }
   }
 
-  std_msgs::Float32 msg;
-  msg.data = distance_;
-  distance_pub_.publish(msg);
+  if(distance_ != 0 && distance_ < 0.2)
+  {
+    create_transform(distance_, 0, name_);
+  }
 
-  create_transform(distance_, 0, name_);
+  std_msgs::Float64 msg, msg2;
+  msg.data = angle;
+  angle_pub_.publish(msg);
+  msg2.data = distance_;
+  distance_pub_.publish(msg2);
+
 }
 
 } // practica3

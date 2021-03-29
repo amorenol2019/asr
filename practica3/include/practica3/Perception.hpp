@@ -51,14 +51,13 @@ private:
   tf2_ros::StaticTransformBroadcaster br_;
   tf2_ros::TransformListener listener_;
 
-  geometry_msgs::Twist cmd_;
-
   int state_;
+  int tf_founded_;
+  int counter_;
 
-  int counter;
   std::string name_;
-  float distance_;
 
+  float distance_;
   float x_;
   float y_;
   float width_;
