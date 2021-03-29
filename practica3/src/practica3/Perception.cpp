@@ -14,6 +14,8 @@
 #include <std_msgs/Int64.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Float64.h>
+#include <std_msgs/Int64MultiArray.h>
+
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>

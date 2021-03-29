@@ -17,6 +17,8 @@ public:
 
 private:
   void distanceCb(const std_msgs::Float32::ConstPtr& msg);
+  void positionCb(const std_msgs::Float32::ConstPtr& msg);
+  void angleCb(const std_msgs::Float32::ConstPtr& msg);
   int orient_2object();
 
   ros::NodeHandle nh_;

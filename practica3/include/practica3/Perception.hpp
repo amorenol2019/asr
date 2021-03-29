@@ -20,6 +20,8 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Int64.h>
+#include <std_msgs/Int64MultiArray.h>
+
 
 namespace practica3
 {
@@ -30,7 +32,7 @@ public:
   void step();
 
 private:
-  void imageCb(const sensor_msgs::Image::ConstPtr& msg);
+  void imageCb(const sensor_msgs::Image::ConstPtr& msg
   void objectCb(const std_msgs::Int64::ConstPtr& msg);
 
   int orient_2object(const int x, const int y);
@@ -42,7 +44,7 @@ private:
 
     ros::Publisher distance_pub_;
     ros::Publisher angle_pub_;
-    ros::Publisher vel_pub_;
+    ros::Publisher position_pub_;
 
     image_transport::ImageTransport it_;
     image_transport::Subscriber image_sub_;
