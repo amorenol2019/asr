@@ -42,7 +42,7 @@ private:
 
   ros::Publisher distance_pub_;
   ros::Publisher angle_pub_;
-  // ros::Publisher vel_pub_;
+  ros::Publisher position_pub_;
 
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
@@ -58,6 +58,10 @@ private:
   int counter;
   std::string name_;
   float distance_;
+
+  float x_;
+  float y_;
+  float width_;
 
   // Filtrado de colores:
   int h_min;

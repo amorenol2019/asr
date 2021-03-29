@@ -17,12 +17,16 @@ public:
 
 private:
   void distanceCb(const std_msgs::Float32::ConstPtr& msg);
+  void positionCb(const std_msgs::Float32::ConstPtr& msg);
+  void angleCb(const std_msgs::Float32::ConstPtr& msg);
   int orient_2object();
 
   ros::NodeHandle nh_;
 
   ros::Publisher vel_pub_;
   ros::Subscriber dist_sub_;
+  ros::Subscriber position_sub_;
+  ros::Subscriber angle_sub_;
 
   geometry_msgs::Twist cmd_;
 

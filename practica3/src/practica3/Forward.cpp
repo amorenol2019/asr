@@ -4,6 +4,7 @@
 #include "geometry_msgs/Twist.h"
 #include "ros/ros.h"
 #include <std_msgs/Float32.h>
+#include <std_msgs/Float32MultiArray.h>
 
 namespace practica3
 {
@@ -12,7 +13,7 @@ Forward::Forward()
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 
   dist_sub_ = nh_.subscribe<std_msgs::Float32>("/distance", 10, &Forward::distanceCb, this);
-  position_sub_ = nh_.subscribe<std_msgs::Int64MultiArray>("position",10,&Forward::positionCb, this);
+  position_sub_ = nh_.subscribe<std_msgs::Float32MultiArray>("position",10,&Forward::positionCb, this);
   angle_sub_ = nh_.subscribe<std_msgs::Float32>("/angle",10,&Forward::angleCb, this);
 
 }
@@ -22,7 +23,7 @@ void Forward::distanceCb(const std_msgs::Float32::ConstPtr& msg)
   distance_ = msg->data;
 }
 
-void Forward::positionCb(const std_msgs::Float32::ConstPtr& msg)
+void Forward::positionCb(const std_msgs::Float32MultiArray::ConstPtr& msg)
 {
   x_ = msg->data[0];
   y_ = msg->data[1];
