@@ -33,14 +33,14 @@ private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
   void objectCb(const std_msgs::Int64::ConstPtr& msg);
 
-  int orient_2object(const int x, const int y);
   void create_transform(const float x, const float y, const std::string name);
-  float look4_TF(const std::string name);
+  void look4_TF(const std::string name);
 
   ros::NodeHandle nh_;
   ros::Subscriber object_sub_;
-  ros::Publisher object_pub_;
-  ros::Publisher pub_;
+
+  ros::Publisher distance_pub_;
+  ros::Publisher angle_pub_;
   ros::Publisher vel_pub_;
 
   image_transport::ImageTransport it_;
@@ -54,14 +54,12 @@ private:
 
   int object_;
 
-  int width_;
-  int x;
-  int y;
+  //int width_;
+  //int x;
+  //int y; los vamosa  publicar por lo que no hace falta tenerlos como atributos
   int counter;
   std::string name_;
   float distance_;
-  float v_turning_;
-  double angle_;
 
   // Filtrado de colores:
   int h_min;
