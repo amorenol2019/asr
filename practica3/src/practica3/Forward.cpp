@@ -13,9 +13,8 @@ Forward::Forward()
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 
   dist_sub_ = nh_.subscribe<std_msgs::Float32>("/distance", 10, &Forward::distanceCb, this);
-  position_sub_ = nh_.subscribe<std_msgs::Float32MultiArray>("position",10,&Forward::positionCb, this);
-  angle_sub_ = nh_.subscribe<std_msgs::Float32>("/angle",10,&Forward::angleCb, this);
-
+  position_sub_ = nh_.subscribe<std_msgs::Float32MultiArray>("/position", 10, &Forward::positionCb, this);
+  angle_sub_ = nh_.subscribe<std_msgs::Float32>("/angle", 10, &Forward::angleCb, this);
 }
 
 void Forward::distanceCb(const std_msgs::Float32::ConstPtr& msg)
@@ -35,10 +34,10 @@ void Forward::angleCb(const std_msgs::Float32::ConstPtr& msg)
   angle_2obj_ = msg->data;
 }
 
-int Perception::orient_2object()
+void Forward::orient_2object()
 { // devuelve 1 si el objeto esta centrado en la imagen
 
-  int centered = 0;
+  //int centered = 0;
   if(x_ < width_ / 2 + 50 && x_ > width_ / 2 - 50)
   {
     v_turning_ = 0.05;
@@ -52,7 +51,7 @@ int Perception::orient_2object()
     } else
     {
       cmd_.angular.z = 0;
-      centered = 1;
+      //centered = 1;
     }
   } else
   {
@@ -66,9 +65,9 @@ int Perception::orient_2object()
       cmd_.angular.z = v_turning_;
     }
   }
-  vel_pub_.publish(cmd_);
+  //vel_pub_.publish(cmd_);
 
-  return centered;
+  return; // centered;
 }
 
 void Forward::step()
@@ -76,12 +75,20 @@ void Forward::step()
   if(!isActive() || vel_pub_.getNumSubscribers() == 0){
     return;
   }
+  if(angle_2obj_ > 0) // revisar
+  {
+    cmd_.angular.z = v_turning_;
+  }
+  else
+  {
+    cmd_.angular.z = -v_turning_;
+  }
 
   if(distance_ > 0.05)
   {
     velocity_ = distance_ * 0.5;
-    cmd_.angular.z = 0;
     cmd_.linear.x = velocity_;
+    orient_2object();
     vel_pub_.publish(cmd_);
   }
 }
