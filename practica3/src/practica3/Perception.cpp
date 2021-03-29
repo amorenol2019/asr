@@ -13,7 +13,7 @@
 #include <string>
 #include <std_msgs/Int64.h>
 #include <std_msgs/Float32.h>
-#include <std_msgs/Int64MultiArray.h>
+#include <std_msgs/Float32MultiArray.h>
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -30,7 +30,7 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 
   distance_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
   angle_pub_ = nh_.advertise<std_msgs::Float64>("/angle", 10);
-  position_pub_ = nh_.advertise<std_msgs::Int64MultiArray>("position",10);
+  position_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("position",10);
 
   //vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10); este no  lo necesitamos porque en el perception no nos vamos a mover
 }
@@ -83,8 +83,8 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   int step = cv_ptr->image.step;
   int channels = 3;
 
-  x = 0;
-  y = 0;
+  x_ = 0;
+  y_ = 0;
   counter = 0;
 
   for (int i = 0; i < height; i++ ){
@@ -98,17 +98,17 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
         (hsv.data[posdata + 2] >= v_min) &&
         (hsv.data[posdata + 2] <= V_MAX))
       {
-        x += j;
-        y += i;
+        x_ += j;
+        y_ += i;
         counter++;
       }
     }
   }
-  std_msgs::Int64MultiArray array;
+  std_msgs::Float32MultiArray array;
   array.data.clear();
-  array.data.push_back(x);
-  array.data.push_back(y);
-  array.data.push_back(width);
+  array.data.push_back(x_);
+  array.data.push_back(y_);
+  array.data.push_back(width_);
 
   position_pub_.publish(array); //publica la posicion x,y
 }
@@ -154,7 +154,7 @@ Perception::look4_TF(const std::string name)
   }
   catch (std::exception & e)
   {
-    ??; //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
+    ROS_INFO("No se ha encontrado transformada"); //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
   }
 
   //angulo del robot respecto a la pelota
@@ -181,7 +181,7 @@ Perception::step()
 
   else //aqui no se que poner porque realmente no se si se deberia calcular aqui la distancia y el orient2object esta en el forward
   {
-    if(orient_2object(x / counter, y / counter) == 1)
+    if(orient_2object(x_ / counter, y_ / counter) == 1)
     {
       if(object_ == 1)
       {
