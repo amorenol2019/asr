@@ -13,7 +13,7 @@
 #include <string>
 #include <std_msgs/Int64.h>
 #include <std_msgs/Float32.h>
-#include <std_msgs/Float64.h>
+#include <std_msgs/Int64MultiArray.h>
 
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -26,7 +26,7 @@ namespace practica3
 Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
 {
   image_sub_ = it_.subscribe("/hsv/image_filtered", 10, &Perception::imageCb, this);
-  object_sub_ = nh_.subscribe("/object", 10, &Perception::objectCb, this);
+  state_sub_ = nh_.subscribe("/" + myBaseId_ + "/state", 10, &Perception::objectCb, this);
 
   distance_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
   angle_pub_ = nh_.advertise<std_msgs::Float64>("/angle", 10);
@@ -35,14 +35,14 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
   //vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10); este no  lo necesitamos porque en el perception no nos vamos a mover
 }
 
-void Perception::objectCb(const std_msgs::Int64::ConstPtr& msg)
+void Perception::stateCb(const std_msgs::String::ConstPtr& msg)
 {
-  object_ = msg->data;
+  state_ = msg->data;
 }
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
-  if(object_ == 1) // ball
+  if(state_ == "ToBall")
   {
     name_ = "ball";
 
@@ -51,7 +51,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = S_MIN;
     v_min = V_MIN;
   }
-  else if(object_ == 2) // blue
+  else if(state_ == "ToBlueGoal")
   {
     name_ = "blue";
 
@@ -60,7 +60,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = BLUE_SMIN;
     v_min = V_MIN;
   }
-  else if(object_ == 3) // yellow
+  else if(state_ == "ToYellGoal")
   {
     name_ = "yellow";
 
@@ -113,7 +113,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   position_pub_.publish(array); //publica la posicion x,y
 }
 
-//crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z y nombre object
+//crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z
 void
 Perception::create_transform(const float x, const float y, const std::string name)
 {
@@ -168,13 +168,13 @@ Perception::look4_TF(const std::string name)
 void
 Perception::step()
 {
-  if(!isActive() || object_pub_.getNumSubscribers() == 0){
+  if(!isActive() || distance_pub_.getNumSubscribers() == 0){
     return;
   }
 
   distance_ = 0.0;
 
-  if (counter == 0)
+  if(counter == 0)
   {
     look4_TF(name_);
   }
@@ -196,7 +196,7 @@ Perception::step()
 
   std_msgs::Float32 msg;
   msg.data = distance_;
-  object_pub_.publish(msg);
+  distance_pub_.publish(msg);
 
   create_transform(distance_, 0, name_);
 }

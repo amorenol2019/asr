@@ -31,30 +31,29 @@ public:
 
 private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
-  void objectCb(const std_msgs::Int64::ConstPtr& msg);
+  void stateCb(const std_msgs::String::ConstPtr& msg)
 
   int orient_2object(const int x, const int y);
   void create_transform(const float x, const float y, const std::string name);
   void look4_TF(const std::string name);
 
-    ros::NodeHandle nh_;
-    ros::Subscriber object_sub_;
+  ros::NodeHandle nh_;
+  ros::Subscriber state_sub_;
 
-    ros::Publisher distance_pub_;
-    ros::Publisher angle_pub_;
-    ros::Publisher vel_pub_;
+  ros::Publisher distance_pub_;
+  ros::Publisher angle_pub_;
+  // ros::Publisher vel_pub_;
 
-    image_transport::ImageTransport it_;
-    image_transport::Subscriber image_sub_;
+  image_transport::ImageTransport it_;
+  image_transport::Subscriber image_sub_;
 
-    tf2_ros::Buffer buffer_;
-    tf2_ros::StaticTransformBroadcaster br_;
-    tf2_ros::TransformListener listener_;
+  tf2_ros::Buffer buffer_;
+  tf2_ros::StaticTransformBroadcaster br_;
+  tf2_ros::TransformListener listener_;
 
-    geometry_msgs::Twist cmd_;
+  geometry_msgs::Twist cmd_;
 
-
-  int object_;
+  int state_;
 
   int counter;
   std::string name_;
