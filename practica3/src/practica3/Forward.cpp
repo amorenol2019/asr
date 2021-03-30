@@ -3,7 +3,9 @@
 #include "bica/Component.h"
 #include "geometry_msgs/Twist.h"
 #include "ros/ros.h"
+#include <std_msgs/Float64.h>
 #include <std_msgs/Float32.h>
+
 #include <std_msgs/Float32MultiArray.h>
 
 namespace practica3
@@ -12,12 +14,12 @@ Forward::Forward()
 {
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 
-  dist_sub_ = nh_.subscribe<std_msgs::Float32>("/distance", 10, &Forward::distanceCb, this);
+  dist_sub_ = nh_.subscribe<std_msgs::Float64>("/distance", 10, &Forward::distanceCb, this);
   position_sub_ = nh_.subscribe<std_msgs::Float32MultiArray>("/position", 10, &Forward::positionCb, this);
-  angle_sub_ = nh_.subscribe<std_msgs::Float32>("/angle", 10, &Forward::angleCb, this);
+  angle_sub_ = nh_.subscribe<std_msgs::Float64>("/angle", 10, &Forward::angleCb, this);
 }
 
-void Forward::distanceCb(const std_msgs::Float32::ConstPtr& msg)
+void Forward::distanceCb(const std_msgs::Float64::ConstPtr& msg)
 {
   distance_ = msg->data;
 }
@@ -29,7 +31,7 @@ void Forward::positionCb(const std_msgs::Float32MultiArray::ConstPtr& msg)
   width_ = msg->data[2];
 }
 
-void Forward::angleCb(const std_msgs::Float32::ConstPtr& msg)
+void Forward::angleCb(const std_msgs::Float64::ConstPtr& msg)
 {
   angle_2obj_ = msg->data;
 }
@@ -70,9 +72,11 @@ void Forward::orient_2object()
 
 void Forward::step()
 {
-  if(!isActive() || vel_pub_.getNumSubscribers() == 0){
+  if(!isActive() || vel_pub_.getNumSubscribers() == 0)
+  {
     return;
   }
+
   if(angle_2obj_ > 0) // revisar
   {
     cmd_.angular.z = v_turning_;
@@ -84,11 +88,19 @@ void Forward::step()
 
   if(distance_ > 0.05)
   {
+    ROS_INFO("distance > 0.05");
+
     velocity_ = distance_ * 0.5;
     cmd_.linear.x = velocity_;
     orient_2object();
-    vel_pub_.publish(cmd_);
   }
+  else
+  {
+    ROS_INFO("distance<0.05");
+    cmd_.linear.x = 0;
+  }
+
+  vel_pub_.publish(cmd_);
 }
 
 } // practica3

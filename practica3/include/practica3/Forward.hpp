@@ -6,6 +6,7 @@
 #include "geometry_msgs/Twist.h"
 
 #include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
 #include <std_msgs/Float32MultiArray.h>
 
 namespace practica3
@@ -17,9 +18,9 @@ public:
   void step();
 
 private:
-  void distanceCb(const std_msgs::Float32::ConstPtr& msg);
+  void distanceCb(const std_msgs::Float64::ConstPtr& msg);
   void positionCb(const std_msgs::Float32MultiArray::ConstPtr& msg);
-  void angleCb(const std_msgs::Float32::ConstPtr& msg);
+  void angleCb(const std_msgs::Float64::ConstPtr& msg);
   void orient_2object();
 
   ros::NodeHandle nh_;
