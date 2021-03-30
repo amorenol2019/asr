@@ -13,6 +13,7 @@
 #include <string>
 #include <std_msgs/Int64.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
 #include <std_msgs/Float32MultiArray.h>
 
 #include <image_transport/image_transport.h>
@@ -28,7 +29,7 @@ Perception::Perception(): it_(nh_), buffer_() , listener_(buffer_)
   image_sub_ = it_.subscribe("/hsv/image_filtered", 10, &Perception::imageCb, this);
   state_sub_ = nh_.subscribe("/practica3/state", 10, &Perception::stateCb, this);
 
-  distance_pub_ = nh_.advertise<std_msgs::Float32>("/distance", 10);
+  distance_pub_ = nh_.advertise<std_msgs::Float64>("/distance", 10);
   angle_pub_ = nh_.advertise<std_msgs::Float64>("/angle", 10);
   position_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("/position",10);
 }
@@ -197,6 +198,7 @@ Perception::step()
   std_msgs::Float64 msg, msg2;
   msg.data = angle_;
   angle_pub_.publish(msg);
+
   msg2.data = distance_;
   distance_pub_.publish(msg2);
 
