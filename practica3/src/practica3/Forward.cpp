@@ -66,8 +66,6 @@ void Forward::orient_2object()
     }
   }
   //vel_pub_.publish(cmd_);
-
-  return; // centered;
 }
 
 void Forward::step()

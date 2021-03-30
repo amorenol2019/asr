@@ -31,7 +31,7 @@ public:
 
 private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
-  void stateCb(const std_msgs::String::ConstPtr& msg)
+  void stateCb(const std_msgs::String::ConstPtr& msg);
 
   int orient_2object(const int x, const int y);
   void create_transform(const float x, const float y, const std::string name);
@@ -51,13 +51,14 @@ private:
   tf2_ros::StaticTransformBroadcaster br_;
   tf2_ros::TransformListener listener_;
 
-  int state_;
+  std::string state_;
   int tf_founded_;
   int counter_;
 
   std::string name_;
 
   float distance_;
+  float angle_;
   float x_;
   float y_;
   float width_;
