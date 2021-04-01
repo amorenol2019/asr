@@ -48,7 +48,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 
     h_min = BALL_HMIN;
     h_max = BALL_HMAX;
-    s_min = S_MIN;
+    s_min = BALL_SMIN;
     v_min = V_MIN;
   }
   else if(state_ == str2_)
