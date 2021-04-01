@@ -41,7 +41,7 @@ void Forward::orient_2object()
 
   if(x_ < width_ / 2 + 50 && x_ > width_ / 2 - 50)
   {
-    v_turning_ = 0.05;
+    v_turning_ = 0.1;
 
     if(x_ > width_ / 2 + 20)
     {
@@ -58,7 +58,7 @@ void Forward::orient_2object()
   }
   else
   {
-    v_turning_ = 0.2;
+    v_turning_ = 0.3;
 
     if(x_ > width_ / 2 + 50)
     {
