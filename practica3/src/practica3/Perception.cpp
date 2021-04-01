@@ -41,8 +41,9 @@ void Perception::stateCb(const std_msgs::String::ConstPtr& msg)
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
-  if(state_.compare("ToBall"))
+  if(state_ == str1_)
   {
+    ROS_INFO("DENTRO: ---%s\n", state_.c_str());
     name_ = "ball";
 
     h_min = BALL_HMIN;
@@ -50,8 +51,9 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = S_MIN;
     v_min = V_MIN;
   }
-  else if(state_.compare("ToBlueGoal"))
+  else if(state_ == str2_)
   {
+    ROS_INFO("DENTRO: ---%s\n", state_.c_str());
     name_ = "blue";
 
     h_min = BLUE_HMIN;
@@ -59,8 +61,9 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = BLUE_SMIN;
     v_min = V_MIN;
   }
-  else if(state_.compare("ToYellGoal"))
+  else if(state_ == str3_)
   {
+    ROS_INFO("DENTRO: ---%s\n", state_.c_str());
     name_ = "yellow";
 
     h_min = YELLOW_HMIN;
@@ -151,7 +154,7 @@ Perception::look4_TF(const std::string name)
   }
   catch (std::exception & e)
   {
-    ROS_INFO("No se ha encontrado transformada"); //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
+    //ROS_INFO("No se ha encontrado transformada"); //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
     return;
   }
 

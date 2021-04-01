@@ -42,7 +42,7 @@ void Forward::orient_2object()
   //int centered = 0;
   if(x_ < width_ / 2 + 50 && x_ > width_ / 2 - 50)
   {
-    v_turning_ = 0.05;
+    v_turning_ = 0.1;
 
     if(x_ > width_ / 2 + 20)
     {
@@ -86,17 +86,17 @@ void Forward::step()
     cmd_.angular.z = -v_turning_;
   }
 
-  if(distance_ > 0.05)
+  if(distance_ > 0.2)
   {
-    ROS_INFO("distance > 0.05");
+    ROS_INFO("distance > 1");
 
-    velocity_ = distance_ * 0.5;
+    velocity_ = distance_ * 0.3;
     cmd_.linear.x = velocity_;
     orient_2object();
   }
   else
   {
-    ROS_INFO("distance<0.05");
+    ROS_INFO("distance < 1");
     cmd_.linear.x = 0;
   }
 
