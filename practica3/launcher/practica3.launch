@@ -1,8 +1,8 @@
 <launch>
 
-	<node pkg="practica3" type="forward_node" name="forward" />
-  <node pkg="practica3" type="turn_node" name="turn" />
-  <node pkg="practica3" type="perception_node" name="perception" />
+	<node pkg="practica3" type="forward_node" name="forward" output="screen" />
+  <node pkg="practica3" type="turn_node" name="turn" output="screen" />
+  <node pkg="practica3" type="perception_node" name="perception" output="screen" />
 	<node pkg="practica3" type="practica3_node" name="practica3" output="screen" />
 
 </launch>

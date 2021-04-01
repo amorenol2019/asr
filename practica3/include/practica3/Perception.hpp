@@ -33,7 +33,6 @@ private:
   void imageCb(const sensor_msgs::Image::ConstPtr& msg);
   void stateCb(const std_msgs::String::ConstPtr& msg);
 
-  int orient_2object(const int x, const int y);
   void create_transform(const float x, const float y, const std::string name);
   void look4_TF(const std::string name);
 
@@ -52,6 +51,10 @@ private:
   tf2_ros::TransformListener listener_;
 
   std::string state_;
+  std::string str1_ = "ToBall";
+  std::string str2_ = "ToBlueGoal";
+  std::string str3_ = "ToYellGoal";
+
   int tf_founded_;
   int counter_;
 
