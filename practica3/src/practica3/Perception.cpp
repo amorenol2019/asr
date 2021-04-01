@@ -108,8 +108,8 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   }
   std_msgs::Float32MultiArray array;
   array.data.clear();
-  array.data.push_back(x_);
-  array.data.push_back(y_);
+  array.data.push_back(x_/counter_);
+  array.data.push_back(y_/counter_);
   array.data.push_back(width_);
 
   position_pub_.publish(array); //publica la posicion x,y
@@ -170,7 +170,7 @@ Perception::step()
     return;
   }
 
-  distance_ = 0.0;
+  distance_ = 0.21;
   tf_founded_ = false;
 
   if(counter_ == 0)
@@ -183,11 +183,11 @@ Perception::step()
   }
   else // calcula distancia con el número de pixeles
   {
-    if(state_.compare("To Ball"))
+    if(state_.compare(str1_))
     {
       distance_ = 10.52 - 1.44 * logf(counter_);
     }
-    else if(state_.compare("ToBlueGoal") || state_.compare("ToYellGoal"))
+    else if(state_.compare(str2_) || state_.compare(str3_))
     {
       distance_ = 16.09 - 1.45 * logf(counter_);
     }

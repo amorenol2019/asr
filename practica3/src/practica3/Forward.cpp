@@ -37,32 +37,34 @@ void Forward::angleCb(const std_msgs::Float64::ConstPtr& msg)
 }
 
 void Forward::orient_2object()
-{ // devuelve 1 si el objeto esta centrado en la imagen
+{
 
-  //int centered = 0;
   if(x_ < width_ / 2 + 50 && x_ > width_ / 2 - 50)
   {
-    v_turning_ = 0.1;
+    v_turning_ = 0.05;
 
     if(x_ > width_ / 2 + 20)
     {
       cmd_.angular.z = -v_turning_;
-    } else if (x_ < width_ / 2 - 20)
+    }
+    else if (x_ < width_ / 2 - 20)
     {
       cmd_.angular.z = v_turning_;
-    } else
+    }
+    else
     {
       cmd_.angular.z = 0;
-      //centered = 1;
     }
-  } else
+  }
+  else
   {
-    v_turning_ = 0.3;
+    v_turning_ = 0.2;
 
     if(x_ > width_ / 2 + 50)
     {
       cmd_.angular.z = -v_turning_;
-    } else
+    }
+    else
     {
       cmd_.angular.z = v_turning_;
     }
@@ -77,20 +79,20 @@ void Forward::step()
     return;
   }
 
-  if(angle_2obj_ > 0) // revisar
-  {
-    cmd_.angular.z = v_turning_;
-  }
-  else
-  {
-    cmd_.angular.z = -v_turning_;
-  }
+  //if(angle_2obj_ > 0) // revisar
+  //{
+    //cmd_.angular.z = v_turning_;
+  //}
+  //else
+  //{
+    //cmd_.angular.z = -v_turning_;
+  //}
 
   if(distance_ > 0.2)
   {
     ROS_INFO("distance > 1");
 
-    velocity_ = distance_ * 0.3;
+    velocity_ = 0.2;//distance_ * 0.2;
     cmd_.linear.x = velocity_;
     orient_2object();
   }
@@ -98,6 +100,7 @@ void Forward::step()
   {
     ROS_INFO("distance < 1");
     cmd_.linear.x = 0;
+    orient_2object();
   }
 
   vel_pub_.publish(cmd_);
