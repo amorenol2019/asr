@@ -43,7 +43,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
   if(state_ == str1_)
   {
-    ROS_INFO("DENTRO: ---%s\n", state_.c_str());
+    ROS_INFO("Estado: %s\n", state_.c_str());
     name_ = "ball";
 
     h_min = BALL_HMIN;
@@ -53,7 +53,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   }
   else if(state_ == str2_)
   {
-    ROS_INFO("DENTRO: ---%s\n", state_.c_str());
+    ROS_INFO("Estado: %s\n", state_.c_str());
     name_ = "blue";
 
     h_min = BLUE_HMIN;
@@ -63,7 +63,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   }
   else if(state_ == str3_)
   {
-    ROS_INFO("DENTRO: ---%s\n", state_.c_str());
+    ROS_INFO("EStado: %s\n", state_.c_str());
     name_ = "yellow";
 
     h_min = YELLOW_HMIN;
@@ -108,8 +108,8 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   }
   std_msgs::Float32MultiArray array;
   array.data.clear();
-  array.data.push_back(x_/counter_);
-  array.data.push_back(y_/counter_);
+  array.data.push_back(x_ / counter_);
+  array.data.push_back(y_ / counter_);
   array.data.push_back(width_);
 
   position_pub_.publish(array); //publica la posicion x,y
@@ -154,11 +154,10 @@ Perception::look4_TF(const std::string name)
   }
   catch (std::exception & e)
   {
-    //ROS_INFO("No se ha encontrado transformada"); //si no se encuantran transformadas se sale de la funcion con una velocidad arbitraria
     return;
   }
 
-  tf_founded_ = true;
+  tf_founded_ = 1;
   //angulo del robot respecto a la pelota
   angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
 }
@@ -170,30 +169,30 @@ Perception::step()
     return;
   }
 
-  distance_ = 0.21;
-  tf_founded_ = false;
+  distance_ = 0.0;
+  tf_founded_ = 0;
 
   if(counter_ == 0)
   {
     look4_TF(name_); // da valor a angle si encuentra la transformada
-    if(tf_founded_ == false)
+    if(tf_founded_ == 0)
     {
       angle_ = -1; // valor aleatorio
     }
   }
-  else // calcula distancia con el número de pixeles
+  else if((x_ / counter_) < width_ / 2 + 20 && (x_ / counter_) > width_ / 2 - 20) // calcula distancia con el número de pixeles
   {
-    if(state_.compare(str1_))
+    if(name_ == "ball")
     {
       distance_ = 10.52 - 1.44 * logf(counter_);
     }
-    else if(state_.compare(str2_) || state_.compare(str3_))
+    else if(name_ == "blue" || name_ == "yellow")
     {
-      distance_ = 16.09 - 1.45 * logf(counter_);
+      distance_ = 16.59 - 1.45 * logf(counter_);
     }
   }
 
-  if(distance_ != 0 && distance_ < 0.2)
+  if(distance_ != 0 && distance_ < 0.2) // revisar, a veces no llega al objeto
   {
     create_transform(distance_, 0, name_);
   }

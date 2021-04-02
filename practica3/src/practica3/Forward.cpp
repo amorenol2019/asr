@@ -45,7 +45,7 @@ void Forward::orient_2object()
 
     if(x_ > width_ / 2 + 20)
     {
-      cmd_.angular.z = -v_turning_;
+      cmd_.angular.z = - v_turning_;
     }
     else if (x_ < width_ / 2 - 20)
     {
@@ -62,14 +62,13 @@ void Forward::orient_2object()
 
     if(x_ > width_ / 2 + 50)
     {
-      cmd_.angular.z = -v_turning_;
+      cmd_.angular.z = - v_turning_;
     }
     else
     {
       cmd_.angular.z = v_turning_;
     }
   }
-  //vel_pub_.publish(cmd_);
 }
 
 void Forward::step()
@@ -79,27 +78,28 @@ void Forward::step()
     return;
   }
 
-  //if(angle_2obj_ > 0) // revisar
-  //{
-    //cmd_.angular.z = v_turning_;
-  //}
-  //else
-  //{
-    //cmd_.angular.z = -v_turning_;
-  //}
-
-  if(distance_ > 0.2)
+  if(distance_ == 0) // No ve nada
   {
-    ROS_INFO("distance > 1");
-
-    velocity_ = 0.2;//distance_ * 0.2;
-    cmd_.linear.x = velocity_;
+    cmd_.linear.x = 0.0;
     orient_2object();
+    v_turning_ = 0.2;
+    //if(angle_2obj_ < 0) // revisar
+    //{
+    //  cmd_.angular.z = v_turning_;
+    //}
+    //else
+    //{
+    //  cmd_.angular.z = - v_turning_;
+    //}
   }
-  else
+  else if(distance_ < 0.2) // Ha llegado al objeto
   {
-    ROS_INFO("distance < 1");
-    cmd_.linear.x = 0;
+    cmd_.linear.x = 0.0;
+    cmd_.angular.z = 0.0;
+  }
+  else // Se acerca al objeto
+  {
+    cmd_.linear.x = 0.2;
     orient_2object();
   }
 
