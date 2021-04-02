@@ -72,8 +72,8 @@ private:
   int s_min;
   int v_min;
 
-  const int BALL_HMIN = 93;
-  const int BALL_HMAX = 148;
+  const int BALL_HMIN =  95;// 93;
+  const int BALL_HMAX = 130; // 148;
   const int BALL_SMIN = 15;
 
   const int BLUE_HMIN = 12;

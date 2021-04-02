@@ -20,11 +20,6 @@ public:
   bool ToYellGoal_2_Turn();
   bool Turn_2_ToBall();
 
-  void ToYellGoal_code_iterative();
-  void Turn_code_iterative();
-  void ToBlueGoal_code_iterative();
-  void ToBall_code_iterative();
-
 private:
   ros::NodeHandle nh_;
   ros::Publisher object_pub_;

@@ -9,7 +9,6 @@ namespace practica3
 {
 Practica3Impl::Practica3Impl()
 {
-  object_pub_ = nh_.advertise<std_msgs::Int64>("/object", 10);
   state_ts_ = ros::Time::now();
 }
 
@@ -31,30 +30,6 @@ bool Practica3Impl::ToYellGoal_2_Turn()
 bool Practica3Impl::Turn_2_ToBall()
 {
   return (ros::Time::now() - state_ts_).toSec() > TURNING_TIME;
-}
-
-void Practica3Impl::ToYellGoal_code_iterative()
-{
-  msg_.data = 3;
-  object_pub_.publish(msg_);
-}
-
-void Practica3Impl::ToBlueGoal_code_iterative()
-{
-  msg_.data = 2;
-  object_pub_.publish(msg_);
-}
-
-void Practica3Impl::ToBall_code_iterative()
-{
-  msg_.data = 1;
-  object_pub_.publish(msg_);
-}
-
-void Practica3Impl::Turn_code_iterative()
-{
-  msg_.data = 4;
-  object_pub_.publish(msg_);
 }
 
 } // practica3
