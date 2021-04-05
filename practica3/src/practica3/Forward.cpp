@@ -60,7 +60,7 @@ void Forward::orient_2object()
     }
     else
     {
-      cmd_.angular.z = v_turning_ - 0.1;
+      cmd_.angular.z = v_turning_; // - 0.1;
     }
   }
 }
@@ -72,32 +72,33 @@ void Forward::step()
     return;
   }
 
-  if(distance_ == 0.0) // No ve nada
+  if(distance_ == 0) // No ve nada centrado
   {
-    cmd_.linear.x = 0.0;
-    if(angle_2obj_ != -1 && abs(angle_2obj_) > 0.5)
+    //if(angle_2obj_ != 400)
+    //{
+    //  cmd_.angular.z = v_turning_ * angle_2obj_;
+    //}
+    //else
+    //{
+    orient_2object();
+    //}
+  }
+  else
+  {
+    if(distance_ < 0.8) // Ha llegado
     {
-      ROS_INFO("Existe la transformada y angulo positivo");
-      cmd_.angular.z = 0.2 * angle_2obj_;
+      cmd_.linear.x = 0.0;
+      cmd_.angular.z = 0.0;
     }
-    else
+    else // Se acerca
     {
+      cmd_.linear.x = 0.5;
+      if(distance_ < 3)
+      {
+        cmd_.linear.x = 0.2;
+      }
       orient_2object();
     }
-  }
-  else if(distance_ < 0.5) // Ha llegado al objeto
-  {
-    cmd_.linear.x = 0.0;
-    cmd_.angular.z = 0.0;
-  }
-  else // Se acerca al objeto
-  {
-    cmd_.linear.x = 0.5;
-    if(distance_ < 2)
-    {
-      cmd_.linear.x = 0.25;
-    }
-    orient_2object();
   }
 
   vel_pub_.publish(cmd_);
