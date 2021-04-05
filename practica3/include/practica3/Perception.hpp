@@ -60,7 +60,6 @@ private:
   std::string str3_ = "Yell Goal";
 
   int tf_founded_;
-  int tf_created_;
   int counter_;
 
   std::string name_;

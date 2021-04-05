@@ -142,7 +142,6 @@ Perception::create_transform(const float x, const float y, const std::string nam
   odom2object_msg.transform = tf2::toMsg(odom2object);
 
   br_.sendTransform(odom2object_msg);
-  tf_created_ = 1;
 }
 
 void
@@ -171,14 +170,13 @@ Perception::step()
 
   distance_ = 0.0;
   tf_founded_ = 0;
-  tf_created_ = 0;
 
   if(counter_ == 0)
   {
     look4_TF(name_); // da valor a angle si encuentra la transformada
     if(tf_founded_ == 0)
     {
-      angle_ = -1; // valor aleatorio
+      angle_ = 400; // valor aleatorio
     }
   }
   else if((x_ / counter_) < width_ / 2 + 20 && (x_ / counter_) > width_ / 2 - 20) // calcula distancia con el número de pixeles
@@ -193,7 +191,7 @@ Perception::step()
     }
   }
 
-  if(tf_created_ == 0 && distance_ != 0 && distance_ < 1.5) // revisar, a veces no llega al objeto
+  if(distance_ != 0 && distance_ < 0.8) // revisar, a veces no llega al objeto
   {
     create_transform(distance_, 0, name_);
   }
