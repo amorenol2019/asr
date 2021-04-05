@@ -59,10 +59,11 @@ private:
   std::string str2_ = "Blue Goal";
   std::string str3_ = "Yell Goal";
 
+  std::string name_;
+
   int tf_founded_;
   int counter_;
-
-  std::string name_;
+  int limit_;
 
   float distance_;
   float angle_;
@@ -76,8 +77,8 @@ private:
   int s_min;
   int v_min;
 
-  const int BALL_HMIN =  95;// 93;
-  const int BALL_HMAX = 130; // 148;
+  const int BALL_HMIN =  95;
+  const int BALL_HMAX = 130;
   const int BALL_SMIN = 15;
 
   const int BLUE_HMIN = 12;

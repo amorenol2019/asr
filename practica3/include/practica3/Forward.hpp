@@ -31,15 +31,15 @@ private:
   ros::Subscriber angle_sub_;
 
   geometry_msgs::Twist cmd_;
-
-  float distance_;
-  float velocity_;
-
+  
   int x_;
   int y_;
   int width_;
 
-  float v_turning_;
+  float distance_;
+  float limit_;
+  float speed_;
+  float s_turning_;
   float angle_2obj_;
 };
 

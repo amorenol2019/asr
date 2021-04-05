@@ -9,7 +9,7 @@
 
 namespace practica3
 {
-Forward::Forward() : v_turning_(0.4)
+Forward::Forward() : s_turning_(0.4)
 {
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 
@@ -41,11 +41,11 @@ void Forward::orient_2object()
   {
     if(x_ > width_ / 2 + 20)
     {
-      cmd_.angular.z = - v_turning_ + 0.3;
+      cmd_.angular.z = - s_turning_ + 0.3;
     }
     else if (x_ < width_ / 2 - 20)
     {
-      cmd_.angular.z = v_turning_ - 0.3;
+      cmd_.angular.z = s_turning_ - 0.3;
     }
     else
     {
@@ -56,11 +56,11 @@ void Forward::orient_2object()
   {
     if(x_ > width_ / 2 + 50)
     {
-      cmd_.angular.z = - v_turning_ + 0.1;
+      cmd_.angular.z = - s_turning_ + 0.1;
     }
     else
     {
-      cmd_.angular.z = v_turning_; // - 0.1;
+      cmd_.angular.z = s_turning_;
     }
   }
 }
@@ -72,30 +72,33 @@ void Forward::step()
     return;
   }
 
+  limit_ = 0.8;
+  speed_ = 0.5;
+
   if(distance_ == 0) // No ve nada centrado
   {
-    if(angle_2obj_ != 400)
-    {
-      cmd_.angular.z = v_turning_ * angle_2obj_ ;
-    }
-    else
-    {
+    // if(angle_2obj_ != 400)
+    //{
+    //  cmd_.angular.z = s_turning_ * angle_2obj_ ;
+    //}
+    //else
+    //{
     orient_2object();
-    }
+    //}
   }
   else
   {
-    if(distance_ < 0.8) // Ha llegado
+    if(distance_ < limit_) // Ha llegado
     {
       cmd_.linear.x = 0.0;
       cmd_.angular.z = 0.0;
     }
     else // Se acerca
     {
-      cmd_.linear.x = 0.5;
+      cmd_.linear.x = speed_;
       if(distance_ < 3)
       {
-        cmd_.linear.x = 0.2;
+        cmd_.linear.x = speed_ - 0.3;
       }
       orient_2object();
     }
