@@ -88,14 +88,15 @@ void Forward::step()
       orient_2object();
     }
   }
-  else if(distance_ < 0.3) // Ha llegado al objeto
+  else if(distance_ < 0.5) // Ha llegado al objeto
   {
     cmd_.linear.x = 0.0;
     cmd_.angular.z = 0.0;
   }
   else // Se acerca al objeto
   {
-    cmd_.linear.x = 0.5;
+    cmd_.linear.x = 0.4;
+    if(distance_ < 2)cmd_.linear.x = 0.25;
     orient_2object();
   }
 
