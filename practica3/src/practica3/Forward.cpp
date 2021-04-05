@@ -74,14 +74,14 @@ void Forward::step()
 
   if(distance_ == 0) // No ve nada centrado
   {
-    //if(angle_2obj_ != 400)
-    //{
-    //  cmd_.angular.z = v_turning_ * angle_2obj_;
-    //}
-    //else
-    //{
+    if(angle_2obj_ != 400)
+    {
+      cmd_.angular.z = v_turning_ * angle_2obj_ ;
+    }
+    else
+    {
     orient_2object();
-    //}
+    }
   }
   else
   {

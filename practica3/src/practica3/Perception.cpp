@@ -170,14 +170,13 @@ Perception::step()
 
   distance_ = 0.0;
   tf_founded_ = 0;
+  look4_TF(name_);
 
-  if(counter_ == 0)
+  if(counter_ == 0 && tf_founded_ == 0)
   {
-    look4_TF(name_); // da valor a angle si encuentra la transformada
-    if(tf_founded_ == 0)
-    {
-      angle_ = 400; // valor aleatorio
-    }
+    //look4_TF(name_); // da valor a angle si encuentra la transformada
+    angle_ = 400; // valor aleatorio
+
   }
   else if((x_ / counter_) < width_ / 2 + 20 && (x_ / counter_) > width_ / 2 - 20) // calcula distancia con el número de pixeles
   {
