@@ -4,13 +4,12 @@
 #include "geometry_msgs/Twist.h"
 #include "ros/ros.h"
 #include <std_msgs/Float64.h>
-#include <std_msgs/Float32.h>
-
 #include <std_msgs/Float32MultiArray.h>
+#include <cmath>
 
 namespace practica3
 {
-Forward::Forward()
+Forward::Forward() : v_turning_(0.4)
 {
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 
@@ -38,18 +37,15 @@ void Forward::angleCb(const std_msgs::Float64::ConstPtr& msg)
 
 void Forward::orient_2object()
 {
-
   if(x_ < width_ / 2 + 50 && x_ > width_ / 2 - 50)
   {
-    v_turning_ = 0.1;
-
     if(x_ > width_ / 2 + 20)
     {
-      cmd_.angular.z = - v_turning_;
+      cmd_.angular.z = - v_turning_ + 0.3;
     }
     else if (x_ < width_ / 2 - 20)
     {
-      cmd_.angular.z = v_turning_;
+      cmd_.angular.z = v_turning_ - 0.3;
     }
     else
     {
@@ -58,15 +54,13 @@ void Forward::orient_2object()
   }
   else
   {
-    v_turning_ = 0.3;
-
     if(x_ > width_ / 2 + 50)
     {
-      cmd_.angular.z = - v_turning_;
+      cmd_.angular.z = - v_turning_ + 0.1;
     }
     else
     {
-      cmd_.angular.z = v_turning_;
+      cmd_.angular.z = v_turning_ - 0.1;
     }
   }
 }
@@ -78,28 +72,30 @@ void Forward::step()
     return;
   }
 
-  if(distance_ == 0) // No ve nada
+  if(distance_ == 0.0) // No ve nada
   {
     cmd_.linear.x = 0.0;
-    orient_2object();
-    v_turning_ = 0.2;
-    //if(angle_2obj_ < 0) // revisar
-    //{
-    //  cmd_.angular.z = v_turning_;
-    //}
-    //else
-    //{
-    //  cmd_.angular.z = - v_turning_;
-    //}
+    if(angle_2obj_ != -1) // revisar
+    {
+      if (abs(angle_2obj_) > 0.5)
+      {
+        ROS_INFO("Existe la transformada y angulo positivo");
+        cmd_.angular.z = 0.2 * angle_2obj_;
+      }
+    }
+    else
+    {
+      orient_2object();
+    }
   }
-  else if(distance_ < 0.2) // Ha llegado al objeto
+  else if(distance_ < 0.3) // Ha llegado al objeto
   {
     cmd_.linear.x = 0.0;
     cmd_.angular.z = 0.0;
   }
   else // Se acerca al objeto
   {
-    cmd_.linear.x = 0.2;
+    cmd_.linear.x = 0.5;
     orient_2object();
   }
 

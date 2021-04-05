@@ -44,7 +44,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   if(state_ == str1_)
   {
     ROS_INFO("Estado: %s\n", state_.c_str());
-    name_ = "ball";
+    name_ = str1_;
 
     h_min = BALL_HMIN;
     h_max = BALL_HMAX;
@@ -54,8 +54,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   else if(state_ == str2_)
   {
     ROS_INFO("Estado: %s\n", state_.c_str());
-    name_ = "blue";
-
+    name_ = str2_;
     h_min = BLUE_HMIN;
     h_max = BLUE_HMAX;
     s_min = BLUE_SMIN;
@@ -64,8 +63,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   else if(state_ == str3_)
   {
     ROS_INFO("EStado: %s\n", state_.c_str());
-    name_ = "yellow";
-
+    name_ = str3_;
     h_min = YELLOW_HMIN;
     h_max = YELLOW_HMAX;
     s_min = YELLOW_SMIN;
@@ -182,17 +180,17 @@ Perception::step()
   }
   else if((x_ / counter_) < width_ / 2 + 20 && (x_ / counter_) > width_ / 2 - 20) // calcula distancia con el número de pixeles
   {
-    if(name_ == "ball")
+    if(name_ == str1_)
     {
       distance_ = 10.52 - 1.44 * logf(counter_);
     }
-    else if(name_ == "blue" || name_ == "yellow")
+    else if(name_ == str2_ || name_ == str3_)
     {
-      distance_ = 16.59 - 1.45 * logf(counter_);
+      distance_ = 15.7 - 1.45 * logf(counter_);
     }
   }
 
-  if(distance_ != 0 && distance_ < 0.2) // revisar, a veces no llega al objeto
+  if(distance_ != 0 && distance_ < 0.3) // revisar, a veces no llega al objeto
   {
     create_transform(distance_, 0, name_);
   }
