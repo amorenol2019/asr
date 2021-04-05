@@ -51,11 +51,16 @@ private:
   tf2_ros::TransformListener listener_;
 
   std::string state_;
-  std::string str1_ = "ToBall";
-  std::string str2_ = "ToBlueGoal";
-  std::string str3_ = "ToYellGoal";
+  std::string state1_ = "ToBall";
+  std::string state2_ = "ToBlueGoal";
+  std::string state3_ = "ToYellGoal";
+
+  std::string str1_ = "Ball";
+  std::string str2_ = "Blue Goal";
+  std::string str3_ = "Yell Goal";
 
   int tf_founded_;
+  int tf_created_;
   int counter_;
 
   std::string name_;
