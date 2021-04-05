@@ -111,6 +111,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   array.data.push_back(width_);
 
   position_pub_.publish(array); //publica la posicion x,y
+  ROS_INFO("counter:%d\n ",counter_);
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z
@@ -182,15 +183,15 @@ Perception::step()
   {
     if(name_ == str1_)
     {
-      distance_ = 10.52 - 1.44 * logf(counter_);
+      distance_ = 8.39 - 1.07 * logf(counter_);
     }
     else if(name_ == str2_ || name_ == str3_)
     {
-      distance_ = 15.7 - 1.45 * logf(counter_);
+      distance_ = 17.16 - 1.49 * logf(counter_);
     }
   }
 
-  if(distance_ != 0 && distance_ < 0.3) // revisar, a veces no llega al objeto
+  if(distance_ != 0 && distance_ < 0.5) // revisar, a veces no llega al objeto
   {
     create_transform(distance_, 0, name_);
   }
