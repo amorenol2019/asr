@@ -75,13 +75,10 @@ void Forward::step()
   if(distance_ == 0.0) // No ve nada
   {
     cmd_.linear.x = 0.0;
-    if(angle_2obj_ != -1) // revisar
+    if(angle_2obj_ != -1 && abs(angle_2obj_) > 0.5)
     {
-      if (abs(angle_2obj_) > 0.5)
-      {
-        ROS_INFO("Existe la transformada y angulo positivo");
-        cmd_.angular.z = 0.2 * angle_2obj_;
-      }
+      ROS_INFO("Existe la transformada y angulo positivo");
+      cmd_.angular.z = 0.2 * angle_2obj_;
     }
     else
     {
@@ -95,8 +92,11 @@ void Forward::step()
   }
   else // Se acerca al objeto
   {
-    cmd_.linear.x = 0.4;
-    if(distance_ < 2)cmd_.linear.x = 0.25;
+    cmd_.linear.x = 0.5;
+    if(distance_ < 2)
+    {
+      cmd_.linear.x = 0.25;
+    }
     orient_2object();
   }
 

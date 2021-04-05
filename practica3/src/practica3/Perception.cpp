@@ -41,7 +41,7 @@ void Perception::stateCb(const std_msgs::String::ConstPtr& msg)
 
 void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
-  if(state_ == str1_)
+  if(state_ == state1_)
   {
     ROS_INFO("Estado: %s\n", state_.c_str());
     name_ = str1_;
@@ -51,7 +51,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = BALL_SMIN;
     v_min = V_MIN;
   }
-  else if(state_ == str2_)
+  else if(state_ == state2_)
   {
     ROS_INFO("Estado: %s\n", state_.c_str());
     name_ = str2_;
@@ -60,7 +60,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
     s_min = BLUE_SMIN;
     v_min = V_MIN;
   }
-  else if(state_ == str3_)
+  else if(state_ == state3_)
   {
     ROS_INFO("EStado: %s\n", state_.c_str());
     name_ = str3_;
@@ -111,7 +111,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   array.data.push_back(width_);
 
   position_pub_.publish(array); //publica la posicion x,y
-  ROS_INFO("counter:%d\n ",counter_);
+  ROS_INFO("Counter:%d\n ", counter_);
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z
@@ -142,6 +142,7 @@ Perception::create_transform(const float x, const float y, const std::string nam
   odom2object_msg.transform = tf2::toMsg(odom2object);
 
   br_.sendTransform(odom2object_msg);
+  tf_created_ = 1;
 }
 
 void
@@ -170,6 +171,7 @@ Perception::step()
 
   distance_ = 0.0;
   tf_founded_ = 0;
+  tf_created_ = 0;
 
   if(counter_ == 0)
   {
@@ -191,7 +193,7 @@ Perception::step()
     }
   }
 
-  if(distance_ != 0 && distance_ < 0.5) // revisar, a veces no llega al objeto
+  if(tf_created_ == 0 && distance_ != 0 && distance_ < 1.5) // revisar, a veces no llega al objeto
   {
     create_transform(distance_, 0, name_);
   }
