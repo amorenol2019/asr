@@ -157,8 +157,6 @@ Perception::look4_TF(const std::string name)
     angle_ = 400; // angulo imposible
     return;
   }
-
-  tf_founded_ = 1;
   //angulo del robot respecto a la pelota
   angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
 }
@@ -172,9 +170,8 @@ Perception::step()
 
   distance_ = 0.0;
 
-  tf_founded_ = 0;
   look4_TF(name_);
-  if(counter_ == 0 && 0.5 > abs(angle_))
+  if(counter_ == 0 && 0.3 > abs(angle_))
   {
     create_transform(0, 0, name_);
   }
