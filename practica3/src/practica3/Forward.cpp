@@ -77,15 +77,10 @@ void Forward::step()
   {
     if(x_ < 0 && angle_2obj_ != 400)//no estoy viendo el objeto y hay una tf
     {
-      if( angle_2obj_ > 0 )  cmd_.angular.z = 0.3;
-      else cmd_.angular.z = -0.3;
-      if( abs(angle_2obj_) > 1 && x_<0)
-        cmd_.angular.z = 0.3;
+      if( angle_2obj_ > 0 )  x_ = width_/2 - 60;
+      else x_ = width_/2 + 60;
     }
-    else//veo el objeto
-    {
-      orient_2object();
-    }
+    orient_2object();
   }
   else
   {

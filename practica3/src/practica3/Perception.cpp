@@ -172,6 +172,10 @@ Perception::step()
   distance_ = 0.0;
   tf_founded_ = 0;
   look4_TF(name_);
+  if(counter_ == 0 && 0.5 > abs(angle_))
+  {
+    create_transform(0, 0, name_);
+  }
 
   if(counter_ != 0 && (x_ / counter_) < width_ / 2 + 80 && (x_ / counter_) > width_ / 2 - 80) // calcula distancia con el número de pixeles
   {
