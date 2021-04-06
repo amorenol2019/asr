@@ -153,6 +153,7 @@ Perception::look4_TF(const std::string name)
   }
   catch (std::exception & e)
   {
+    angle_ = 400;
     return;
   }
 
@@ -172,13 +173,7 @@ Perception::step()
   tf_founded_ = 0;
   look4_TF(name_);
 
-  if(counter_ == 0 && tf_founded_ == 0)
-  {
-    //look4_TF(name_); // da valor a angle si encuentra la transformada
-    angle_ = 400; // valor aleatorio
-
-  }
-  else if((x_ / counter_) < width_ / 2 + 20 && (x_ / counter_) > width_ / 2 - 20) // calcula distancia con el número de pixeles
+  if(counter_ != 0 && (x_ / counter_) < width_ / 2 + 80 && (x_ / counter_) > width_ / 2 - 80) // calcula distancia con el número de pixeles
   {
     if(name_ == str1_)
     {
