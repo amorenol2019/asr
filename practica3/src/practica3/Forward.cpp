@@ -26,6 +26,7 @@ void Forward::distanceCb(const std_msgs::Float64::ConstPtr& msg)
 void Forward::positionCb(const std_msgs::Float32MultiArray::ConstPtr& msg)
 {
   x_ = msg->data[0];
+  ROS_INFO("xxxxxxx: %d\n",x_);
   y_ = msg->data[1];
   width_ = msg->data[2];
 }
@@ -72,15 +73,18 @@ void Forward::step()
     return;
   }
 
-  if(distance_ == 0) // No ve nada centrado
+  if(distance_ == 0 ) // No ve nada centrado
   {
-    if(angle_2obj_ != 400)
+    if(x_ < 0 && angle_2obj_ != 400)//no estoy viendo el objeto y hay una tf
     {
-      cmd_.angular.z = v_turning_ * angle_2obj_ ;
+      if( angle_2obj_ > 0 )  cmd_.angular.z = 0.3;
+      else cmd_.angular.z = -0.3;
+      if( abs(angle_2obj_) > 1 && x_<0)
+        cmd_.angular.z = 0.3;
     }
-    else
+    else//veo el objeto
     {
-    orient_2object();
+      orient_2object();
     }
   }
   else
