@@ -43,7 +43,7 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
 {
   if(state_ == state1_)
   {
-    ROS_INFO("Estado: %s\n", state_.c_str());
+    //ROS_INFO("Estado: %s\n", state_.c_str());
     name_ = str1_;
 
     h_min = BALL_HMIN;
@@ -53,8 +53,9 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   }
   else if(state_ == state2_)
   {
-    ROS_INFO("Estado: %s\n", state_.c_str());
+    //ROS_INFO("Estado: %s\n", state_.c_str());
     name_ = str2_;
+
     h_min = BLUE_HMIN;
     h_max = BLUE_HMAX;
     s_min = BLUE_SMIN;
@@ -62,8 +63,9 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   }
   else if(state_ == state3_)
   {
-    ROS_INFO("EStado: %s\n", state_.c_str());
+    //ROS_INFO("EStado: %s\n", state_.c_str());
     name_ = str3_;
+
     h_min = YELLOW_HMIN;
     h_max = YELLOW_HMAX;
     s_min = YELLOW_SMIN;
@@ -107,11 +109,10 @@ void Perception::imageCb(const sensor_msgs::Image::ConstPtr& msg)
   std_msgs::Float32MultiArray array;
   array.data.clear();
   array.data.push_back(x_ / counter_);
-  array.data.push_back(y_ / counter_);
   array.data.push_back(width_);
 
-  position_pub_.publish(array); //publica la posicion x,y
-  ROS_INFO("Counter:%d\n ", counter_);
+  position_pub_.publish(array); //publica la posicion x
+  // ROS_INFO("Counter:%d\n ", counter_);
 }
 
 //crea una transformada estatica desde base_footprint hasta el objeto con coordenadas x,y,z
@@ -153,7 +154,7 @@ Perception::look4_TF(const std::string name)
   }
   catch (std::exception & e)
   {
-    angle_ = 400;
+    angle_ = 400; // angulo imposible
     return;
   }
 
@@ -170,6 +171,7 @@ Perception::step()
   }
 
   distance_ = 0.0;
+
   tf_founded_ = 0;
   look4_TF(name_);
   if(counter_ == 0 && 0.5 > abs(angle_))
@@ -189,7 +191,7 @@ Perception::step()
     }
   }
 
-  if(distance_ != 0 && distance_ < 0.8) // revisar, a veces no llega al objeto
+  if(distance_ != 0 && distance_ < 0.8)
   {
     create_transform(distance_, 0, name_);
   }

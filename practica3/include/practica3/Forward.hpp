@@ -33,14 +33,15 @@ private:
   geometry_msgs::Twist cmd_;
 
   float distance_;
-  float velocity_;
+  float speed_;
 
   int x_;
-  int y_;
   int width_;
 
-  float v_turning_;
+  float s_turning_;
   float angle_2obj_;
+
+  int IMPOSIBLE_ANGLE = 400;
 };
 
 } // practica3

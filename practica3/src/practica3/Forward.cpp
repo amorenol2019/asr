@@ -9,7 +9,7 @@
 
 namespace practica3
 {
-Forward::Forward() : v_turning_(0.4)
+Forward::Forward() : s_turning_(0.4)
 {
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
 
@@ -26,9 +26,7 @@ void Forward::distanceCb(const std_msgs::Float64::ConstPtr& msg)
 void Forward::positionCb(const std_msgs::Float32MultiArray::ConstPtr& msg)
 {
   x_ = msg->data[0];
-  ROS_INFO("xxxxxxx: %d\n",x_);
-  y_ = msg->data[1];
-  width_ = msg->data[2];
+  width_ = msg->data[1];
 }
 
 void Forward::angleCb(const std_msgs::Float64::ConstPtr& msg)
@@ -42,11 +40,11 @@ void Forward::orient_2object()
   {
     if(x_ > width_ / 2 + 20)
     {
-      cmd_.angular.z = - v_turning_ + 0.3;
+      cmd_.angular.z = - s_turning_ + 0.3;
     }
     else if (x_ < width_ / 2 - 20)
     {
-      cmd_.angular.z = v_turning_ - 0.3;
+      cmd_.angular.z = s_turning_ - 0.3;
     }
     else
     {
@@ -57,11 +55,11 @@ void Forward::orient_2object()
   {
     if(x_ > width_ / 2 + 50)
     {
-      cmd_.angular.z = - v_turning_ + 0.1;
+      cmd_.angular.z = - s_turning_ + 0.1;
     }
     else
     {
-      cmd_.angular.z = v_turning_; // - 0.1;
+      cmd_.angular.z = s_turning_;
     }
   }
 }
@@ -75,10 +73,16 @@ void Forward::step()
 
   if(distance_ == 0 ) // No ve nada centrado
   {
-    if(x_ < 0 && angle_2obj_ != 400)//no estoy viendo el objeto y hay una tf
+    if(x_ < 0 && angle_2obj_ != IMPOSIBLE_ANGLE)//no estoy viendo el objeto y hay una tf
     {
-      if( angle_2obj_ > 0 )  x_ = width_/2 - 60;
-      else x_ = width_/2 + 60;
+      if(angle_2obj_ > 0)
+      {
+        x_ = width_ / 2 - 60;
+      }
+      else
+      {
+        x_ = width_ / 2 + 60;
+      }
     }
     orient_2object();
   }
