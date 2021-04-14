@@ -1,4 +1,4 @@
-#include "practica4/navigate.hpp"
+#include "practica4/Navigate.hpp"
 
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
@@ -7,17 +7,17 @@
 namespace practica4
 {
 
-void doneCb(const actionlib::SimpleClientGoalState& state,
+void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
   const move_base_msgs::MoveBaseResultConstPtr& result)
 {
   ROS_INFO("Terminado!!");
   finished_ = true;
 }
 
-void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback)
+void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback)
 {
-  double goal_x = goal.target_pose.pose.position.x;
-  double goal_y = goal.target_pose.pose.position.y;
+  double goal_x = goal_.target_pose.pose.position.x;
+  double goal_y = goal_.target_pose.pose.position.y;
   double current_x = feedback->base_position.pose.position.x;
   double current_y = feedback->base_position.pose.position.y;
 
@@ -29,4 +29,4 @@ void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback)
   ROS_INFO("Distance to goal = %lf", dist);
 }
 
-}//practica4
+} //practica4

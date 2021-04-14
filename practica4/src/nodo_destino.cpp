@@ -1,3 +1,5 @@
+#include "practica4/Navigate.hpp"
+
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
@@ -6,7 +8,7 @@ typdef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCli
 
 int main(int argc, char** argv){
 
-  practica4::navigate navigator;//??
+  practica4::Navigate navigator; //??
 
   ros::init(argc, argv, "simple_navigation_goals");
 
@@ -16,16 +18,16 @@ int main(int argc, char** argv){
     ROS_INFO("Waiting for the move_base acation server to come up");
   }
 
-  navigator.goal.target_pose.header.frame_id = "map";
-  navigator.goal.target_pose.header.stamp = ros::Time::now();
+  navigator.goal_.target_pose.header.frame_id = "map";
+  navigator.goal_.target_pose.header.stamp = ros::Time::now();
 
   // Posicion a la que ir
-  navigator.goal.target_pose.pose.position.x = navigator.x_;
-  navigator.goal.target_pose.pose.position.y = navigator.y_;
-  navigator.goal.target_pose.pose.orientation.w = 1.0;
+  navigator.goal_.target_pose.pose.position.x = navigator.x_;
+  navigator.goal_.target_pose.pose.position.y = navigator.y_;
+  navigator.goal_.target_pose.pose.orientation.w = 1.0;
 
   ROS_INFO("Sending goal");
-  ac.sendGoal(navigator.goal, doneCb);
+  ac.sendGoal(navigator.goal_, doneCb);
 
   ros::Rate rate(1);
   while(ros::ok() && !navigator.finished_) // cambiar segunda condicion
