@@ -171,7 +171,7 @@ Perception::step()
   distance_ = 0.0;
 
   look4_TF(name_);
-  if(counter_ == 0 && 0.3 > abs(angle_))
+  if(counter_ == 0 && 0.3 > fabs(angle_)) 
   {
     create_transform(0, 0, name_);
   }
