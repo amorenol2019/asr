@@ -5,13 +5,12 @@
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-int main(int argc, char** argv){
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "navigator");
+  practica4::Navigate navigator;
 
-  practica4::Navigate navigator; //??
-
-  ros::init(argc, argv, "navigate");
-
-  MoveBaseClient ac("move_base", false); // cambiar
+  MoveBaseClient ac("move_base", false);
 
   while(!ac.waitForServer(ros::Duration(5.0))){
     ROS_INFO("Waiting for the move_base acation server to come up");
@@ -26,7 +25,7 @@ int main(int argc, char** argv){
   navigator.goal_.target_pose.pose.orientation.w = 1.0;
 
   ROS_INFO("Sending goal");
-  ac.sendGoal(navigator.goal_, navigator.doneCb, MoveBaseClient::SimpleActiveCallback(),  navigator.feedbackCb);
+  ac.sendGoal(navigator.goal_); // navigator.doneCb, MoveBaseClient::SimpleActiveCallback(),  navigator.feedbackCb);
 
   /*
   ros::Rate rate(1);
