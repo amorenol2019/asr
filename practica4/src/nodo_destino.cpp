@@ -10,7 +10,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "navigator");
   practica4::Navigate navigator;
 
-  MoveBaseClient ac("move_base", false);
+  MoveBaseClient ac("move_base", true);
 
   while(!ac.waitForServer(ros::Duration(5.0))){
     ROS_INFO("Waiting for the move_base acation server to come up");
