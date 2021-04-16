@@ -6,6 +6,7 @@
 
 namespace practica4
 {
+Navigate::Navigate() : x_(0.0) ,y_(0.0),finished_(false)
 
 void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
   const move_base_msgs::MoveBaseResultConstPtr& result)
@@ -29,4 +30,4 @@ void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedba
   ROS_INFO("Distance to goal = %lf", dist);
 }
 
-} //practica4
+}//practica4
