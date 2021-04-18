@@ -5,8 +5,8 @@
 #include <actionlib/client/simple_action_client.h>
 
 namespace practica4
-{
-Navigate::Navigate() : x_(0.0) ,y_(0.0),finished_(false)
+{                                        //tell the action client that we want to spin a thread by default
+Navigate::Navigate() : ac_("move_base", true) {} //x(0.0),y(0.0)
 
 void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
   const move_base_msgs::MoveBaseResultConstPtr& result)
@@ -28,6 +28,16 @@ void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedba
   double dist = sqrt(diff_x * diff_x + diff_y * diff_y);
 
   ROS_INFO("Distance to goal = %lf", dist);
+}
+
+void Navigate::sendNavigationGoal(void)
+{
+  ROS_INFO("Sending goal");
+  ac_.sendGoal(goal_,
+      boost::bind(&Navigate::doneCb, this, _1, _2),
+      MoveBaseClient::SimpleActiveCallback(),
+      boost::bind(&Navigate::feedbackCb, this, _1));
+  ac_.waitForResult();
 }
 
 }//practica4
