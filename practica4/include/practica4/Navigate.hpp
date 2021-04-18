@@ -1,27 +1,28 @@
 #ifndef PRACTICA4__NAVIGATE_HPP__
 #define PRACTICA4__NAVIGATE_HPP__
 
+#include "bica/Component.h"
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
 namespace practica4
 {
-class Navigate
+class Navigate : public bica::Component
 {
 public:
   Navigate(ros::NodeHandle& nh);
+  void step();
+
   void doneCb(const actionlib::SimpleClientGoalState& state,
     const move_base_msgs::MoveBaseResultConstPtr& result);
   void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
   void sendNavigationGoal(void);
 
-  ros::NodeHandle& nh_;
+  std::string destination_;
 
-  std::string d;
-
-  float x_ = -0.5;
-  float y_ = 8.5;
+  float x_ = - 0.5; // = 0.0;
+  float y_ = 8.5; // = 0.0;
 
   move_base_msgs::MoveBaseGoal goal_;
   bool finished_;
