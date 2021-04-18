@@ -14,18 +14,16 @@ public:
   void doneCb(const actionlib::SimpleClientGoalState& state,
     const move_base_msgs::MoveBaseResultConstPtr& result);
   void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
-  int main(int argc, char** argv);
+  void sendNavigationGoal(void);
 
-  float x_;
-  float y_;
+  //float x_;
+  //float y_;
 
   move_base_msgs::MoveBaseGoal goal_;
   bool finished_;
 
-  //x e y inicializadas a 0
-  //indican el punto al que se navegará
-
-
+  typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+  MoveBaseClient ac_;
 };
 
 }//practica4
