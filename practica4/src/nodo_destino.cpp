@@ -3,13 +3,11 @@
 #include <actionlib/client/simple_action_client.h>
 #include "practica4/Navigate.hpp"
 
-
-typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-
 int main(int argc, char** argv){
   ros::init(argc, argv, "simple_navigation_goals");
+  ros::NodeHandle n;
 
-  practica4::Navigate navigator;
+  practica4::Navigate navigator(n);
 
   //wait for the action server to come up
   while(!navigator.ac_.waitForServer(ros::Duration(5.0))){
@@ -20,8 +18,8 @@ int main(int argc, char** argv){
   navigator.goal_.target_pose.header.frame_id = "base_link";
   navigator.goal_.target_pose.header.stamp = ros::Time::now();
 
-  navigator.goal_.target_pose.pose.position.x = 1.0;
-  navigator.goal_.target_pose.pose.position.y = 1.0;
+  navigator.goal_.target_pose.pose.position.x = navigator.x_;
+  navigator.goal_.target_pose.pose.position.y = navigator.y_;
   navigator.goal_.target_pose.pose.orientation.w = 1.0;
 
   navigator.sendNavigationGoal();

@@ -1,0 +1,5 @@
+destination:
+  - {name: "carreta", pos_x: -0.5, pos_y: 8.5 }
+  - {name: "contenedor", pos_x: 1.5, pos_y: -7 }
+  - {name: "cajas", pos_x: -3.5, pos_y: -2.5 }
+  - {name: "derecha_superior", pos_x: 5.0, pos_y: -9.5 }

@@ -10,14 +10,18 @@ namespace practica4
 class Navigate
 {
 public:
-  Navigate();
+  Navigate(ros::NodeHandle& nh);
   void doneCb(const actionlib::SimpleClientGoalState& state,
     const move_base_msgs::MoveBaseResultConstPtr& result);
   void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
   void sendNavigationGoal(void);
 
-  //float x_;
-  //float y_;
+  ros::NodeHandle& nh_;
+
+  std::string d;
+
+  float x_ = -0.5;
+  float y_ = 8.5;
 
   move_base_msgs::MoveBaseGoal goal_;
   bool finished_;

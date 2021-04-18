@@ -1,12 +1,17 @@
 #include "practica4/Navigate.hpp"
-
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
 namespace practica4
 {                                        //tell the action client that we want to spin a thread by default
-Navigate::Navigate() : ac_("move_base", true) {} //x(0.0),y(0.0)
+Navigate::Navigate(ros::NodeHandle& nh) : nh_(nh), ac_("move_base", true)
+{
+  nh_.getParam("destination", d);
+  //x_ = d[1];
+  //y_ = d[2];
+
+} //x(0.0),y(0.0)
 
 void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
   const move_base_msgs::MoveBaseResultConstPtr& result)
@@ -26,7 +31,6 @@ void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedba
   double diff_y = goal_y - current_y;
 
   double dist = sqrt(diff_x * diff_x + diff_y * diff_y);
-
   ROS_INFO("Distance to goal = %lf", dist);
 }
 
