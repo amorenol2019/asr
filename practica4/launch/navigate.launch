@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="practica4" type="nodo_destino" name="nodo_destino" output="screen" />
+		<rosparam file="$(find practica4)/param/destination_params.yaml" command="load" ns="destination" />
+  <arg name="destino" />
+</launch>
