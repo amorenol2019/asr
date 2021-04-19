@@ -6,31 +6,33 @@
 
 namespace practica4
 {
-Navigate::Navigate(ros::NodeHandle& nh) : ac_("move_base", true) // true?
+Navigate::Navigate() : nh_("~"), ac_("move_base", true) // true?
 {
-  nh.getParam("destination", destination_);
-  if(destination_ == carreta_){
+  nh_.getParam("destination", destination_);
+  if(destination_ == "carreta"){
     ROS_INFO("Estado: %s\n", destination_.c_str());
     x_ = -0.5;
     y_ = 8.5;
   }
-  else if(destination_ == cajas_){
-    //ROS_INFO("Estado: %s\n", state_.c_str());
+  else if(destination_ == "cajas"){
+    ROS_INFO("Destination: %s\n", destination_.c_str());
     x_ = -3.5;
     y_ = -2.5;
   }
-  else if(destination_ == contenedor_){
+  else if(destination_ == "contenedor"){
+    ROS_INFO("Destination: %s\n", destination_.c_str());
     x_ = 1.5;
     y_ = -7;
   }
-  else if (destination_ == derecha_superior_){
+  else if (destination_ == "derecha_superior"){
+    ROS_INFO("destination: %s\n", destination_.c_str());
     x_ = 5.0;
     y_ = -0.5;
   }
   else{
     ROS_INFO("No parameter received");
-    x_ = 2.0;
-    y_ = 1.0;
+    x_ = 0.0;
+    y_ = 0.0;
   }
 
 }
