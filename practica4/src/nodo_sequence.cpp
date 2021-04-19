@@ -22,11 +22,9 @@ int main(int argc, char** argv)
     navigator.set_coordinates();
 
     navigator.goal_.target_pose.header.stamp = ros::Time::now();
-
     navigator.goal_.target_pose.pose.position.x = navigator.x_;
     navigator.goal_.target_pose.pose.position.y = navigator.y_;
     navigator.goal_.target_pose.pose.orientation.w = 1.0;
-
 
     navigator.sendNavigationGoal();
 

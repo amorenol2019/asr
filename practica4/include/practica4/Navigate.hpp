@@ -18,7 +18,7 @@ public:
   void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
 
 
-  std::string destination_;
+  std::string destination_ = "none";
 
   typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
   MoveBaseClient ac_;

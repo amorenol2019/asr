@@ -8,9 +8,10 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "navigator");
   practica4::Navigate navigator(true);
 
-  /*if(navigator.destination_ == "none"){
+  if(navigator.destination_ == "none"){
+    ROS_INFO("There is no parameter.");
     return 0;
-  }*/
+  }
 
   while(!navigator.ac_.waitForServer(ros::Duration(5.0))){
     ROS_INFO("Waiting for the move_base action server to come up");
@@ -30,6 +31,8 @@ int main(int argc, char** argv)
     ROS_INFO("The robot arrived to %s\n", navigator.destination_.c_str());
   else
     ROS_INFO("The base failed to move for some reason");
+
+  navigator.destination_ = "none";
 
   return 0;
 }

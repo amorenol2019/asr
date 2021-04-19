@@ -17,23 +17,19 @@ Navigate::Navigate(bool need_param_) : nh_("~"), ac_("move_base", true) // true?
 void Navigate::set_coordinates(){
   if(destination_ == "carreta"){
     x_ = -0.5;
-    y_ = 8.5;
+    y_ = 9.0;
   }
   else if(destination_ == "cajas"){
     x_ = -3.5;
     y_ = -2.5;
   }
   else if(destination_ == "contenedor"){
-    x_ = 1.5;
-    y_ = -7;
+    x_ = 2.5;
+    y_ = -7.0;
   }
   else if(destination_ == "derecha_superior"){
-    x_ = 4.5;
+    x_ = 4.0;
     y_ = -8.5;
-  }
-  else if(destination_ == "none"){
-    x_ = 0.0;
-    y_ = 0.0;
   }
   ROS_INFO("Destination: %s\n", destination_.c_str());
 }
