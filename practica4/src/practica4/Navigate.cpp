@@ -27,7 +27,7 @@ Navigate::Navigate() : nh_("~"), ac_("move_base", true) // true?
   else if (destination_ == "derecha_superior"){
     ROS_INFO("destination: %s\n", destination_.c_str());
     x_ = 5.0;
-    y_ = -0.5;
+    y_ = -8.5;
   }
   else{
     ROS_INFO("No parameter received");
