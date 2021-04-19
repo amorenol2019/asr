@@ -6,35 +6,36 @@
 
 namespace practica4
 {
-Navigate::Navigate() : nh_("~"), ac_("move_base", true) // true?
+Navigate::Navigate(bool need_param_) : nh_("~"), ac_("move_base", true) // true?
 {
-  nh_.getParam("destination", destination_);
+  if(need_param_){
+    nh_.getParam("destination", destination_);
+    set_coordinates();
+  }
+}
+
+void Navigate::set_coordinates(){
   if(destination_ == "carreta"){
-    ROS_INFO("Estado: %s\n", destination_.c_str());
     x_ = -0.5;
     y_ = 8.5;
   }
   else if(destination_ == "cajas"){
-    ROS_INFO("Destination: %s\n", destination_.c_str());
     x_ = -3.5;
     y_ = -2.5;
   }
   else if(destination_ == "contenedor"){
-    ROS_INFO("Destination: %s\n", destination_.c_str());
     x_ = 1.5;
     y_ = -7;
   }
-  else if (destination_ == "derecha_superior"){
-    ROS_INFO("destination: %s\n", destination_.c_str());
-    x_ = 5.0;
+  else if(destination_ == "derecha_superior"){
+    x_ = 4.5;
     y_ = -8.5;
   }
-  else{
-    ROS_INFO("No parameter received");
+  else if(destination_ == "none"){
     x_ = 0.0;
     y_ = 0.0;
   }
-
+  ROS_INFO("Destination: %s\n", destination_.c_str());
 }
 
 void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
@@ -61,9 +62,9 @@ void Navigate::sendNavigationGoal(void)
 {
   ROS_INFO("Sending goal");
   ac_.sendGoal(goal_,
-      boost::bind(&Navigate::doneCb, this, _1, _2),
-      MoveBaseClient::SimpleActiveCallback(),
-      boost::bind(&Navigate::feedbackCb, this, _1));
+     boost::bind(&Navigate::doneCb, this, _1, _2),
+     MoveBaseClient::SimpleActiveCallback(),
+     boost::bind(&Navigate::feedbackCb, this, _1));
   ac_.waitForResult();
 }
 
