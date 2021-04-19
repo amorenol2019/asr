@@ -18,9 +18,13 @@ public:
   void sendNavigationGoal(void);
 
   std::string destination_;
+  std::string carreta_ = "carreta";
+  std::string cajas_ = "cajas";
+  std::string contenedor_ = "contenedor";
+  std::string derecha_superior_ = "derecha_superior";
 
-  float x_ = - 0.5; // = 0.0;
-  float y_ = 8.5; // = 0.0;
+  float x_;
+  float y_;
 
   move_base_msgs::MoveBaseGoal goal_;
   bool finished_;
