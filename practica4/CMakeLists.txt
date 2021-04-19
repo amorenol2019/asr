@@ -25,3 +25,7 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 add_executable(nodo_destino src/nodo_destino.cpp  src/practica4/Navigate.cpp)
 add_dependencies(nodo_destino ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(nodo_destino ${PROJECT_NAME} ${catkin_LIBRARIES})
+
+add_executable(nodo_sequence src/nodo_sequence.cpp  src/practica4/Navigate.cpp)
+add_dependencies(nodo_sequence ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(nodo_sequence ${PROJECT_NAME} ${catkin_LIBRARIES})

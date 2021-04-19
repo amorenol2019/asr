@@ -13,7 +13,7 @@ int main(int argc, char** argv)
   }
 
   // Send a goal to the robot to move to the selected position
-  navigator.goal_.target_pose.header.frame_id = "base_link";
+  navigator.goal_.target_pose.header.frame_id = "map";
   navigator.goal_.target_pose.header.stamp = ros::Time::now();
 
   navigator.goal_.target_pose.pose.position.x = navigator.x_;
