@@ -3,18 +3,18 @@
 #include <actionlib/client/simple_action_client.h>
 #include "practica4/Navigate.hpp"
 
-int main(int argc, char** argv){
-  ros::init(argc, argv, "simple_navigation_goals");
+int main(int argc, char** argv)
+{
+  ros::init(argc, argv, "navigator");
   ros::NodeHandle n;
 
   practica4::Navigate navigator(n);
 
-  //wait for the action server to come up
   while(!navigator.ac_.waitForServer(ros::Duration(5.0))){
-  ROS_INFO("Waiting for the move_base action server to come up");
+    ROS_INFO("Waiting for the move_base action server to come up");
   }
 
-  //we'll send a goal to the robot to move 1 meter forward
+  // Send a goal to the robot to move to the selected position
   navigator.goal_.target_pose.header.frame_id = "base_link";
   navigator.goal_.target_pose.header.stamp = ros::Time::now();
 
@@ -25,9 +25,9 @@ int main(int argc, char** argv){
   navigator.sendNavigationGoal();
 
   if(navigator.ac_.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-    ROS_INFO("Hooray, the base moved 1 meter forward");
+    ROS_INFO("The robot arrived to %s\n", navigator.destination_.c_str());
   else
-    ROS_INFO("The base failed to move forward 1 meter for some reason");
+    ROS_INFO("The base failed to move for some reason");
 
   return 0;
-   }
+}

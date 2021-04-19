@@ -1,22 +1,23 @@
 #include "practica4/Navigate.hpp"
+
+#include "bica/Component.h"
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
 namespace practica4
-{                                        //tell the action client that we want to spin a thread by default
-Navigate::Navigate(ros::NodeHandle& nh) : nh_(nh), ac_("move_base", true)
 {
-  nh_.getParam("destination", d);
-  //x_ = d[1];
-  //y_ = d[2];
+Navigate::Navigate(ros::NodeHandle& nh) : ac_("move_base", true) // true?
+{
+  nh.getParam("destination", destination_);
+  // x_ = destination_[1];
+  // y_ = destination_[2];
 
-} //x(0.0),y(0.0)
+}
 
 void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
   const move_base_msgs::MoveBaseResultConstPtr& result)
 {
-  ROS_INFO("Terminado!!");
   finished_ = true;
 }
 
@@ -30,8 +31,8 @@ void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedba
   double diff_x = goal_x - current_x;
   double diff_y = goal_y - current_y;
 
-  double dist = sqrt(diff_x * diff_x + diff_y * diff_y);
-  ROS_INFO("Distance to goal = %lf", dist);
+  double distance = sqrt(diff_x * diff_x + diff_y * diff_y);
+  ROS_INFO("Distance to %s = %lf", destination_.c_str(), distance);
 }
 
 void Navigate::sendNavigationGoal(void)
@@ -44,4 +45,14 @@ void Navigate::sendNavigationGoal(void)
   ac_.waitForResult();
 }
 
-}//practica4
+void Navigate::step()
+{
+  if(!isActive())
+  {
+    return;
+  }
+
+
+}
+
+} //practica4
