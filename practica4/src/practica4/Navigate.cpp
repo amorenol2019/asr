@@ -1,6 +1,5 @@
 #include "practica4/Navigate.hpp"
 
-#include "bica/Component.h"
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
@@ -43,16 +42,6 @@ void Navigate::sendNavigationGoal(void)
       MoveBaseClient::SimpleActiveCallback(),
       boost::bind(&Navigate::feedbackCb, this, _1));
   ac_.waitForResult();
-}
-
-void Navigate::step()
-{
-  if(!isActive())
-  {
-    return;
-  }
-
-
 }
 
 } //practica4

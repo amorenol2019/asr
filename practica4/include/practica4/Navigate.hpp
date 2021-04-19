@@ -1,18 +1,16 @@
 #ifndef PRACTICA4__NAVIGATE_HPP__
 #define PRACTICA4__NAVIGATE_HPP__
 
-#include "bica/Component.h"
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
 namespace practica4
 {
-class Navigate : public bica::Component
+class Navigate
 {
 public:
   Navigate(ros::NodeHandle& nh);
-  void step();
 
   void doneCb(const actionlib::SimpleClientGoalState& state,
     const move_base_msgs::MoveBaseResultConstPtr& result);
@@ -31,6 +29,6 @@ public:
   MoveBaseClient ac_;
 };
 
-}//practica4
+} //practica4
 
 #endif // PRACTICA4__NAVIGATE_HPP__
