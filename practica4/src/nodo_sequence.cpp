@@ -13,6 +13,7 @@ int main(int argc, char** argv)
   }
 
   std::vector<std::string> arr_destinations = {"carreta", "derecha_superior", "contenedor", "cajas"};
+  navigator.goal_.target_pose.header.frame_id = "map";
 
   // Send a goal to the robot to move to the selected position
   for (int i = 0; i < arr_destinations.size(); i++)
@@ -20,7 +21,6 @@ int main(int argc, char** argv)
     navigator.destination_ = arr_destinations[i];
     navigator.set_coordinates();
 
-    navigator.goal_.target_pose.header.frame_id = "map";
     navigator.goal_.target_pose.header.stamp = ros::Time::now();
 
     navigator.goal_.target_pose.pose.position.x = navigator.x_;
