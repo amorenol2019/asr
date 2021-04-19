@@ -1,7 +1,4 @@
 <launch>
-
 	<node pkg="practica4" type="nodo_destino" name="nodo_destino" output="screen" />
-	<arg name="destination" default="carreta"/>
-
-	</node>
+		<param name="destination" value="carreta"/>
 </launch>
