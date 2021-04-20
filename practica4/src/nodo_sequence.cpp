@@ -6,13 +6,13 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "navigator");
-  practica4::Navigate navigator(false);
+  practica4::Navigate navigator(false, "none");
 
   while(!navigator.ac_.waitForServer(ros::Duration(5.0))){
     ROS_INFO("Waiting for the move_base action server to come up");
   }
 
-  std::vector<std::string> arr_destinations = {"carreta", "esquina", "contenedor", "cajas"};
+  std::vector<std::string> arr_destinations = {"carreta", "cajas", "contenedor", "esquina"};
   navigator.goal_.target_pose.header.frame_id = "map";
 
   // Send a goal to the robot to move to the selected position
@@ -27,11 +27,6 @@ int main(int argc, char** argv)
     navigator.goal_.target_pose.pose.orientation.w = 1.0;
 
     navigator.sendNavigationGoal();
-
-    if(navigator.ac_.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
-      ROS_INFO("The robot arrived to %s\n", navigator.destination_.c_str());
-    else
-      ROS_INFO("The base failed to move for some reason");
   }
 
   return 0;
