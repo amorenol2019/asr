@@ -6,25 +6,18 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "navigator");
-  practica4::Navigate navigator(true,argv[1]);
-  navigator.set_coordinates();
-  ROS_INFO("argc:%d  argv[0]:%s\n",argc,argv[1]);
-  if(navigator.destination_ == "none"){
+
+  if(argc < 2){
     ROS_INFO("There is no parameter.");
     return 0;
   }
 
-  while(!navigator.ac_.waitForServer(ros::Duration(5.0))){
-    ROS_INFO("Waiting for the move_base action server to come up");
-  }
+  practica4::Navigate navigator(true);
 
-  // Send a goal to the robot to move to the selected position
-  navigator.goal_.target_pose.header.frame_id = "map";
-  navigator.goal_.target_pose.header.stamp = ros::Time::now();
+  navigator.destination_ = argv[1];
+  navigator.set_coordinates();
 
-  navigator.goal_.target_pose.pose.position.x = navigator.x_;
-  navigator.goal_.target_pose.pose.position.y = navigator.y_;
-  navigator.goal_.target_pose.pose.orientation.w = 1.0;
+  ROS_INFO("argc:%d  argv[0]:%s\n", argc, argv[1]);
 
   navigator.sendNavigationGoal();
 

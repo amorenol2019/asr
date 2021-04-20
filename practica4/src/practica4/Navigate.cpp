@@ -9,14 +9,9 @@
 
 namespace practica4
 {
-Navigate::Navigate(bool need_arg,std::string arg) : nh_("~"), ac_("move_base", true)
+Navigate::Navigate(bool need_arg) : nh_("~"), ac_("move_base", true)
 {
-  if(need_arg){
-    ROS_INFO("HOLA");
-    destination_ = arg;
-  }
-  else
-  {
+  if(!need_arg){
     dest_sub_ = nh_.subscribe<std_msgs::String>("/destination", 10, &Navigate::destinationCb, this);
   }
 
@@ -57,7 +52,7 @@ void Navigate::set_coordinates()
     y_ = -8.5;
   }
 
-  ROS_INFO("Destination: %s x:%f y:%f", destination_.c_str(),x_,y_);
+  ROS_INFO("Destination: %s x:%f y:%f", destination_.c_str(), x_, y_);
 }
 
 void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
@@ -86,12 +81,32 @@ void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedba
   ROS_INFO("Distance to %s = %lf", destination_.c_str(), distance);
 }
 
-void Navigate::sendNavigationGoal(void)
+void Navigate::sendNavigationGoal()
 {
+  while(!ac_.waitForServer(ros::Duration(5.0))){
+    ROS_INFO("Waiting for the move_base action server to come up");
+  }
+  goal_.target_pose.header.frame_id = "map";
+
+  goal_.target_pose.header.stamp = ros::Time::now();
+  goal_.target_pose.pose.position.x = x_;
+  goal_.target_pose.pose.position.y = y_;
+  goal_.target_pose.pose.orientation.w = 1.0;
+
   ROS_INFO("Sending goal");
-  ac_.sendGoal(goal_, boost::bind(&Navigate::doneCb, this, _1, _2), MoveBaseClient::SimpleActiveCallback(),
-     boost::bind(&Navigate::feedbackCb, this, _1));
-  ac_.waitForResult(); //esto entonces habria que quitarlo de aqui !?
+  ac_.sendGoal(goal_,
+    boost::bind(&Navigate::doneCb, this, _1, _2),
+    MoveBaseClient::SimpleActiveCallback(),
+    boost::bind(&Navigate::feedbackCb, this, _1));
+    ac_.waitForResult(); // esto entonces habria que quitarlo de aqui !? car: creo que no
+}
+
+void Navigate::step()
+{
+  if(!isActive() || finish_pub_.getNumSubscribers() == 0){
+    return;
+  }
+  sendNavigationGoal();
 }
 
 } //practica4

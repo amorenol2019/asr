@@ -11,31 +11,32 @@
 
 namespace practica4
 {
-class Navigate
+class Navigate : public bica::Component
 {
 public:
-  Navigate(bool need_arg,std::string arg="none");
-  void sendNavigationGoal(void);
+  Navigate(bool need_arg);
+  void sendNavigationGoal();
   void set_coordinates();
-
-  void destinationCb(const std_msgs::String::ConstPtr& msg);
-  void doneCb(const actionlib::SimpleClientGoalState& state,
-    const move_base_msgs::MoveBaseResultConstPtr& result);
-  void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
-
-  std::string destination_ = "none";
+  void step();
 
   typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
   MoveBaseClient ac_;
 
   float x_;
   float y_;
+  std::string destination_ = "none";
   move_base_msgs::MoveBaseGoal goal_;
 
+private:
+  void destinationCb(const std_msgs::String::ConstPtr& msg);
+  void doneCb(const actionlib::SimpleClientGoalState& state,
+    const move_base_msgs::MoveBaseResultConstPtr& result);
+  void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
+
+  ros::NodeHandle nh_;
   ros::Publisher finish_pub_;
   ros::Subscriber dest_sub_;
 
-  ros::NodeHandle nh_;
 };
 
 } //practica4

@@ -9,15 +9,16 @@
 
 namespace practica4
 {
-class sequenceImpl : public bica::sequence
+class SequenceImpl : public bica::sequence
 {
-  sequenceImpl();
-
+public:
+  SequenceImpl();
+  /*
   void carreta_code_once();
   void esquina_code_once();
   void cajas_code_once();
   void contenedor_code_once();
-
+  */
   bool esquina_2_carreta();
   bool contenedor_2_esquina();
   bool cajas_2_contenedor();
@@ -31,8 +32,10 @@ private:
   ros::Subscriber finish_sub_;
 
   bool finished_;
+  std_msgs::String msg_;
+
 };
 
-}//practica4
+} //practica4
 
-#endif // PRACTICA3__SEQUENCE_IMPL_HPP__
+#endif // PRACTICA4__SEQUENCE_IMPL_HPP__

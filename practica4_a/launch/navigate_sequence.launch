@@ -1,0 +1,5 @@
+<launch>
+	<include file ="$(find robots)/launch/sim.launch" output="screen"/>
+	<include file="$(find navigation)/launch/navigation.launch" output="screen"/>
+	<node pkg="practica4" type="nodo_sequence" name="nodo_sequence" output="screen"/>
+</launch>
