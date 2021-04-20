@@ -10,7 +10,7 @@ namespace practica4
 class Navigate
 {
 public:
-  Navigate(bool need_param_);
+  Navigate(bool need_arg,std::string arg="none");
   void sendNavigationGoal(void);
   void set_coordinates();
 
