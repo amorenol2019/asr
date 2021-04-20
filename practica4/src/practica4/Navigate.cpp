@@ -6,7 +6,7 @@
 
 namespace practica4
 {
-Navigate::Navigate(bool need_param_) : nh_("~"), ac_("move_base", true) // true?
+Navigate::Navigate(bool need_param_) : nh_("~"), ac_("move_base", true)
 {
   if(need_param_){
     nh_.getParam("destination", destination_);
@@ -27,17 +27,11 @@ void Navigate::set_coordinates(){
     x_ = 2.5;
     y_ = -7.0;
   }
-  else if(destination_ == "derecha_superior"){
+  else if(destination_ == "esquina"){
     x_ = 4.0;
     y_ = -8.5;
   }
   ROS_INFO("Destination: %s\n", destination_.c_str());
-}
-
-void Navigate::doneCb(const actionlib::SimpleClientGoalState& state,
-  const move_base_msgs::MoveBaseResultConstPtr& result)
-{
-  finished_ = true;
 }
 
 void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback)
@@ -57,9 +51,7 @@ void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedba
 void Navigate::sendNavigationGoal(void)
 {
   ROS_INFO("Sending goal");
-  ac_.sendGoal(goal_,
-     boost::bind(&Navigate::doneCb, this, _1, _2),
-     MoveBaseClient::SimpleActiveCallback(),
+  ac_.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
      boost::bind(&Navigate::feedbackCb, this, _1));
   ac_.waitForResult();
 }

@@ -12,7 +12,7 @@ int main(int argc, char** argv)
     ROS_INFO("Waiting for the move_base action server to come up");
   }
 
-  std::vector<std::string> arr_destinations = {"carreta", "derecha_superior", "contenedor", "cajas"};
+  std::vector<std::string> arr_destinations = {"carreta", "esquina", "contenedor", "cajas"};
   navigator.goal_.target_pose.header.frame_id = "map";
 
   // Send a goal to the robot to move to the selected position
