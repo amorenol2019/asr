@@ -18,12 +18,12 @@
 *      contributors may be used to endorse or promote products derived
 *      from this software without specific prior written permission.
 
-*   THIS SOFTWARE IS PROVsequenced_destinationED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+*   THIS SOFTWARE IS PROVsequenceED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
 *   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
 *   COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-*   INCsequenced_destinationENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+*   INCsequenceENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 *   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 *   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
@@ -35,8 +35,8 @@
 /* Author: Francisco Martín fmrico@gmail.com */
 
 /* Mantainer: Francisco Martín fmrico@gmail.com */
-#ifndef SEQUENCED_DESTINATION_H_
-#define SEQUENCED_DESTINATION_H_
+#ifndef SEQUENCE_H_
+#define SEQUENCE_H_
 
 #include <bica/Component.h>
 #include <ros/ros.h>
@@ -47,27 +47,27 @@
 
 namespace bica
 {
-class sequenced_destination : public bica::Component
+class sequence : public bica::Component
 {
 public:
-  sequenced_destination();
-  virtual ~sequenced_destination();
+  sequence();
+  virtual ~sequence();
 
   void activateCode();
 
-  	virtual void carreta_code_iterative() {};
-	virtual void carreta_code_once() {};
+  	virtual void contenedor_code_iterative() {};
+	virtual void contenedor_code_once() {};
+	virtual void cajas_code_iterative() {};
+	virtual void cajas_code_once() {};
 	virtual void esquina_code_iterative() {};
 	virtual void esquina_code_once() {};
-	virtual void caja_code_iterative() {};
-	virtual void caja_code_once() {};
-	virtual void contenedor_code_iterative() {};
-	virtual void contenedor_code_once() {};
+	virtual void carreta_code_iterative() {};
+	virtual void carreta_code_once() {};
 
-  	virtual bool esquina_2_contenedor() {return false;};
-	virtual bool contenedor_2_caja() {return false;};
-	virtual bool caja_2_carreta() {return false;};
-	virtual bool carreta_2_esquina() {return false;};
+  	virtual bool carreta_2_cajas() {return false;};
+	virtual bool esquina_2_carreta() {return false;};
+	virtual bool cajas_2_contenedor() {return false;};
+	virtual bool contenedor_2_esquina() {return false;};
 
 
   bool ok();
@@ -79,16 +79,16 @@ private:
   void step() {}
 
   	void deactivateAllDeps();
-	void carreta_activateDeps();
-	void esquina_activateDeps();
-	void caja_activateDeps();
 	void contenedor_activateDeps();
+	void cajas_activateDeps();
+	void esquina_activateDeps();
+	void carreta_activateDeps();
 
 
-  	static const int CARRETA = 0;
-	static const int ESQUINA = 1;
-	static const int CAJA = 2;
-	static const int CONTENEDOR = 3;
+  	static const int CONTENEDOR = 0;
+	static const int CAJAS = 1;
+	static const int ESQUINA = 2;
+	static const int CARRETA = 3;
 
 
   int state_;
@@ -100,4 +100,4 @@ private:
 
 } /* namespace bica */
 
-#endif /* SEQUENCED_DESTINATION_H_ */
+#endif /* SEQUENCE_H_ */
