@@ -6,32 +6,34 @@
 
 namespace practica4
 {
-Navigate::Navigate(bool need_param_) : nh_("~"), ac_("move_base", true)
+Navigate::Navigate(bool need_arg,std::string arg) : nh_("~"), ac_("move_base", true)
 {
-  if(need_param_){
-    nh_.getParam("destination", destination_);
+  if(need_arg){
+    destination_ = arg;
     set_coordinates();
   }
 }
 
 void Navigate::set_coordinates(){
+
   if(destination_ == "carreta"){
-    x_ = -0.5;
-    y_ = 9.0;
+    nh_.getParam("X_CARRETA",x_);
+    nh_.getParam("Y_CARRETA",y_);
   }
   else if(destination_ == "cajas"){
-    x_ = -3.5;
-    y_ = -2.5;
+    nh_.getParam("X_CAJAS",x_);
+    nh_.getParam("Y_CAJAS",y_);
   }
   else if(destination_ == "contenedor"){
-    x_ = 2.5;
-    y_ = -7.0;
+    nh_.getParam("X_CONTENEDOR",x_);
+    nh_.getParam("Y_CONTENEDOR",y_);
   }
   else if(destination_ == "esquina"){
-    x_ = 4.0;
-    y_ = -8.5;
+    nh_.getParam("X_ESQUINA",x_);
+    nh_.getParam("Y_ESQUINA",y_);
   }
-  ROS_INFO("Destination: %s\n", destination_.c_str());
+
+  ROS_INFO("Destination: %s x:%f y:%f", destination_.c_str(),x_,y_);
 }
 
 void Navigate::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback)
@@ -53,7 +55,7 @@ void Navigate::sendNavigationGoal(void)
   ROS_INFO("Sending goal");
   ac_.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
      boost::bind(&Navigate::feedbackCb, this, _1));
-  ac_.waitForResult();
+  ac_.waitForResult(); //esto entonces habria que quitarlo de aqui !?
 }
 
 } //practica4

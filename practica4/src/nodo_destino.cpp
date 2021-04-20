@@ -6,8 +6,9 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "navigator");
-  practica4::Navigate navigator(true);
+  practica4::Navigate navigator(true,argv[1]);
 
+ROS_INFO("argc:%d  argv[0]:%s\n",argc,argv[1]);
   if(navigator.destination_ == "none"){
     ROS_INFO("There is no parameter.");
     return 0;
