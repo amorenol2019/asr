@@ -6,9 +6,8 @@
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "navigator");
-  practica4::Navigate navigator(true,argv[1]);
-  navigator.set_coordinates();
-  ROS_INFO("argc:%d  argv[0]:%s\n",argc,argv[1]);
+  practica4::Navigate navigator(true);
+
   if(navigator.destination_ == "none"){
     ROS_INFO("There is no parameter.");
     return 0;
@@ -27,6 +26,11 @@ int main(int argc, char** argv)
   navigator.goal_.target_pose.pose.orientation.w = 1.0;
 
   navigator.sendNavigationGoal();
+
+  if(navigator.ac_.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+    ROS_INFO("The robot arrived to %s\n", navigator.destination_.c_str());
+  else
+    ROS_INFO("The base failed to move for some reason");
 
   navigator.destination_ = "none";
 

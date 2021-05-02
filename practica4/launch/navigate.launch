@@ -1,5 +1,3 @@
 <launch>
-	<node pkg="practica4" type="nodo_sequence" name="nodo_sequence" output="screen">
-		<rosparam command="load" file="$(find practica4)/param/destinations.yaml" />
-	</node>
+	<node pkg="practica4" type="nodo_sequence" name="nodo_sequence" output="screen"/>
 </launch>

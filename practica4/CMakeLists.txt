@@ -5,24 +5,19 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
   move_base_msgs
   actionlib
-	bica
-	std_msgs
 )
 
 catkin_package(
- CATKIN_DEPENDS roscpp  move_base_msgs actionlib bica std_msgs
+ CATKIN_DEPENDS roscpp  move_base_msgs actionlib
 )
 
 include_directories(
   include
-	fsm
 	${catkin_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME}
    src/${PROJECT_NAME}/Navigate.cpp
-	 src/${PROJECT_NAME}/sequenceImpl.cpp
-	 fsm/sequence.cpp
 )
 
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
