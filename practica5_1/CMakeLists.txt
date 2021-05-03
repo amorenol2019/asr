@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   pcl_conversions
   pcl_ros
+  darknet_ros
 )
 
 catkin_package(
@@ -22,6 +23,7 @@ CATKIN_DEPENDS
   image_transport
   pcl_conversions
   pcl_ros
+  darknet_ros
 )
 
 include_directories(
