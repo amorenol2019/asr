@@ -14,7 +14,7 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_ros/transform_broadcaster.h>
-#include <tf2_ros/transform_listener.h>
+#include <tf/transform_listener.h>
 #include <tf2_ros/buffer.h>
 #include "tf2/transform_datatypes.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
@@ -52,39 +52,42 @@ public:
 
   void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
   {
+    sensor_msgs::PointCloud2 cloud;
+
+    try
+    {
+      pcl_ros::transformPointCloud("camera_link", *cloud_in, cloud, tfListener_);
+    }
+    catch(tf::TransformException & ex)
+    {
+      ROS_ERROR_STREAM("Transform error of sensor data: " << ex.what() << ", quitting callback");
+      return;
+    }
+
     auto pcrgb = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    pcl::fromROSMsg(*cloud_in, *pcrgb);
+    pcl::fromROSMsg(cloud, *pcrgb);
+
 
     auto point = pcrgb->at(ctr_image_x, ctr_image_y);
 
     // Las coordenadas respecto a que son?
     std::cout << "(" << point.x << ", " << point.y << "; " << point.z << ")" << std::endl;
+    create_transform(point.x, point.y, point.z);
   }
 
-  void create_transform(const float x, const float y, const std::string name)
+  void create_transform(const float x, const float y, const float z)
   {
-    geometry_msgs::TransformStamped odom2bf_msg;
-    try{
-      odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
-    } catch (std::exception & e)
-    {
-      return;
-    }
-
-    tf2::Stamped<tf2::Transform> odom2bf;
-    tf2::fromMsg(odom2bf_msg, odom2bf);
-
-    tf2::Stamped<tf2::Transform> bf2object;
-    bf2object.setOrigin(tf2::Vector3(x * 1.0, y * 1.0, 0));
-    bf2object.setRotation(tf2::Quaternion(0.0, 0.0, 0.0, 1.0));
-
-    tf2::Transform odom2object = odom2bf * bf2object;
-
     geometry_msgs::TransformStamped odom2object_msg;
-    odom2object_msg.header.frame_id = object_;
-    odom2object_msg.child_frame_id = name;
+    odom2object_msg.transform.translation.x = x;
+    odom2object_msg.transform.translation.y = y;
+    odom2object_msg.transform.translation.z = z;
+    odom2object_msg.transform.rotation.x = 0.0;
+    odom2object_msg.transform.rotation.y = 0.0;
+    odom2object_msg.transform.rotation.z = 0.0;
+    odom2object_msg.transform.rotation.w = 1.0;
+    odom2object_msg.header.frame_id = "odom";
+    odom2object_msg.child_frame_id = object_;
     odom2object_msg.header.stamp = ros::Time::now();
-    odom2object_msg.transform = tf2::toMsg(odom2object);
 
     br_.sendTransform(odom2object_msg);
   }
@@ -103,6 +106,7 @@ private:
 
   tf2_ros::Buffer buffer_;
   tf2_ros::StaticTransformBroadcaster br_;
+  tf::TransformListener tfListener_;
 };
 
 int main(int argc, char** argv)
