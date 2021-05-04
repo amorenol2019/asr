@@ -9,9 +9,15 @@
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_types_conversion.h>
+#include <pcl_ros/transforms.h>
 
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_listener.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <tf2_ros/static_transform_broadcaster.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>
+#include "tf2/transform_datatypes.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
 
 #include <std_msgs/Float32.h>
 #include <sensor_msgs/PointCloud2.h>
@@ -31,17 +37,17 @@ public:
 
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
   {
-     int ar_length = sizeof(msg->bounding_boxes); //24s
+    int ar_length = sizeof(msg->bounding_boxes); // 24
 
-    for ( int i = 0 ; i < ar_length ; i++)
+    for(int i = 0 ; i < ar_length ; i++)
     {
-      if (msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].class == object_)
+      if (msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].Class == object_)
       {
-            ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
-            ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
+        ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
+        ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
       }
     }
-    std::cout << "(" << ctr_image_x << ", " << ctr_image_y <<")"<< std::endl;
+    std::cout << "(" << ctr_image_x << ", " << ctr_image_y << ")" << std::endl;
   }
 
   void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
@@ -51,11 +57,11 @@ public:
 
     auto point = pcrgb->at(ctr_image_x, ctr_image_y);
 
+    // Las coordenadas respecto a que son?
     std::cout << "(" << point.x << ", " << point.y << "; " << point.z << ")" << std::endl;
   }
 
-  void
-  Perception::create_transform(const float x, const float y, const std::string name)
+  void create_transform(const float x, const float y, const std::string name)
   {
     geometry_msgs::TransformStamped odom2bf_msg;
     try{
@@ -74,7 +80,7 @@ public:
 
     tf2::Transform odom2object = odom2bf * bf2object;
 
-    geometry_msgs::TransformStamped odom2object_msg ;
+    geometry_msgs::TransformStamped odom2object_msg;
     odom2object_msg.header.frame_id = object_;
     odom2object_msg.child_frame_id = name;
     odom2object_msg.header.stamp = ros::Time::now();
@@ -89,12 +95,14 @@ private:
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
 
-  int ctr_image_x=0.0;
-  int ctr_image_y=0.0;
+  int ctr_image_x = 0.0;
+  int ctr_image_y = 0.0;
 
   std::string destination_;
   std::string object_;
 
+  tf2_ros::Buffer buffer_;
+  tf2_ros::StaticTransformBroadcaster br_;
 };
 
 int main(int argc, char** argv)

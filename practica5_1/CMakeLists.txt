@@ -5,7 +5,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
-  tf
+  tf2
+  tf2_geometry_msgs
+  tf2_ros
   cv_bridge
   image_transport
   pcl_conversions
@@ -18,7 +20,9 @@ CATKIN_DEPENDS
   roscpp
   sensor_msgs
   std_msgs
-  tf
+  tf2
+  tf2_geometry_msgs
+  tf2_ros
   cv_bridge
   image_transport
   pcl_conversions
