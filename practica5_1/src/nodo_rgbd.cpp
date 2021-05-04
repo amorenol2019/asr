@@ -23,26 +23,22 @@
 class RGBDFilter
 {
 public:
-  RGBDFilter()
+  RGBDFilter(std::string dest, std::string obj): destination_(dest) , object_(obj)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
   }
+
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
   {
      int ar_length = sizeof(msg->bounding_boxes); //24s
 
     for ( int i = 0 ; i < ar_length ; i++)
     {
-      if (msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].probability < 1)
+      if (msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].class == object_)
       {
             ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
             ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
-
-            std::cout << "probability: " << msg->bounding_boxes[i].probability << std::endl;
-            std::cout << "xmin: " << msg->bounding_boxes[i].xmin << "xmax: " <<msg->bounding_boxes[i].xmax<< std::endl;
-            std::cout << "ctr x: " << ctr_image_x << std::endl;
-
       }
     }
     std::cout << "(" << ctr_image_x << ", " << ctr_image_y <<")"<< std::endl;
@@ -53,12 +49,38 @@ public:
     auto pcrgb = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     pcl::fromROSMsg(*cloud_in, *pcrgb);
 
-    //int c_w = cloud_in->width / 2;
-    //int c_h = cloud_in->height / 2;
-
     auto point = pcrgb->at(ctr_image_x, ctr_image_y);
-    //?
+
     std::cout << "(" << point.x << ", " << point.y << "; " << point.z << ")" << std::endl;
+  }
+
+  void
+  Perception::create_transform(const float x, const float y, const std::string name)
+  {
+    geometry_msgs::TransformStamped odom2bf_msg;
+    try{
+      odom2bf_msg = buffer_.lookupTransform("odom", "base_footprint", ros::Time(0));
+    } catch (std::exception & e)
+    {
+      return;
+    }
+
+    tf2::Stamped<tf2::Transform> odom2bf;
+    tf2::fromMsg(odom2bf_msg, odom2bf);
+
+    tf2::Stamped<tf2::Transform> bf2object;
+    bf2object.setOrigin(tf2::Vector3(x * 1.0, y * 1.0, 0));
+    bf2object.setRotation(tf2::Quaternion(0.0, 0.0, 0.0, 1.0));
+
+    tf2::Transform odom2object = odom2bf * bf2object;
+
+    geometry_msgs::TransformStamped odom2object_msg ;
+    odom2object_msg.header.frame_id = object_;
+    odom2object_msg.child_frame_id = name;
+    odom2object_msg.header.stamp = ros::Time::now();
+    odom2object_msg.transform = tf2::toMsg(odom2object);
+
+    br_.sendTransform(odom2object_msg);
   }
 
 private:
@@ -70,12 +92,16 @@ private:
   int ctr_image_x=0.0;
   int ctr_image_y=0.0;
 
+  std::string destination_;
+  std::string object_;
+
 };
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "rgbd");
-  RGBDFilter rf;
+
+  RGBDFilter rf(argv[1],argv[2]);
   ros::spin();
   return 0;
 }
