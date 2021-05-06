@@ -1,4 +1,3 @@
-
 #include <string>
 #include <vector>
 #include <iostream>
@@ -29,7 +28,7 @@
 class RGBDFilter
 {
 public:
-  RGBDFilter(std::string dest, std::string obj): destination_(dest) , object_(obj)
+  RGBDFilter(std::string dest, std::string obj): destination_(dest), object_(obj)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
@@ -37,17 +36,17 @@ public:
 
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
   {
-    int ar_length = sizeof(msg->bounding_boxes); // 24
+    int ar_length = sizeof(msg->bounding_boxes);
 
     for(int i = 0 ; i < ar_length ; i++)
     {
-      if (msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].Class == object_)
+      if(msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].Class == object_)
       {
         ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
         ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
       }
     }
-    std::cout << "(" << ctr_image_x << ", " << ctr_image_y << ")" << std::endl;
+    ROS_INFO("(%c, %c)", ctr_image_x, ctr_image_y);
   }
 
   void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
@@ -56,7 +55,7 @@ public:
 
     try
     {
-      pcl_ros::transformPointCloud("base_footprint", *cloud_in, cloud, tfListener_);
+      pcl_ros::transformPointCloud("camera_link", *cloud_in, cloud, listener_);
     }
     catch(tf::TransformException & ex)
     {
@@ -67,11 +66,10 @@ public:
     auto pcrgb = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     pcl::fromROSMsg(cloud, *pcrgb);
 
-
     auto point = pcrgb->at(ctr_image_x, ctr_image_y);
 
-    // Las coordenadas respecto a que son?
-    std::cout << "(" << point.x << ", " << point.y << "; " << point.z << ")" << std::endl;
+    ROS_INFO("(%f, %f, %f)", point.x, point.y, point.z);
+    // Controlar nan
     create_transform(point.x, point.y, point.z);
   }
 
@@ -85,7 +83,7 @@ public:
     odom2object_msg.transform.rotation.y = 0.0;
     odom2object_msg.transform.rotation.z = 0.0;
     odom2object_msg.transform.rotation.w = 1.0;
-    odom2object_msg.header.frame_id = "odom";
+    odom2object_msg.header.frame_id = "/base_footprint"; // map
     odom2object_msg.child_frame_id = object_;
     odom2object_msg.header.stamp = ros::Time::now();
 
@@ -106,13 +104,13 @@ private:
 
   tf2_ros::Buffer buffer_;
   tf2_ros::StaticTransformBroadcaster br_;
-  tf::TransformListener tfListener_;
+  tf::TransformListener listener_;
 };
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "rgbd");
-  if( argc < 3 )
+  if(argc < 3)
   {
      std::cout << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl;
      return -1;
