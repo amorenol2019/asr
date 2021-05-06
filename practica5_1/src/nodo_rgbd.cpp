@@ -56,7 +56,7 @@ public:
 
     try
     {
-      pcl_ros::transformPointCloud("camera_link", *cloud_in, cloud, tfListener_);
+      pcl_ros::transformPointCloud("base_footprint", *cloud_in, cloud, tfListener_);
     }
     catch(tf::TransformException & ex)
     {
@@ -112,7 +112,11 @@ private:
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "rgbd");
-
+  if( argc < 3 )
+  {
+     std::cout << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl;
+     return -1;
+  }
   RGBDFilter rf(argv[1],argv[2]);
   ros::spin();
   return 0;
