@@ -35,10 +35,11 @@ public:
 
     for(int i = 0 ; i < ar_length ; i++)
     {
-      if(msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].Class == object_)
+      if(msg->bounding_boxes[i].probability > MIN_PROB && msg->bounding_boxes[i].Class == object_)
       {
         ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
         ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
+        founded_ = true;
       }
     }
     ROS_INFO("(%c, %c)", ctr_image_x, ctr_image_y);
@@ -50,15 +51,15 @@ public:
 
     try
     {
-      pcl_ros::transformPointCloud("camera_link", *cloud_in, cloud, listener_);
+      pcl_ros::transformPointCloud("odom", *cloud_in, cloud, listener_);
     }
     catch(tf::TransformException & ex)
     {
       ROS_ERROR_STREAM("Transform error of sensor data: " << ex.what() << ", quitting callback");
       return;
     }
-    // Controlar nan
-    if (ctr_image_x != 0.0 && ctr_image_x != 0.0)
+
+    if(ctr_image_x != 0.0 && ctr_image_y != 0.0 && founded_ == true)
     {
       auto pcrgb = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
       pcl::fromROSMsg(cloud, *pcrgb);
@@ -80,7 +81,7 @@ public:
     odom2object_msg.transform.rotation.y = 0.0;
     odom2object_msg.transform.rotation.z = 0.0;
     odom2object_msg.transform.rotation.w = 1.0;
-    odom2object_msg.header.frame_id = "/base_footprint"; // map
+    odom2object_msg.header.frame_id = "odom"; // map
     odom2object_msg.child_frame_id = object_;
     odom2object_msg.header.stamp = ros::Time::now();
 
@@ -89,13 +90,15 @@ public:
 
 private:
   ros::NodeHandle nh_;
-
+  
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
 
   int ctr_image_x;
   int ctr_image_y;
-  bool created_ = false;
+  int MIN_PROB = 0.7;
+
+  bool founded_ = false;
 
   std::string destination_;
   std::string object_;
@@ -109,9 +112,10 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "rgbd");
   if(argc < 3)
   {
-     std::cout << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl;
+     std::cout << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl; // cerr
      return -1;
   }
+
   RGBDFilter rf(argv[1],argv[2]);
   ros::spin();
   return 0;
