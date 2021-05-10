@@ -4,9 +4,13 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
+//#include "behavior_trees/Go_point.hpp"
+#include "behaviortree_cpp_v3/behavior_tree.h"
+#include "behaviortree_cpp_v3/bt_factory.h"
+
 namespace practica5
 {
-  Go_point::Go_point(bool need_param_) : nh_("~"), ac_("move_base", true)
+  Go_point::Go_point(bool need_param_): nh_("~"), ac_("move_base", true)
   {
     /*
   if(need_param_){
@@ -14,7 +18,8 @@ namespace practica5
     set_coordinates();
   }
   */
-  set_coordinates();
+    set_coordinates();
+    first_time_ = true;
   }
 
   void Go_point::set_coordinates(){
@@ -56,7 +61,6 @@ namespace practica5
     ROS_INFO("Sending goal");
     ac_.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
        boost::bind(&Navigate::feedbackCb, this, _1));
-    ac_.waitForResult();
   }
 
   void Go_point::halt() {
@@ -64,7 +68,40 @@ namespace practica5
   }
 
   BT::NodeStatus Go_point::tick(){
+    ROS_INFO("GoPoint tick");
+    MoveBaseClient ac("move_base",true);
+    if (first_time_)
+    {
+      while (!ac.waitForServer(ros::Duration(5.0)))
+      {
+        ROS_INFO("Waiting for the move_base action server to come up");
+      }
 
+      goal_.target_pose.header.frame_id = "map";
+      set_goal(goal_, destination_);
+      goal_.target_pose.header.stamp = ros::Time::now();
+
+      ROS_INFO("Sending goal");
+      sendNavigationGoal();
+      first_time_ = false;
+    }
+
+    // ac.waitForResult();
+    if (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE)
+    {
+      ROS_INFO("Mission is being accomplished");
+      return BT::NodeStatus::RUNNING;
+    }
+    else if (ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+    {
+      ROS_INFO("Hooray, mission accomplished");
+      return BT::NodeStatus::SUCCESS;
+    }
+    else
+    {
+      ROS_INFO("[Error] mission could not be accomplished");
+      return BT::NodeStatus::FAILURE;
+    }
   }
 
 } // practica5

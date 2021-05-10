@@ -1,8 +1,11 @@
-#include "practica5/nodo_rgbd.hpp"
+//#include "practica5/nodo_rgbd.hpp"
 
 #include "ros/ros.h"
+//#include "behavior_trees/RGBDFilter.hpp"
+//#include "behavior_trees/Go_point.hpp"
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
+
 
 #include "ros/package.h"
 
