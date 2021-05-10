@@ -14,6 +14,7 @@ int main(int argc, char **argv)
   BT::BehaviorTreeFactory factory;
 
   factory.registerNodeType<practica5::RGBDFilter>("RGBDFilter");
+  factory.registerNodeType<practica5::Go_point>("Go_point");
 
 
   std::string pkgpath = ros::package::getPath("practica5");
