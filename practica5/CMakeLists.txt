@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(practica5_1)
+project(practica5)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -44,8 +44,11 @@ link_directories(
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(nodo_rgbd src/practica5/nodo_rgbd.cpp)
-target_link_libraries(nodo_rgbd ${catkin_LIBRARIES})
+add_executable(RGBDFilter src/practica5/RGBDFilter.cpp)
+target_link_libraries(RGBDFilter ${catkin_LIBRARIES})
+
+add_executable(Go_point src/practica5/Go_point.cpp)
+target_link_libraries(Go_point ${catkin_LIBRARIES})
 
 add_executable(practica5 src/practica5.cpp)
 target_link_libraries(practica5 ${catkin_LIBRARIES})
