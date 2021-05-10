@@ -1,5 +1,5 @@
-#ifndef PRACTICA5__NODO_RGBD_HPP__
-#define PRACTICA5__NODO_RGBD_HPP__
+#ifndef PRACTICA5__RGBDFILTER_HPP__
+#define PRACTICA5__RGBDFILTER_HPP__
 
 #include <string>
 #include <vector>

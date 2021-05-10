@@ -91,7 +91,16 @@ namespace practica5
     br_.sendTransform(odom2object_msg);
   }
 
-}//namespace practica5
+  void RGBDFilter::halt() {
+
+  }
+
+  BT::NodeStatus RGBDFilter::tick(){
+
+  }
+
+
+} //namespace practica5
 
 
 //int main(int argc, char** argv)
