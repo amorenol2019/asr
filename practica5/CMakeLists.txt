@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_conversions
   pcl_ros
   darknet_ros
+  behaviortree_cpp_v3
 )
 
 catkin_package(
@@ -28,9 +29,11 @@ CATKIN_DEPENDS
   pcl_conversions
   pcl_ros
   darknet_ros
+  behaviortree_cpp_v3
 )
 
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
 )
@@ -41,5 +44,8 @@ link_directories(
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(nodo_rgbd src/nodo_rgbd.cpp)
+add_executable(nodo_rgbd src/practica5/nodo_rgbd.cpp)
 target_link_libraries(nodo_rgbd ${catkin_LIBRARIES})
+
+add_executable(practica5 src/practica5.cpp)
+target_link_libraries(practica5 ${catkin_LIBRARIES})

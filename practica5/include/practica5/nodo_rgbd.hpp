@@ -1,0 +1,53 @@
+#include <string>
+#include <vector>
+#include <iostream>
+
+#include <ros/ros.h>
+#include <ros/console.h>
+
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/point_types_conversion.h>
+#include <pcl_ros/transforms.h>
+
+#include <tf2_ros/static_transform_broadcaster.h>
+#include <tf/transform_listener.h>
+
+#include <std_msgs/Float32.h>
+#include <sensor_msgs/PointCloud2.h>
+
+#include <boost/algorithm/string.hpp>
+#include <darknet_ros_msgs/BoundingBoxes.h>
+#include <darknet_ros_msgs/BoundingBox.h>
+
+namespace practica5
+{
+  class RGBDFilter
+{
+public:
+  RGBDFilter(std::string dest, std::string obj);
+
+private:
+  void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg);
+  void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in);
+  void create_transform(const float x, const float y, const float z);
+
+  ros::NodeHandle nh_;
+
+  ros::Subscriber cloud_sub_;
+  ros::Subscriber box_sub_;
+
+  int ctr_image_x;
+  int ctr_image_y;
+  int MIN_PROB = 0.7;
+
+  bool detected_ = false;
+
+  std::string destination_;
+  std::string object_;
+
+  tf2_ros::StaticTransformBroadcaster br_;
+  tf::TransformListener listener_;
+};
+
+}//namespace practica5_1

@@ -20,16 +20,18 @@
 #include <darknet_ros_msgs/BoundingBoxes.h>
 #include <darknet_ros_msgs/BoundingBox.h>
 
-class RGBDFilter
+#include "practica5/nodo_rgbd.hpp"
+
+namespace practica5
 {
-public:
-  RGBDFilter(std::string dest, std::string obj): destination_(dest), object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
+
+  RGBDFilter::RGBDFilter(std::string dest, std::string obj): destination_(dest), object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
   }
 
-  void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
+  void RGBDFilter::boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
   {
     int ar_length = sizeof(msg->bounding_boxes);
     detected_ = false;
@@ -46,7 +48,7 @@ public:
     ROS_INFO("(%c, %c)", ctr_image_x, ctr_image_y);
   }
 
-  void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
+  void RGBDFilter::cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
   {
     sensor_msgs::PointCloud2 cloud;
 
@@ -73,7 +75,7 @@ public:
     }
   }
 
-  void create_transform(const float x, const float y, const float z)
+  void RGBDFilter::create_transform(const float x, const float y, const float z)
   {
     geometry_msgs::TransformStamped odom2object_msg;
     odom2object_msg.transform.translation.x = x;
@@ -90,35 +92,19 @@ public:
     br_.sendTransform(odom2object_msg);
   }
 
-private:
-  ros::NodeHandle nh_;
+}//namespace practica5
 
-  ros::Subscriber cloud_sub_;
-  ros::Subscriber box_sub_;
 
-  int ctr_image_x;
-  int ctr_image_y;
-  int MIN_PROB = 0.7;
+//int main(int argc, char** argv)
+//{
+//  ros::init(argc, argv, "rgbd");
+//  if(argc < 3)
+//  {
+//     std::cerr << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl; // cerr
+//     return -1;
+//  }
 
-  bool detected_ = false;
-
-  std::string destination_;
-  std::string object_;
-
-  tf2_ros::StaticTransformBroadcaster br_;
-  tf::TransformListener listener_;
-};
-
-int main(int argc, char** argv)
-{
-  ros::init(argc, argv, "rgbd");
-  if(argc < 3)
-  {
-     std::cout << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl; // cerr
-     return -1;
-  }
-
-  RGBDFilter rf(argv[1],argv[2]);
-  ros::spin();
-  return 0;
-}
+//  RGBDFilter rf(argv[1],argv[2]);
+//  ros::spin();
+//  return 0;
+//}

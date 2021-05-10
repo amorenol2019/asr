@@ -2,5 +2,5 @@
 	<include file ="$(find robots)/launch/sim.launch" output="screen"/>
 	<include file="$(find navigation)/launch/navigation.launch" output="screen"/>
   <include file="$(find darknet_ros)/launch/darknet_ros.launch" output="screen"/>
-	<node pkg="practica5_1" type="nodo_rgbd" name="nodo_rgbd" output="screen"/>
+	<node pkg="practica5" type="nodo_rgbd" name="nodo_rgbd" output="screen"/>
 </launch>
