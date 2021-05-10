@@ -1,3 +1,6 @@
+#ifndef PRACTICA5__NODO_RGBD_HPP__
+#define PRACTICA5__NODO_RGBD_HPP__
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -22,10 +25,12 @@
 
 namespace practica5
 {
-  class RGBDFilter
+class RGBDFilter : public BT::ActionNodeBase
 {
 public:
-  RGBDFilter(std::string dest, std::string obj);
+  RGBDFilter(std::string dest, std::string obj); // explicit?
+  void halt();
+  BT::NodeStatus tick();
 
 private:
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg);
@@ -50,4 +55,4 @@ private:
   tf::TransformListener listener_;
 };
 
-}//namespace practica5_1
+} //namespace practica5

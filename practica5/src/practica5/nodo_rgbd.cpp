@@ -24,7 +24,6 @@
 
 namespace practica5
 {
-
   RGBDFilter::RGBDFilter(std::string dest, std::string obj): destination_(dest), object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
@@ -85,7 +84,7 @@ namespace practica5
     odom2object_msg.transform.rotation.y = 0.0;
     odom2object_msg.transform.rotation.z = 0.0;
     odom2object_msg.transform.rotation.w = 1.0;
-    odom2object_msg.header.frame_id = "map"; // map
+    odom2object_msg.header.frame_id = "map";
     odom2object_msg.child_frame_id = object_;
     odom2object_msg.header.stamp = ros::Time::now();
 
