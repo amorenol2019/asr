@@ -20,7 +20,11 @@
 #include <darknet_ros_msgs/BoundingBoxes.h>
 #include <darknet_ros_msgs/BoundingBox.h>
 
-#include "practica5/nodo_rgbd.hpp"
+//#include "behavior_trees/RGBDFilter.hpp"
+#include "behaviortree_cpp_v3/behavior_tree.h"
+#include "behaviortree_cpp_v3/bt_factory.h"
+
+//#include "practica5/RGBDFilter.hpp"
 
 namespace practica5
 {

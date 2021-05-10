@@ -26,6 +26,7 @@ public:
 
   float x_;
   float y_;
+  bool first_time_;
   move_base_msgs::MoveBaseGoal goal_;
 
   ros::NodeHandle nh_;
