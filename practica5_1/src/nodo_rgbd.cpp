@@ -32,14 +32,15 @@ public:
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
   {
     int ar_length = sizeof(msg->bounding_boxes);
+    detected_ = false;
 
     for(int i = 0 ; i < ar_length ; i++)
     {
-      if(msg->bounding_boxes[i].probability > MIN_PROB && msg->bounding_boxes[i].Class == object_)
+      if(msg->bounding_boxes[i].probability >= MIN_PROB && msg->bounding_boxes[i].Class == object_)
       {
         ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
         ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
-        founded_ = true;
+        detected_ = true;
       }
     }
     ROS_INFO("(%c, %c)", ctr_image_x, ctr_image_y);
@@ -49,18 +50,14 @@ public:
   {
     sensor_msgs::PointCloud2 cloud;
 
-    try
+    if (!detected_)
     {
-      pcl_ros::transformPointCloud("odom", *cloud_in, cloud, listener_);
-    }
-    catch(tf::TransformException & ex)
-    {
-      ROS_ERROR_STREAM("Transform error of sensor data: " << ex.what() << ", quitting callback");
       return;
     }
 
-    if(ctr_image_x != 0.0 && ctr_image_y != 0.0 && founded_ == true)
+    try
     {
+      pcl_ros::transformPointCloud("/map", *cloud_in, cloud, listener_);
       auto pcrgb = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
       pcl::fromROSMsg(cloud, *pcrgb);
 
@@ -68,6 +65,11 @@ public:
 
       ROS_INFO("(%f, %f, %f)", point.x, point.y, point.z);
       create_transform(point.x, point.y, point.z);
+    }
+    catch(tf::TransformException & ex)
+    {
+      ROS_ERROR_STREAM("Transform error of sensor data: " << ex.what() << ", quitting callback");
+      return;
     }
   }
 
@@ -81,7 +83,7 @@ public:
     odom2object_msg.transform.rotation.y = 0.0;
     odom2object_msg.transform.rotation.z = 0.0;
     odom2object_msg.transform.rotation.w = 1.0;
-    odom2object_msg.header.frame_id = "odom"; // map
+    odom2object_msg.header.frame_id = "map"; // map
     odom2object_msg.child_frame_id = object_;
     odom2object_msg.header.stamp = ros::Time::now();
 
@@ -90,7 +92,7 @@ public:
 
 private:
   ros::NodeHandle nh_;
-  
+
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
 
@@ -98,7 +100,7 @@ private:
   int ctr_image_y;
   int MIN_PROB = 0.7;
 
-  bool founded_ = false;
+  bool detected_ = false;
 
   std::string destination_;
   std::string object_;
