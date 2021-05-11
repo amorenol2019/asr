@@ -104,7 +104,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "rgbd");
   if(argc < 3)
   {
-     std::cout << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl; // cerr
+     std::cerr << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl; // cerr
      return -1;
   }
   RGBDFilter rf(argv[1],argv[2]);
