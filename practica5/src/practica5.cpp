@@ -10,6 +10,12 @@
 
 int main(int argc, char **argv)
 {
+  if(argc < 3)
+  {
+    std::cerr << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl; // cerr
+    return -1;
+  }
+
   ros::init(argc, argv, "practica5");
   ros::NodeHandle n;
 
@@ -19,11 +25,14 @@ int main(int argc, char **argv)
   factory.registerNodeType<practica5::Go_point>("Go_point");
   factory.registerNodeType<practica5::Turn>("Turn");
 
+  auto blackboard = BT::Blackboard::create();
+  blackboard->set<std::string>("destination", argv[1]);
+  blackboard->set<std::string>("object", argv[2]);
 
   std::string pkgpath = ros::package::getPath("practica5");
   std::string xml_file = pkgpath + "/behavior_trees_xml/tree.xml";
 
-  BT::Tree tree = factory.createTreeFromFile(xml_file);
+  BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 
   ros::Rate loop_rate(5);
 

@@ -13,13 +13,14 @@ namespace practica5
 { // herencia
   typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-  Go_point::Go_point(const std::string& name) : BT::ActionNodeBase(name,{}), nh_("~")
+  Go_point::Go_point(const std::string& name, const BT::NodeConfiguration& config)
+  : BT::ActionNodeBase(name, config), nh_("~")
   {
     /*
     ,  const std::string& destination)
     , destination_(destination)
 
-    
+
   if(need_param_){
     nh_.getParam("destination", destination_);
     set_coordinates();
@@ -31,23 +32,23 @@ namespace practica5
 
   void Go_point::set_coordinates(move_base_msgs::MoveBaseGoal& goal){
     if(destination_ == "carreta"){
-      goal_x_ = goal_.target_pose.pose.position.x = -0.5;
-      goal_y_ = goal_.target_pose.pose.position.y = 9.0;
+      goal_.target_pose.pose.position.x = -0.5;
+      goal_.target_pose.pose.position.y = 9.0;
       goal_.target_pose.pose.orientation.w = 0.05;
     }
     else if(destination_ == "cajas"){
-      goal_x_ = goal_.target_pose.pose.position.x = -3.5;
-      goal_y_ = goal_.target_pose.pose.position.y = -2.5;
+      goal_.target_pose.pose.position.x = -3.5;
+      goal_.target_pose.pose.position.y = -2.5;
       goal_.target_pose.pose.orientation.w = 0.05;
     }
     else if(destination_ == "esquina"){
-      goal_x_ = goal_.target_pose.pose.position.x = 4.0;
-      goal_y_ = goal_.target_pose.pose.position.y = -8.5;
+      goal_.target_pose.pose.position.x = 4.0;
+      goal_.target_pose.pose.position.y = -8.5;
       goal_.target_pose.pose.orientation.w = 0.05;
     }
     else if(destination_ == "contenedor"){
-      goal_x_ = goal_.target_pose.pose.position.x = 2.5;
-      goal_y_ = goal_.target_pose.pose.position.y = -7.0;
+      goal_.target_pose.pose.position.x = 2.5;
+      goal_.target_pose.pose.position.y = -7.0;
       goal_.target_pose.pose.orientation.w = 0.05;
     }
     else
@@ -75,6 +76,9 @@ namespace practica5
 
   BT::NodeStatus Go_point::tick(){
     ROS_INFO("GoPoint tick");
+
+    std::string destination_ = getInput<std::string>("destination").value();
+
     MoveBaseClient ac("move_base",true);
     if (first_time_)
     {
@@ -89,7 +93,7 @@ namespace practica5
 
       ROS_INFO("Sending goal");
       ac.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
-   boost::bind(&Go_point::feedbackCb, this, _1));
+        boost::bind(&Go_point::feedbackCb, this, _1));
       first_time_ = false;
     }
 
