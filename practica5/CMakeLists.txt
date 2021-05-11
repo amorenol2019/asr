@@ -44,11 +44,5 @@ link_directories(
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(RGBDFilter src/practica5/RGBDFilter.cpp)
-target_link_libraries(RGBDFilter ${catkin_LIBRARIES})
-
-add_executable(Go_point src/practica5/Go_point.cpp)
-target_link_libraries(Go_point ${catkin_LIBRARIES})
-
-add_executable(practica5 src/practica5.cpp)
+add_executable(practica5 src/practica5.cpp src/practica5/Go_point.cpp src/practica5/RGBDFilter.cpp src/practica5/Turn.cpp)
 target_link_libraries(practica5 ${catkin_LIBRARIES})

@@ -24,13 +24,13 @@ namespace practica5
   {
     vel.angular.z = VELOCITY;
     vel_pub_.publish(vel);
-    if( (ros::Time::now() - beggining_time) < TURNING_TIME)
+    if((ros::Time::now() - beggining_time).toSec())  < TURNING_TIME)
     {
       return BT::NodeStatus::RUNNING;
     }
-    if(ros::Time::now() - beggining_time >= TURNING_TIME)
+    if((ros::Time::now() - beggining_time).toSec()) >= TURNING_TIME)
     {
-      vel.angular.z= 0;
+      vel.angular.z = 0;
       return BT::NodeStatus::SUCCESS;
     }
   }
