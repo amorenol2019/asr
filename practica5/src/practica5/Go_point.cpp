@@ -4,13 +4,14 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
-//#include "behavior_trees/Go_point.hpp"
+#include <string>
+
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
 
 namespace practica5
-{
-  Go_point::Go_point(bool need_param_): nh_("~"), ac_("move_base", true)
+{ // herencia
+  Go_point::Go_point(bool need_param_): BT::ActionNodeBase(????) : nh_("~"), ac_("move_base", true)
   {
     /*
   if(need_param_){
@@ -102,6 +103,4 @@ namespace practica5
       ROS_INFO("[Error] mission could not be accomplished");
       return BT::NodeStatus::FAILURE;
     }
-  }
-
 } // practica5

@@ -2,6 +2,8 @@
 #include <vector>
 #include <iostream>
 
+#include "practica5/RGBDFilter.hpp"
+
 #include <ros/ros.h>
 #include <ros/console.h>
 
@@ -20,15 +22,14 @@
 #include <darknet_ros_msgs/BoundingBoxes.h>
 #include <darknet_ros_msgs/BoundingBox.h>
 
-//#include "behavior_trees/RGBDFilter.hpp"
+#include <string>
+
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
 
-//#include "practica5/RGBDFilter.hpp"
-
 namespace practica5
 {
-  RGBDFilter::RGBDFilter(std::string dest, std::string obj): destination_(dest), object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
+  RGBDFilter::RGBDFilter(std::string dest, std::string obj): BT::ActionNodeBase(?????) : destination_(dest), object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);

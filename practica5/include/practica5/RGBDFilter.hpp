@@ -23,6 +23,11 @@
 #include <darknet_ros_msgs/BoundingBoxes.h>
 #include <darknet_ros_msgs/BoundingBox.h>
 
+#include "behaviortree_cpp_v3/behavior_tree.h"
+#include "behaviortree_cpp_v3/bt_factory.h"
+
+#include <string>
+
 namespace practica5
 {
 class RGBDFilter : public BT::ActionNodeBase
@@ -53,6 +58,9 @@ private:
 
   tf2_ros::StaticTransformBroadcaster br_;
   tf::TransformListener listener_;
+
 };
 
-} //namespace practica5
+} // practica5
+
+#endif // PRACTICA5__GO_POINT_HPP__
