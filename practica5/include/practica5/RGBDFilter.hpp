@@ -33,7 +33,7 @@ namespace practica5
 class RGBDFilter : public BT::ActionNodeBase
 {
 public:
-    RGBDFilter(const std::string& name, std::string dest, std::string obj); // explicit?
+  RGBDFilter(const std::string& name, std::string obj); // explicit?
   void halt();
   BT::NodeStatus tick();
 
@@ -54,7 +54,6 @@ private:
   bool detected_ = false;
   bool created_ = false;
 
-  std::string destination_;
   std::string object_;
 
   tf2_ros::StaticTransformBroadcaster br_;

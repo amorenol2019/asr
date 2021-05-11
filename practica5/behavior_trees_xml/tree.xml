@@ -1,10 +1,9 @@
 <root main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
        <Sequence name="root_sequence">
-         <root main_tree_to_execute="MainTree">
-           <Go_point name="Go_point"/>
+           <Go_point   name="Go_point"/>
            <RGBDFilter name="RGBDFilter"/>
-           <Turn name="Turn"/>
+           <Turn    name="Turn"/>
        </Sequence>
     </BehaviorTree>
 </root>
