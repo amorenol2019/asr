@@ -29,8 +29,8 @@
 
 namespace practica5
 {
-  RGBDFilter::RGBDFilter(const std::string& name, std::string dest, std::string obj):  BT::ActionNodeBase(name, {}), destination_(dest), object_(obj),
-  ctr_image_x(0.0), ctr_image_y(0.0)
+  RGBDFilter::RGBDFilter(const std::string& name, std::string obj):  BT::ActionNodeBase(name, {}), nh_("~"),
+  ctr_image_x(0.0), ctr_image_y(0.0)  , object_(obj)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);

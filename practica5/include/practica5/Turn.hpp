@@ -14,7 +14,7 @@ namespace practica5
   class Turn : public BT::ActionNodeBase
 {
 public:
-  Turn(void); // explicit?
+  Turn(const std::string& name); // explicit?
   void halt();
   BT::NodeStatus tick();
 

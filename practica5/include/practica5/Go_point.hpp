@@ -23,7 +23,7 @@ public:
 
   void halt();
   BT::NodeStatus tick();
-  
+
 private:
   std::string destination_ = "carreta"; // cambiar a "none"
 
