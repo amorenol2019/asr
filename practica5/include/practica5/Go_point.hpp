@@ -5,6 +5,11 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include <actionlib/client/simple_action_client.h>
 
+#include "behaviortree_cpp_v3/behavior_tree.h"
+#include "behaviortree_cpp_v3/bt_factory.h"
+
+#include <string>
+
 namespace practica5
 {
 class Go_point : public BT::ActionNodeBase
@@ -30,6 +35,7 @@ public:
   move_base_msgs::MoveBaseGoal goal_;
 
   ros::NodeHandle nh_;
+
 };
 
 } // practica5

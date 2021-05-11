@@ -1,11 +1,10 @@
-//#include "practica5/nodo_rgbd.hpp"
+#include "practica5/RGBDFilter.hpp"
+#include "practica5/Go_point.hpp"
+#include "practica5/Turn.hpp"
 
 #include "ros/ros.h"
-//#include "behavior_trees/RGBDFilter.hpp"
-//#include "behavior_trees/Go_point.hpp"
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
-
 
 #include "ros/package.h"
 
@@ -18,6 +17,7 @@ int main(int argc, char **argv)
 
   factory.registerNodeType<practica5::RGBDFilter>("RGBDFilter");
   factory.registerNodeType<practica5::Go_point>("Go_point");
+  factory.registerNodeType<practica5::Turn>("Turn");
 
 
   std::string pkgpath = ros::package::getPath("practica5");
