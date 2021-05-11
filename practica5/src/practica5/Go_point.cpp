@@ -11,7 +11,9 @@
 
 namespace practica5
 { // herencia
-  Go_point::Go_point(bool need_param_): BT::ActionNodeBase(????) : nh_("~"), ac_("move_base", true)
+  typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+
+  Go_point::Go_point(const std::string& name, const std::string& destination): BT::ActionNodeBase(name,{}), nh_("~"), destination_(destination)
   {
     /*
   if(need_param_){
@@ -19,53 +21,52 @@ namespace practica5
     set_coordinates();
   }
   */
-    set_coordinates();
     first_time_ = true;
   }
 
-  void Go_point::set_coordinates(){
+
+  void Go_point::set_coordinates(move_base_msgs::MoveBaseGoal& goal){
     if(destination_ == "carreta"){
-      x_ = -0.5;
-      y_ = 9.0;
+      goal_x_ = goal_.target_pose.pose.position.x = -0.5;
+      goal_y_ = goal_.target_pose.pose.position.y = 9.0;
+      goal_.target_pose.pose.orientation.w = 0.05;
     }
     else if(destination_ == "cajas"){
-      x_ = -3.5;
-      y_ = -2.5;
+      goal_x_ = goal_.target_pose.pose.position.x = -3.5;
+      goal_y_ = goal_.target_pose.pose.position.y = -2.5;
+      goal_.target_pose.pose.orientation.w = 0.05;
     }
     else if(destination_ == "esquina"){
-      x_ = 4.0;
-      y_ = -8.5;
+      goal_x_ = goal_.target_pose.pose.position.x = 4.0;
+      goal_y_ = goal_.target_pose.pose.position.y = -8.5;
+      goal_.target_pose.pose.orientation.w = 0.05;
     }
     else if(destination_ == "contenedor"){
-      x_ = 2.5;
-      y_ = -7.0;
+      goal_x_ = goal_.target_pose.pose.position.x = 2.5;
+      goal_y_ = goal_.target_pose.pose.position.y = -7.0;
+      goal_.target_pose.pose.orientation.w = 0.05;
+    }
+    else
+    {
+      ROS_INFO("Destination invalid");
     }
     ROS_INFO("Destination: %s\n", destination_.c_str());
   }
 
   void Go_point::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback)
   {
-    double goal_x = goal_.target_pose.pose.position.x;
-    double goal_y = goal_.target_pose.pose.position.y;
     double current_x = feedback->base_position.pose.position.x;
     double current_y = feedback->base_position.pose.position.y;
 
-    double diff_x = goal_x - current_x;
-    double diff_y = goal_y - current_y;
+    double diff_x = goal_x_ - current_x;
+    double diff_y = goal_y_ - current_y;
 
     double distance = sqrt(diff_x * diff_x + diff_y * diff_y);
     ROS_INFO("Distance to %s = %lf", destination_.c_str(), distance);
   }
 
-  void Go_point::sendNavigationGoal(void)
-  {
-    ROS_INFO("Sending goal");
-    ac_.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
-       boost::bind(&Navigate::feedbackCb, this, _1));
-  }
-
   void Go_point::halt() {
-
+    ROS_INFO("GoPoint halt");
   }
 
   BT::NodeStatus Go_point::tick(){
@@ -79,11 +80,12 @@ namespace practica5
       }
 
       goal_.target_pose.header.frame_id = "map";
-      set_goal(goal_, destination_);
+      set_coordinates(goal_);
       goal_.target_pose.header.stamp = ros::Time::now();
 
       ROS_INFO("Sending goal");
-      sendNavigationGoal();
+      ac.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
+   boost::bind(&Go_point::feedbackCb, this, _1));
       first_time_ = false;
     }
 
@@ -103,4 +105,5 @@ namespace practica5
       ROS_INFO("[Error] mission could not be accomplished");
       return BT::NodeStatus::FAILURE;
     }
+  }
 } // practica5

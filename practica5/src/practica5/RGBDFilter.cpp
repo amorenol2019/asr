@@ -29,7 +29,8 @@
 
 namespace practica5
 {
-  RGBDFilter::RGBDFilter(std::string dest, std::string obj): BT::ActionNodeBase(?????) : destination_(dest), object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
+  RGBDFilter::RGBDFilter(const std::string& name, std::string dest, std::string obj):  BT::ActionNodeBase(name, {}), destination_(dest), object_(obj),
+  ctr_image_x(0.0), ctr_image_y(0.0)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
@@ -71,6 +72,7 @@ namespace practica5
 
       ROS_INFO("(%f, %f, %f)", point.x, point.y, point.z);
       create_transform(point.x, point.y, point.z);
+      created_ = true;
     }
     catch(tf::TransformException & ex)
     {
@@ -97,11 +99,19 @@ namespace practica5
   }
 
   void RGBDFilter::halt() {
-
+    ROS_INFO("RGBDFilter halt");
   }
 
   BT::NodeStatus RGBDFilter::tick(){
-
+    ROS_INFO("RGBDFilter tick");
+    if (created_)
+    {
+      return BT::NodeStatus::SUCCESS;
+    }
+    else
+    {
+      return BT::NodeStatus::RUNNING;
+    }
   }
 
 

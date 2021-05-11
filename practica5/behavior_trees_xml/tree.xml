@@ -1,11 +1,10 @@
 <root main_tree_to_execute = "MainTree" >
     <BehaviorTree ID="MainTree">
        <Sequence name="root_sequence">
-           <ApproachObject name="approach"/>
-           <CheckBattery   name="battery_ok"/>
-           <OpenGripper    name="open_gripper"/>
-           <ApproachObject name="approach_object"/>
-           <CloseGripper   name="close_gripper"/>
+         <root main_tree_to_execute="MainTree">
+           <Go_point name="Go_point"/>
+           <RGBDFilter name="RGBDFilter"/>
+           <Turn name="Turn"/>
        </Sequence>
     </BehaviorTree>
 </root>

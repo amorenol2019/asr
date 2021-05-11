@@ -15,23 +15,23 @@ namespace practica5
 class Go_point : public BT::ActionNodeBase
 {
 public:
-  Go_point(bool need_param_); // explicit ??
+  Go_point(const std::string& name, const std::string& destination); // explicit ??
   void sendNavigationGoal(void);
-  void set_coordinates();
+  void set_coordinates(move_base_msgs::MoveBaseGoal& goal);
 
   void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
 
   void halt();
   BT::NodeStatus tick();
-
+  
+private:
   std::string destination_ = "carreta"; // cambiar a "none"
-
-  typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
-  MoveBaseClient ac_;
 
   float x_;
   float y_;
   bool first_time_;
+  double goal_x_;
+  double goal_y_;
   move_base_msgs::MoveBaseGoal goal_;
 
   ros::NodeHandle nh_;
