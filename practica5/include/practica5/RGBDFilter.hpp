@@ -33,7 +33,7 @@ namespace practica5
 class RGBDFilter : public BT::ActionNodeBase
 {
 public:
-  RGBDFilter(std::string dest, std::string obj); // explicit?
+    RGBDFilter(const std::string& name, std::string dest, std::string obj); // explicit?
   void halt();
   BT::NodeStatus tick();
 
@@ -52,6 +52,7 @@ private:
   int MIN_PROB = 0.7;
 
   bool detected_ = false;
+  bool created_ = false;
 
   std::string destination_;
   std::string object_;
