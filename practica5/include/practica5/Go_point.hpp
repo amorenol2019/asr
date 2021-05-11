@@ -15,7 +15,7 @@ namespace practica5
 class Go_point : public BT::ActionNodeBase
 {
 public:
-  Go_point(const std::string& name); //, const std::string& destination); // explicit ??
+  Go_point(const std::string& name, const BT::NodeConfiguration& config); //, const std::string& destination); // explicit ??
   void sendNavigationGoal(void);
   void set_coordinates(move_base_msgs::MoveBaseGoal& goal);
 
@@ -23,6 +23,11 @@ public:
 
   void halt();
   BT::NodeStatus tick();
+
+  static BT::PortsList providedPorts()
+  {
+    return { BT::InputPort<std::string>("destination")};
+  }
 
 private:
   std::string destination_ = "carreta"; // cambiar a "none"

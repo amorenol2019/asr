@@ -29,8 +29,8 @@
 
 namespace practica5
 {
-  RGBDFilter::RGBDFilter(const std::string& name):  BT::ActionNodeBase(name, {}), nh_("~"),
-  ctr_image_x(0.0), ctr_image_y(0.0)
+  RGBDFilter::RGBDFilter(const std::string& name, const BT::NodeConfiguration & config)
+  : BT::ActionNodeBase(name, {}), nh_("~"), ctr_image_x(0.0), ctr_image_y(0.0)
   {
   // , std::string obj
   // , object_(obj)
@@ -106,6 +106,9 @@ namespace practica5
 
   BT::NodeStatus RGBDFilter::tick(){
     ROS_INFO("RGBDFilter tick");
+
+    std::string object_ = getInput<std::string>("object").value();
+
     if (created_)
     {
       return BT::NodeStatus::SUCCESS;

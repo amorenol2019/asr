@@ -33,9 +33,14 @@ namespace practica5
 class RGBDFilter : public BT::ActionNodeBase
 {
 public:
-  RGBDFilter(const std::string& name); //, std::string obj); // explicit?
+  RGBDFilter(const std::string& name, const BT::NodeConfiguration& config); //, std::string obj); // explicit?
   void halt();
   BT::NodeStatus tick();
+
+  static BT::PortsList providedPorts()
+  {
+    return { BT::InputPort<std::string>("object")};
+  }
 
 private:
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg);
