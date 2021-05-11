@@ -13,9 +13,13 @@ namespace practica5
 { // herencia
   typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-  Go_point::Go_point(const std::string& name,  const std::string& destination): BT::ActionNodeBase(name,{}), nh_("~"), destination_(destination)
+  Go_point::Go_point(const std::string& name) : BT::ActionNodeBase(name,{}), nh_("~")
   {
     /*
+    ,  const std::string& destination)
+    , destination_(destination)
+
+    
   if(need_param_){
     nh_.getParam("destination", destination_);
     set_coordinates();
