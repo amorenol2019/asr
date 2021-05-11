@@ -21,6 +21,7 @@ public:
 private:
   ros::NodeHandle nh_;
   geometry_msgs::Twist vel;
+  ros::Publisher vel_pub_;
   ros::Time beggining_time;
 
   const float VELOCITY = 0.1;
