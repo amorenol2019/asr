@@ -1,4 +1,3 @@
-#include "practica5/RGBDFilter.hpp"
 #include "practica5/Go_point.hpp"
 #include "practica5/Turn.hpp"
 
@@ -21,7 +20,6 @@ int main(int argc, char **argv)
 
   BT::BehaviorTreeFactory factory;
 
-  factory.registerNodeType<practica5::RGBDFilter>("RGBDFilter");
   factory.registerNodeType<practica5::Go_point>("Go_point");
   factory.registerNodeType<practica5::Turn>("Turn");
 
