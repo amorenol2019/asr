@@ -3,6 +3,7 @@
 
 #include "geometry_msgs/Twist.h"
 #include "ros/ros.h"
+#include <std_msgs/Bool.h>
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
@@ -15,14 +16,18 @@ namespace practica5
 {
 public:
   Turn(const std::string& name); // explicit?
+  void tfCb(const std_msgs::Bool::ConstPtr& msg);
   void halt();
   BT::NodeStatus tick();
 
 private:
   ros::NodeHandle nh_;
   geometry_msgs::Twist vel;
+  ros::Subscriber tf_sub_;
   ros::Publisher vel_pub_;
   ros::Time beggining_time;
+
+  bool created_;
 
   const float VELOCITY = 0.1;
   float TURNING_TIME = 1.0;
