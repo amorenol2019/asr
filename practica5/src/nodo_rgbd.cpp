@@ -18,12 +18,12 @@
 class RGBDFilter
 {
 public:
-  RGBDFilter(std::string dest, std::string obj): destination_(dest), object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
+  RGBDFilter(std::string obj):  object_(obj), ctr_image_x(0.0), ctr_image_y(0.0)
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
 
-    created_pub_ = nh_.advertise<std_msgs::Bool>("/created", 10);
+    created_pub_ = nh_.advertise<std_msgs::Bool>("/created", 10);//?
   }
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
   {
@@ -100,7 +100,6 @@ private:
 
   bool detected_ = false;
 
-  std::string destination_;
   std::string object_;
   tf2_ros::StaticTransformBroadcaster br_;
   tf::TransformListener listener_;
@@ -111,10 +110,10 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "rgbd");
   if(argc < 3)
   {
-     std::cerr << "usage: rosrun practica5_1 nodo_rgbd <destination> <object>" << std::endl; // cerr
+     std::cerr << "usage: rosrun practica5_1 nodo_rgbd <object>" << std::endl; // cerr
      return -1;
   }
-  RGBDFilter rf(argv[1],argv[2]);
+  RGBDFilter rf(argv[2]);
   ros::spin();
   return 0;
 }

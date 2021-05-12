@@ -30,7 +30,7 @@ private:
   bool created_;
 
   const float VELOCITY = 0.1;
-  float TURNING_TIME = 1.0;
+  //float TURNING_TIME = 1.0;
 
 };
 

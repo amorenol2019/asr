@@ -20,7 +20,7 @@ namespace practica5
   {
     created_ = msg->data;
   }
-  
+
   void Turn::halt()
   {
     ROS_INFO("He girado un pokin");
@@ -29,19 +29,22 @@ namespace practica5
   BT::NodeStatus Turn::tick()
   {
     vel.angular.z = VELOCITY;
-    vel_pub_.publish(vel);  //Habría que publicarla antes de cada return?
-    //Porque no publicaria en el else el z=0
+
+    /*
     if((ros::Time::now() - beggining_time).toSec() < TURNING_TIME)
     {
+      vel_pub_.publish(vel);
       return BT::NodeStatus::RUNNING;
     }
     else
     {
       vel.angular.z = 0;
+      vel_pub_.publish(vel);
       return BT::NodeStatus::SUCCESS;
     }
+    */
 
-    /**   ----------------PARA GIRAR CUANDO NO HAYA CREADO LA TF
+    //   ----------------PARA GIRAR CUANDO NO HAYA CREADO LA TF
     if (created_)
     {
       vel_pub_.publish(vel);
@@ -53,7 +56,7 @@ namespace practica5
       vel_pub_.publish(vel);
       return BT::NodeStatus::SUCCESS;
     }
-    **/
+
   }
 
 } // practica5
