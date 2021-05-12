@@ -23,7 +23,7 @@ namespace practica5
     BT::NodeStatus tick();
     static BT::PortsList providedPorts()
     {
-      return { BT::InputPort<std::string>("object")};
+      return { BT::InputPort<std::string>("target")};
     }
 
   private:
@@ -34,12 +34,11 @@ namespace practica5
     std::string object_ = "none";
     bool arrived_;
 
-    float angle_;
-    float distance_;
-    tf2_ros::Buffer buffer_;
-
     float ANGULAR_VEL = 0.1;
     float LINEAR_VEL = 0.2;
+    float angle_;
+    float distance_;
 
+    tf2_ros::Buffer buffer_;
   };
-}//namespace practica5
+} //namespace practica5
