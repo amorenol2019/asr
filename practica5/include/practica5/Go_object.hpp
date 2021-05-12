@@ -32,7 +32,7 @@ namespace practica5
     ros::Publisher vel_pub_;
 
     std::string object_ = "none";
-    std::bool arrived_;
+    bool arrived_;
 
     float angle_;
     float distance_;
