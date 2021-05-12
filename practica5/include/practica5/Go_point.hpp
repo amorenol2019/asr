@@ -34,7 +34,6 @@ private:
 
   float x_;
   float y_;
-  bool first_time_;
   double goal_x_;
   double goal_y_;
   move_base_msgs::MoveBaseGoal goal_;

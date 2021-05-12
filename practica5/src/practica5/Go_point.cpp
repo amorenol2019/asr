@@ -26,7 +26,6 @@ namespace practica5
     set_coordinates();
   }
   */
-    first_time_ = true;
   }
 
 
@@ -80,7 +79,8 @@ namespace practica5
     std::string destination_ = getInput<std::string>("destination").value();
 
     MoveBaseClient ac("move_base",true);
-    if (first_time_)
+
+    if (status() == BT::NodeStatus::IDLE)
     {
       while (!ac.waitForServer(ros::Duration(5.0)))
       {
@@ -94,7 +94,6 @@ namespace practica5
       ROS_INFO("Sending goal");
       ac.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
         boost::bind(&Go_point::feedbackCb, this, _1));
-      first_time_ = false;
     }
 
     // ac.waitForResult();

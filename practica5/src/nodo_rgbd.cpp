@@ -10,6 +10,7 @@
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Bool.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <boost/algorithm/string.hpp>
 #include <darknet_ros_msgs/BoundingBoxes.h>
@@ -21,6 +22,8 @@ public:
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
+
+    created_pub_ = nh_.advertise<std_msgs::Bool>("/created", 10);
   }
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
   {
@@ -62,6 +65,9 @@ public:
       ROS_ERROR_STREAM("Transform error of sensor data: " << ex.what() << ", quitting callback");
       return;
     }
+    std_msgs::Bool msg;
+    msg.data = detected_;
+    created_pub_.publish(msg);
   }
 
   void create_transform(const float x, const float y, const float z)
@@ -86,6 +92,7 @@ private:
 
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
+  ros::Publisher created_pub_;
 
   int ctr_image_x;
   int ctr_image_y;
