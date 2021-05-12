@@ -10,26 +10,13 @@
 #include "behaviortree_cpp_v3/bt_factory.h"
 
 namespace practica5
-{ // herencia
+{
   typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
   Go_point::Go_point(const std::string& name, const BT::NodeConfiguration& config)
-  : BT::ActionNodeBase(name, config), nh_("~")
-  {
-    /*
-    ,  const std::string& destination)
-    , destination_(destination)
+  : BT::ActionNodeBase(name, config), nh_("~") {}
 
-
-  if(need_param_){
-    nh_.getParam("destination", destination_);
-    set_coordinates();
-  }
-  */
-  }
-
-
-  void Go_point::set_coordinates(move_base_msgs::MoveBaseGoal& goal){
+  void Go_point::set_coordinates(){
     if(destination_ == "carreta"){
       goal_.target_pose.pose.position.x = -0.5;
       goal_.target_pose.pose.position.y = 9.0;
@@ -52,10 +39,18 @@ namespace practica5
     }
     else
     {
-      ROS_INFO("Destination invalid");
+      ROS_INFO("Error: Invalid destination");
     }
     ROS_INFO("Destination: %s\n", destination_.c_str());
   }
+
+  /*
+  void Go_point::doneCb(const actionlib::SimpleClientGoalState& state,
+    const move_base_msgs::MoveBaseResultConstPtr& result)
+  {
+      ROS_INFO("Distance to goal = %lf", dist);
+  }
+  */
 
   void Go_point::feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback)
   {
@@ -73,14 +68,14 @@ namespace practica5
     ROS_INFO("GoPoint halt");
   }
 
-  BT::NodeStatus Go_point::tick(){
+  BT::NodeStatus Go_point::tick()
+  {
     ROS_INFO("GoPoint tick");
-
-    std::string destination_ = getInput<std::string>("destination").value();
+    destination_ = getInput<std::string>("goal").value();
 
     MoveBaseClient ac("move_base",true);
 
-    if (status() == BT::NodeStatus::IDLE)
+    if(status() == BT::NodeStatus::IDLE)
     {
       while (!ac.waitForServer(ros::Duration(5.0)))
       {
@@ -88,22 +83,22 @@ namespace practica5
       }
 
       goal_.target_pose.header.frame_id = "map";
-      set_coordinates(goal_);
+      set_coordinates();
       goal_.target_pose.header.stamp = ros::Time::now();
 
       ROS_INFO("Sending goal");
-      ac.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
+      ac.sendGoal(goal_, NULL, // oost::bind(&Go_point::doneCb, this, _1, _2),
+        MoveBaseClient::SimpleActiveCallback(),
         boost::bind(&Go_point::feedbackCb, this, _1));
       ac.waitForResult();
     }
 
-    // ac.waitForResult();
-    if (ac.getState() == actionlib::SimpleClientGoalState::ACTIVE)
+    if(ac.getState() == actionlib::SimpleClientGoalState::ACTIVE)
     {
       ROS_INFO("Mission is being accomplished");
       return BT::NodeStatus::RUNNING;
     }
-    else if (ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+    else if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
     {
       ROS_INFO("Hooray, mission accomplished");
       return BT::NodeStatus::SUCCESS;

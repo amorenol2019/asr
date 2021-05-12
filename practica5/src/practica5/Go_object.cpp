@@ -27,7 +27,7 @@ namespace practica5
 
     look4_TF(object_);
 
-    if( angle_ > 0 )//esta hacia su izq?
+    if(angle_ > 0) //esta hacia su izq?
     {
       vel.angular.z = ANGULAR_VEL;
     }
@@ -38,7 +38,7 @@ namespace practica5
     //habra que poner un rango en el que consideremos que esta centrado en funcion del angulo (ir probando)
     //cuando este dentro de ese rango centered = true
 
-    if( distance_ > 1)
+    if(distance_ > 1)
     {
       vel.linear.x = LINEAR_VEL;
     }
@@ -53,7 +53,6 @@ namespace practica5
     {
       arrived_ = true;
     }
-
   }
 
   void Go_object::look4_TF(const std::string name)
@@ -67,18 +66,18 @@ namespace practica5
       angle_ = 400; // angulo imposible
       return;
     }
-    //angulo del robot respecto al objecto
+    // angulo del robot respecto al objecto
     angle_ = atan2(bf2obj_msg.transform.translation.y, bf2obj_msg.transform.translation.x);
-    //tambien quiero obtener la distancia hasta el objecto
-    distance_ = bf2obj_msg.transform.translation.x; //nose si esto esta bien
+    // tambien quiero obtener la distancia hasta el objecto
+    distance_ = bf2obj_msg.transform.translation.x; //nose si esto esta bien;  car: creo que si
   }
 
   BT::NodeStatus Go_object::tick()
   {
-    std::string object_ = getInput<std::string>("object").value();
+    object_ = getInput<std::string>("target").value();
     centre_2object();
 
-    if( arrived_ )
+    if(arrived_)
     {
       return BT::NodeStatus::SUCCESS;
     }
@@ -86,11 +85,10 @@ namespace practica5
     {
       return BT::NodeStatus::RUNNING;
     }
-
   }
 
   void Go_object::halt()
   {
     ROS_INFO("HOORRAY , HE CENTRADO EN OBJETO");
   }
-}//namespace practica5
+} // practica5

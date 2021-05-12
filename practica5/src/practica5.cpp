@@ -25,7 +25,6 @@ int main(int argc, char **argv)
   factory.registerNodeType<practica5::Turn>("Turn");
   factory.registerNodeType<practica5::Go_object>("Go_object");
 
-
   auto blackboard = BT::Blackboard::create();
   blackboard->set<std::string>("destination", argv[1]);
   blackboard->set<std::string>("object", argv[2]);
@@ -36,7 +35,6 @@ int main(int argc, char **argv)
   BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 
   ros::Rate loop_rate(5);
-
   int count = 0;
 
   bool finish = false;
