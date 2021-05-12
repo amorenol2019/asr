@@ -62,8 +62,8 @@ namespace practica5
     double current_x = feedback->base_position.pose.position.x;
     double current_y = feedback->base_position.pose.position.y;
 
-    double diff_x = goal_x_ - current_x;
-    double diff_y = goal_y_ - current_y;
+    double diff_x = goal_.target_pose.pose.position.x - current_x ;
+    double diff_y = goal_.target_pose.pose.position.y - current_y ;
 
     double distance = sqrt(diff_x * diff_x + diff_y * diff_y);
     ROS_INFO("Distance to %s = %lf", destination_.c_str(), distance);
@@ -94,6 +94,7 @@ namespace practica5
       ROS_INFO("Sending goal");
       ac.sendGoal(goal_, NULL, MoveBaseClient::SimpleActiveCallback(),
         boost::bind(&Go_point::feedbackCb, this, _1));
+      ac.waitForResult();
     }
 
     // ac.waitForResult();

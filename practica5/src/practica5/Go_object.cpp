@@ -22,8 +22,8 @@ namespace practica5
 
   void Go_object::centre_2object()
   {
-    std::bool centered = false;
-    std::bool near = false;
+    bool centered = false;
+    bool near = false;
 
     look4_TF(object_);
 
