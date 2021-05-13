@@ -22,7 +22,7 @@ int main(int argc, char **argv)
   BT::BehaviorTreeFactory factory;
 
   factory.registerNodeType<practica5::Go_point>("Go_point");
-  factory.registerNodeType<practica5::Turn>("Turn");
+  //factory.registerNodeType<practica5::Turn>("Turn");
   factory.registerNodeType<practica5::Go_object>("Go_object");
 
   auto blackboard = BT::Blackboard::create();
