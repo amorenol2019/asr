@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   blackboard->set<std::string>("object", argv[2]);
 
   std::string pkgpath = ros::package::getPath("practica5");
-  std::string xml_file = pkgpath + "/behavior_trees_xml/tree_1.xml";
+  std::string xml_file = pkgpath + "/behavior_trees_xml/tree_3.xml";
 
   BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 

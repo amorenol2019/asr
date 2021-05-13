@@ -7,7 +7,7 @@
 #include "behaviortree_cpp_v3/bt_factory.h"
 
 #include <tf2_ros/static_transform_broadcaster.h>
-#include <tf/transform_listener.h>
+#include <tf2_ros/transform_listener.h>
 
 namespace practica5
 {
@@ -31,14 +31,15 @@ namespace practica5
     geometry_msgs::Twist vel;
     ros::Publisher vel_pub_;
 
-    std::string object_ = "none";
+    std::string object_ = "person";
     bool arrived_;
 
-    float ANGULAR_VEL = 0.1;
+    float ANGULAR_VEL = 0.2;
     float LINEAR_VEL = 0.2;
     float angle_;
     float distance_;
 
     tf2_ros::Buffer buffer_;
+    tf2_ros::TransformListener  listener_;
   };
 } //namespace practica5

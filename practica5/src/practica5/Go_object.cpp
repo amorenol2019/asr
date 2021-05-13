@@ -8,14 +8,14 @@
 #include "behaviortree_cpp_v3/bt_factory.h"
 
 #include <tf2_ros/static_transform_broadcaster.h>
-#include <tf/transform_listener.h>
+#include <tf2_ros/transform_listener.h>
 
 #include "practica5/Go_object.hpp"
 
 namespace practica5
 {
   Go_object::Go_object(const std::string& name, const BT::NodeConfiguration& config)
-  : BT::ActionNodeBase(name, config), nh_("~") ,buffer_(), arrived_(false)
+  : BT::ActionNodeBase(name, config), nh_("~") ,buffer_(), arrived_(false), listener_(buffer_)
   {
     vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
   }
@@ -27,12 +27,22 @@ namespace practica5
 
     look4_TF(object_);
 
-    if(angle_ > 0) //esta hacia su izq?
+    if (0.8 >= fabs(angle_))
     {
+      ROS_INFO("(%lf)", angle_);
+      ROS_INFO("ANGULO INTERMEDIO");
+      vel.angular.z = 0;
+    }
+    else if(angle_ > 0.8) //IZQUIERDA
+    {
+      ROS_INFO("(%lf)", angle_);
+      ROS_INFO("ANGULO > 0.8");
       vel.angular.z = ANGULAR_VEL;
     }
     else
     {
+      ROS_INFO("(%lf)", angle_);
+      ROS_INFO("ANGULO < -0.8");
       vel.angular.z = -ANGULAR_VEL;
     }
     //habra que poner un rango en el que consideremos que esta centrado en funcion del angulo (ir probando)
@@ -40,10 +50,14 @@ namespace practica5
 
     if(distance_ > 1)
     {
+      ROS_INFO("(%lf)", distance_);
+      ROS_INFO("DISTANCIA > 1");
       vel.linear.x = LINEAR_VEL;
     }
     else
     {
+      ROS_INFO("DISTANCIA < 1");
+      ROS_INFO("(%lf)", distance_);
       vel.linear.x = 0;
       near = true;
     }
@@ -63,7 +77,7 @@ namespace practica5
     }
     catch (std::exception & e)
     {
-      angle_ = 400; // angulo imposible
+      angle_ = 200; // angulo imposible
       return;
     }
     // angulo del robot respecto al objecto
