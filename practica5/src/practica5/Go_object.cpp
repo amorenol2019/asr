@@ -14,6 +14,8 @@
 
 namespace practica5
 {
+  //typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
+
   Go_object::Go_object(const std::string& name, const BT::NodeConfiguration& config)
   : BT::ActionNodeBase(name, config), nh_("~") ,buffer_(), arrived_(false), listener_(buffer_)
   {
@@ -109,6 +111,62 @@ namespace practica5
       return BT::NodeStatus::RUNNING;
     }
   }
+
+  /*
+  bool Go_object::going2object()
+  {
+      geometry_msgs::TransformStamped bf2object_msg;
+
+      try
+      {
+          bf2object_msg = buffer_.lookupTransform("base_footprint", object_, ros::Time(0));
+      }
+      catch (std::exception & e)
+      {
+          return false;
+      }
+
+      goal_.target_pose.header.frame_id = "base_footprint";
+      goal_.target_pose.pose.orientation = bf2object_msg.transform.rotation;
+      goal_.target_pose.pose.position.x = bf2object_msg.transform.translation.x - 1; //Idea de cuando está a menos 1
+      goal_.target_pose.pose.position.y = bf2object_msg.transform.translation.y;   //O aqui
+      goal_.target_pose.pose.position.z = bf2object_msg.transform.translation.z;
+
+      return true;
+  }
+
+  BT::NodeStatus Go_object::tick()
+  {
+      object_ = getInput<std::string>("target").value();
+      MoveBaseClient ac("move_base",true);
+      if (!(going2object() ))
+      {
+          return BT::NodeStatus::FAILURE;
+      }
+
+      while (!ac.waitForServer(ros::Duration(5.0)))
+      {
+          ROS_INFO("Waiting for the move_base action server to come up");
+      }
+      goal_.target_pose.header.stamp = ros::Time::now();
+
+      ROS_INFO("Sending goal");
+      ac.sendGoal(goal_);
+      ac.waitForResult();
+
+      if (ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+      {
+          ROS_INFO("Hooray, mission accomplished");
+          return BT::NodeStatus::SUCCESS;
+      }
+      else
+      {
+          ROS_INFO("[Error] mission could not be accomplished");
+          return BT::NodeStatus::FAILURE;
+      }
+
+  }
+  */
 
   void Go_object::halt()
   {
