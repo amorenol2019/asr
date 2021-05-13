@@ -24,7 +24,7 @@ namespace practica5
     }
     else if(destination_ == "cajas"){
       goal_.target_pose.pose.position.x = -3.5;
-      goal_.target_pose.pose.position.y = -2.5;
+      goal_.target_pose.pose.position.y = -2.3;
       goal_.target_pose.pose.orientation.w = 0.05;
     }
     else if(destination_ == "esquina"){

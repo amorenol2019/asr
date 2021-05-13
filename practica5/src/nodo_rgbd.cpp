@@ -89,7 +89,6 @@ private:
 
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
-  // ros::Publisher created_pub_;
 
   int ctr_image_x;
   int ctr_image_y;
