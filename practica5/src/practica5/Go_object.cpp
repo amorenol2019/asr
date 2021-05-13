@@ -17,7 +17,12 @@ namespace practica5
   Go_object::Go_object(const std::string& name, const BT::NodeConfiguration& config)
   : BT::ActionNodeBase(name, config), nh_("~") ,buffer_(), arrived_(false), listener_(buffer_)
   {
+    detect_sub_ = nh_.subscribe("/detected", 1, &Go_object::detectCB, this);
     vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
+  }
+  void Go_object::detectCB(const std_msgs::Bool::ConstPtr& msg)
+  {
+      detected_ = msg->data;
   }
 
   void Go_object::centre_2object()
@@ -27,13 +32,16 @@ namespace practica5
 
     look4_TF(object_);
 
-    if (0.8 >= fabs(angle_))
+    ROS_INFO_STREAM(detected_);
+    //movimiento angular
+    if (0.8 >= fabs(angle_) && detected_)
     {
       ROS_INFO("(%lf)", angle_);
       ROS_INFO("ANGULO INTERMEDIO");
       vel.angular.z = 0;
+      centered = true;
     }
-    else if(angle_ > 0.8) //IZQUIERDA
+    else if(angle_ > 0.8 && detected_) //IZQUIERDA
     {
       ROS_INFO("(%lf)", angle_);
       ROS_INFO("ANGULO > 0.8");
@@ -45,10 +53,9 @@ namespace practica5
       ROS_INFO("ANGULO < -0.8");
       vel.angular.z = -ANGULAR_VEL;
     }
-    //habra que poner un rango en el que consideremos que esta centrado en funcion del angulo (ir probando)
-    //cuando este dentro de ese rango centered = true
 
-    if(distance_ > 1)
+    //movimiento lineal
+    if(distance_ > 1 && detected_)
     {
       ROS_INFO("(%lf)", distance_);
       ROS_INFO("DISTANCIA > 1");
@@ -88,12 +95,14 @@ namespace practica5
 
   BT::NodeStatus Go_object::tick()
   {
+    arrived_ = false;
     object_ = getInput<std::string>("target").value();
     centre_2object();
 
-    if(arrived_)
+    if(arrived_ && detected_)
     {
-      return BT::NodeStatus::SUCCESS;
+      ROS_INFO("HOORRAY , HE CENTRADO EN OBJETO");
+      return BT::NodeStatus::RUNNING;
     }
     else
     {

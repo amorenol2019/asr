@@ -23,6 +23,7 @@ public:
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
+    detect_pub_ = nh_.advertise<std_msgs::Bool>("/detected",1);
   }
 
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
@@ -32,39 +33,48 @@ public:
 
     for(int i = 0; i < ar_length; i++)
     {
+
       if(msg->bounding_boxes[i].probability >= MIN_PROB && msg->bounding_boxes[i].Class == object_)
       {
         ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
         ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
         detected_ = true;
+        ROS_INFO_STREAM("object_ : "<<object_);
       }
     }
-    ROS_INFO("(%c, %c)", ctr_image_x, ctr_image_y);
+    //ROS_INFO("boxCb: (%d, %d)", ctr_image_x, ctr_image_y);
   }
 
   void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
   {
     sensor_msgs::PointCloud2 cloud;
+    ROS_INFO_STREAM(detected_);
 
+    std_msgs::Bool msg;
+    msg.data = detected_;
+    detect_pub_.publish(msg);
+    
     if(!detected_) {
-      return;
+     return;
     }
 
     try
     {
-      pcl_ros::transformPointCloud("/map", *cloud_in, cloud, listener_);
+      pcl_ros::transformPointCloud("map", *cloud_in, cloud, listener_);
       auto pcrgb = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
       pcl::fromROSMsg(cloud, *pcrgb);
 
       auto point = pcrgb->at(ctr_image_x, ctr_image_y);
-      ROS_INFO("(%f, %f, %f)", point.x, point.y, point.z);
+      ROS_INFO("cloudCb(%f, %f, %f)", point.x, point.y, point.z);
       create_transform(point.x, point.y, point.z);
+      detected_ = false;
     }
     catch(tf::TransformException & ex)
     {
       ROS_ERROR_STREAM("Transform error of sensor data: " << ex.what() << ", quitting callback");
       return;
     }
+
   }
 
   void create_transform(const float x, const float y, const float z)
@@ -89,10 +99,11 @@ private:
 
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
+  ros::Publisher detect_pub_;
 
   int ctr_image_x;
   int ctr_image_y;
-  int MIN_PROB = 0.7;
+  int MIN_PROB = 0.8;
 
   bool detected_ = false;
 
@@ -106,7 +117,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "rgbd");
   if(argc < 2)
   {
-     std::cerr << "usage: rosrun practica5_1 nodo_rgbd <object>" << std::endl;
+     std::cerr << "usage: rosrun practica5 nodo_rgbd <object>" << std::endl;
      return -1;
   }
   RGBDFilter rf(argv[1]);
