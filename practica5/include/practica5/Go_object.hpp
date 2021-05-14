@@ -18,8 +18,7 @@ namespace practica5
 
     void detectCB(const std_msgs::Bool::ConstPtr& msg);
 
-    void centre_2object();
-    void look4_TF(const std::string name);
+
 
     void halt();
     BT::NodeStatus tick();
@@ -29,6 +28,10 @@ namespace practica5
     }
 
   private:
+    void centre_2object();
+    void look4_TF(const std::string name);
+    float speed_4angle(float angle);
+
     ros::NodeHandle nh_;
     geometry_msgs::Twist vel;
     ros::Publisher vel_pub_;
@@ -45,5 +48,8 @@ namespace practica5
 
     tf2_ros::Buffer buffer_;
     tf2_ros::TransformListener  listener_;
+
+    ros::Time seen_;
+    bool already_seen;
   };
 } //namespace practica5

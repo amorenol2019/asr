@@ -15,7 +15,7 @@
 namespace practica5
 {
   Go_object::Go_object(const std::string& name, const BT::NodeConfiguration& config)
-  : BT::ActionNodeBase(name, config), nh_("~") ,buffer_(), arrived_(false), listener_(buffer_)
+  : BT::ActionNodeBase(name, config), nh_("~") ,buffer_(), arrived_(false), listener_(buffer_),already_seen(false)
   {
     detect_sub_ = nh_.subscribe("/detected", 1, &Go_object::detectCB, this);
     vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 10);
@@ -30,50 +30,87 @@ namespace practica5
     bool centered = false;
     bool near = false;
 
-    look4_TF(object_);
-
-    ROS_INFO_STREAM(detected_);
     //movimiento angular
-    if (0.8 >= fabs(angle_) && detected_)
+    ROS_INFO("angle : %lf",angle_);
+    if(detected_)// si lo esta viendo
     {
-      ROS_INFO("(%lf)", angle_);
-      ROS_INFO("ANGULO INTERMEDIO");
-      vel.angular.z = 0;
-      centered = true;
-    }
-    else if(angle_ > 0.8 && detected_) //IZQUIERDA
-    {
-      ROS_INFO("(%lf)", angle_);
-      ROS_INFO("ANGULO > 0.8");
-      vel.angular.z = ANGULAR_VEL;
+      if(!already_seen)
+      {
+        seen_ = ros::Time::now();
+        already_seen = true;
+      }
+
+      float speed = speed_4angle(angle_);
+      vel.angular.z = speed;
+      if(speed == 0.0)
+      {
+        centered = true;
+      }
     }
     else
     {
-      ROS_INFO("(%lf)", angle_);
-      ROS_INFO("ANGULO < -0.8");
-      vel.angular.z = -ANGULAR_VEL;
+      vel.angular.z = 0.3;
+      /*if(angle_== 200)// si no hay tf
+      {
+        vel.angular.z = 0.3;
+      }
+      else
+      {
+        vel.angular.z = speed_4angle(angle_);
+      }
+      */
     }
 
     //movimiento lineal
-    if(distance_ > 1 && detected_)
+    if( distance_ > 1 || ( (ros::Time::now() - seen_).toSec() > 3.0 &&(ros::Time::now() - seen_).toSec() < 15.0 && distance_ == -100) )
     {
-      ROS_INFO("(%lf)", distance_);
-      ROS_INFO("DISTANCIA > 1");
+      ROS_INFO("distancia > 1 O mucho tiempo desde que o vi");
       vel.linear.x = LINEAR_VEL;
     }
-    else
+    else if(distance_ <= 1 || !detected_)
     {
-      ROS_INFO("DISTANCIA < 1");
+      ROS_INFO("DISTANCIA < 1 O !detected_");
       ROS_INFO("(%lf)", distance_);
       vel.linear.x = 0;
       near = true;
     }
-    vel_pub_.publish(vel);
 
     if(centered && near)
     {
       arrived_ = true;
+      seen_ = ros::Time::now();
+      vel.linear.x = 0;
+      vel.angular.z = 0;
     }
+
+    vel_pub_.publish(vel);
+  }
+
+  float Go_object::speed_4angle(float angle)
+  {
+    float speed;
+    if(angle_ == 200)
+    {
+      ROS_INFO("0:no TF");
+      speed = 0.00001;
+    }
+    else if(0.3 >= fabs(angle_))
+    {
+      ROS_INFO("I: cnetrado ");
+      speed = 0.0;
+    }
+    else if(angle_ > 0.3)
+    {
+      ROS_INFO("M: > 0.8");
+      speed = ANGULAR_VEL;
+    }
+    else if(angle < 0.3)
+    {
+      ROS_INFO("m: < 0.8");
+      speed = -ANGULAR_VEL;
+    }
+
+    return speed;
   }
 
   void Go_object::look4_TF(const std::string name)
@@ -85,6 +122,7 @@ namespace practica5
     catch (std::exception & e)
     {
       angle_ = 200; // angulo imposible
+      distance_ = -100;
       return;
     }
     // angulo del robot respecto al objecto
@@ -95,8 +133,12 @@ namespace practica5
 
   BT::NodeStatus Go_object::tick()
   {
-    arrived_ = false;
     object_ = getInput<std::string>("target").value();
+    look4_TF(object_);
+    if(arrived_)
+    {
+      angle_ =200;
+    }
     centre_2object();
 
     if(arrived_ && detected_)

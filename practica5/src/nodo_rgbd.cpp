@@ -23,6 +23,7 @@ public:
   {
     box_sub_ = nh_.subscribe("/darknet_ros/bounding_boxes", 1, &RGBDFilter::boxCB, this);
     cloud_sub_ = nh_.subscribe("/camera/depth/points", 1, &RGBDFilter::cloudCB, this);
+    detect_pub_ = nh_.advertise<std_msgs::Bool>("/detected",1);
   }
 
   void boxCB(const darknet_ros_msgs::BoundingBoxes::ConstPtr& msg)
@@ -37,8 +38,8 @@ public:
         ROS_INFO("i: %d, proba= %fd", i, msg->bounding_boxes[i].probability);
         ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
         ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
+        detected_ts = ros::Time::now();
         detected_ = true;
-        ROS_INFO("%s", "Detected");
       }
     }
     //ROS_INFO("(%d, %d)", ctr_image_x, ctr_image_y);
@@ -47,6 +48,11 @@ public:
   void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
   {
     sensor_msgs::PointCloud2 cloud;
+
+    std_msgs::Bool msg;
+    msg.data = detected_;
+    detect_pub_.publish(msg);
+    ROS_INFO_STREAM("detected: "<<detected_);
 
     if(!detected_) {
       return;
@@ -65,7 +71,8 @@ public:
       if(detected_ == true) {
         create_transform(point.x, point.y, point.z);
       }
-      detected_ = false;
+      if( (ros::Time::now() - detected_ts).toSec() > 5) detected_ = false;
+      ROS_INFO("t desde detected: %lf",(ros::Time::now() - detected_ts).toSec());
     }
     catch(tf::TransformException & ex)
     {
@@ -96,6 +103,7 @@ private:
 
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
+  ros::Publisher detect_pub_;
 
   int ctr_image_x;
   int ctr_image_y;
@@ -106,6 +114,8 @@ private:
   std::string object_;
   tf2_ros::StaticTransformBroadcaster br_;
   tf::TransformListener listener_;
+
+  ros::Time detected_ts;
 };
 
 int main(int argc, char** argv)
