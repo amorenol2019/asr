@@ -17,9 +17,7 @@ class Go_point : public BT::ActionNodeBase
 public:
   Go_point(const std::string& name, const BT::NodeConfiguration& config);
 
-  void sendNavigationGoal(void);
   void set_coordinates();
-
   void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback);
   //void doneCb(const actionlib::SimpleClientGoalState& state,
     //  const move_base_msgs::MoveBaseResultConstPtr& result);

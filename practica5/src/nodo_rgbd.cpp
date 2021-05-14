@@ -33,16 +33,14 @@ public:
 
     for(int i = 0; i < ar_length; i++)
     {
-      if(msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].probability < 1 && msg->bounding_boxes[i].Class == object_)
+      if(msg->bounding_boxes[i].probability > MIN_PROB && msg->bounding_boxes[i].probability < MAX_PROB && msg->bounding_boxes[i].Class == object_)
       {
-        ROS_INFO("i: %d, proba= %fd", i, msg->bounding_boxes[i].probability);
         ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
         ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
         detected_ts = ros::Time::now();
         detected_ = true;
       }
     }
-    //ROS_INFO("(%d, %d)", ctr_image_x, ctr_image_y);
   }
 
   void cloudCB(const sensor_msgs::PointCloud2::ConstPtr& cloud_in)
@@ -52,7 +50,7 @@ public:
     std_msgs::Bool msg;
     msg.data = detected_;
     detect_pub_.publish(msg);
-    ROS_INFO_STREAM("detected: "<<detected_);
+    // ROS_INFO_STREAM("detected: " << detected_);
 
     if(!detected_) {
       return;
@@ -65,14 +63,13 @@ public:
       pcl::fromROSMsg(cloud, *pcrgb);
 
       auto point = pcrgb->at(ctr_image_x, ctr_image_y);
-      //ROS_INFO("(%f, %f, %f)", point.x, point.y, point.z);
 
-      ROS_INFO("%s", "Voy a crear la transformada");
       if(detected_ == true) {
         create_transform(point.x, point.y, point.z);
       }
-      if( (ros::Time::now() - detected_ts).toSec() > 5) detected_ = false;
-      ROS_INFO("t desde detected: %lf",(ros::Time::now() - detected_ts).toSec());
+      if((ros::Time::now() - detected_ts).toSec() > 5){
+        detected_ = false;
+      }
     }
     catch(tf::TransformException & ex)
     {
@@ -104,18 +101,18 @@ private:
   ros::Subscriber cloud_sub_;
   ros::Subscriber box_sub_;
   ros::Publisher detect_pub_;
+  ros::Time detected_ts;
 
   int ctr_image_x;
   int ctr_image_y;
   int MIN_PROB = 0.7;
+  int MAX_PROB = 1;
 
   bool detected_ = false;
 
   std::string object_;
   tf2_ros::StaticTransformBroadcaster br_;
   tf::TransformListener listener_;
-
-  ros::Time detected_ts;
 };
 
 int main(int argc, char** argv)

@@ -22,7 +22,6 @@ int main(int argc, char **argv)
   BT::BehaviorTreeFactory factory;
 
   factory.registerNodeType<practica5::Go_point>("Go_point");
-  //factory.registerNodeType<practica5::Turn>("Turn");
   factory.registerNodeType<practica5::Go_object>("Go_object");
 
   auto blackboard = BT::Blackboard::create();
@@ -30,7 +29,7 @@ int main(int argc, char **argv)
   blackboard->set<std::string>("object", argv[2]);
 
   std::string pkgpath = ros::package::getPath("practica5");
-  std::string xml_file = pkgpath + "/behavior_trees_xml/tree_3.xml";
+  std::string xml_file = pkgpath + "/behavior_trees_xml/tree.xml";
 
   BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 
@@ -38,7 +37,7 @@ int main(int argc, char **argv)
   int count = 0;
 
   bool finish = false;
-  while (ros::ok() && !finish)
+  while(ros::ok() && !finish)
   {
     finish = tree.rootNode()->executeTick() == BT::NodeStatus::SUCCESS;
 

@@ -48,7 +48,7 @@ namespace practica5
   void Go_point::doneCb(const actionlib::SimpleClientGoalState& state,
     const move_base_msgs::MoveBaseResultConstPtr& result)
   {
-      ROS_INFO("Distance to goal = %lf", dist);
+    ROS_INFO("");
   }
   */
 
@@ -73,11 +73,11 @@ namespace practica5
     ROS_INFO("GoPoint tick");
     destination_ = getInput<std::string>("goal").value();
 
-    MoveBaseClient ac("move_base",true);
+    MoveBaseClient ac("move_base", true);
 
     if(status() == BT::NodeStatus::IDLE)
     {
-      while (!ac.waitForServer(ros::Duration(5.0)))
+      while(!ac.waitForServer(ros::Duration(5.0)))
       {
         ROS_INFO("Waiting for the move_base action server to come up");
       }
@@ -87,7 +87,7 @@ namespace practica5
       goal_.target_pose.header.stamp = ros::Time::now();
 
       ROS_INFO("Sending goal");
-      ac.sendGoal(goal_, NULL, // oost::bind(&Go_point::doneCb, this, _1, _2),
+      ac.sendGoal(goal_, NULL, // boost::bind(&Go_point::doneCb, this, _1, _2),
         MoveBaseClient::SimpleActiveCallback(),
         boost::bind(&Go_point::feedbackCb, this, _1));
       ac.waitForResult();
