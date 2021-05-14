@@ -51,7 +51,7 @@ namespace practica5
     }
     else
     {
-      vel.angular.z = 0.3;
+      vel.angular.z = 0.1;
       /*if(angle_== 200)// si no hay tf
       {
         vel.angular.z = 0.3;
@@ -64,12 +64,12 @@ namespace practica5
     }
 
     //movimiento lineal
-    if( distance_ > 1 || ( (ros::Time::now() - seen_).toSec() > 3.0 &&(ros::Time::now() - seen_).toSec() < 15.0 && distance_ == -100) )
+    if( distance_ > 1 )//|| ( (ros::Time::now() - seen_).toSec() > 3.0 &&(ros::Time::now() - seen_).toSec() < 15.0 && distance_ == -100) )
     {
       ROS_INFO("distancia > 1 O mucho tiempo desde que o vi");
       vel.linear.x = LINEAR_VEL;
     }
-    else if(distance_ <= 1 || !detected_)
+    else if(distance_ <= 1.5 || !detected_)
     {
       ROS_INFO("DISTANCIA < 1 O !detected_");
       ROS_INFO("(%lf)", distance_);
