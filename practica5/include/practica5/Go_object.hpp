@@ -19,7 +19,6 @@ namespace practica5
     void detectCB(const std_msgs::Bool::ConstPtr& msg);
 
 
-
     void halt();
     BT::NodeStatus tick();
     static BT::PortsList providedPorts()
@@ -37,7 +36,7 @@ namespace practica5
     ros::Publisher vel_pub_;
     ros::Subscriber detect_sub_;
 
-    std::string object_ = "person";
+    std::string object_ = "none";
     bool arrived_;
     bool detected_ ;
 
@@ -45,6 +44,11 @@ namespace practica5
     float LINEAR_VEL = 0.2;
     float angle_;
     float distance_;
+
+    /*
+    MoveBaseClient ac;
+    move_base_msgs::MoveBaseGoal goal_;
+    */
 
     tf2_ros::Buffer buffer_;
     tf2_ros::TransformListener  listener_;
