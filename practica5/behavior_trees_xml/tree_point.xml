@@ -1,0 +1,5 @@
+<root main_tree_to_execute = "MainTree" >
+    <BehaviorTree ID="MainTree">
+      <Go_point   name="Go_point" goal="{destination}"/>
+    </BehaviorTree>
+</root>

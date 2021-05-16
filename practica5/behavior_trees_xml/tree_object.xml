@@ -1,0 +1,8 @@
+<root main_tree_to_execute = "MainTree" >
+    <BehaviorTree ID="MainTree">
+      <Sequence name="root_sequence">
+        <Turn   name="Turn"/>
+        <Go_object   name="Go_object" target="{object}"/>
+      </Sequence>
+    </BehaviorTree>
+</root>
