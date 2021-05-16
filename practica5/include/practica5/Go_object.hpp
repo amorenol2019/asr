@@ -15,11 +15,10 @@ namespace practica5
   {
   public:
     Go_object(const std::string& name, const BT::NodeConfiguration& config);
-    void detectCB(const std_msgs::Bool::ConstPtr& msg);
 
     BT::NodeStatus tick();
     void halt();
-    
+
     static BT::PortsList providedPorts()
     {
       return { BT::InputPort<std::string>("target")};
@@ -27,8 +26,8 @@ namespace practica5
 
   private:
     void detectCb(const std_msgs::Bool::ConstPtr& msg);
-    bool centre_2object(float angle , float distance);
-    void look4_TF(const std::string name , float *angle , float *distance);
+    bool centre_2object(float angle, float distance);
+    void look4_TF(const std::string name, float *angle, float *distance);
     float speed_4angle(float angle);
 
     ros::NodeHandle nh_;

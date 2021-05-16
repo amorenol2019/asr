@@ -29,7 +29,7 @@ namespace practica5
   {
     vel.angular.z = VELOCITY;
 
-    if (!detected_)
+    if(!detected_)
     {
       vel_pub_.publish(vel);
       return BT::NodeStatus::RUNNING;
