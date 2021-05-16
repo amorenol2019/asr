@@ -51,7 +51,7 @@ namespace practica5
     }
 
     //movimiento lineal
-    if(distance_ > 1)
+    if(distance_ > 1.5 && detected_)
     {
       vel.linear.x = LINEAR_VEL;
     }
@@ -76,7 +76,7 @@ namespace practica5
     float speed;
     if(angle_ == 200)
     {
-      speed = 0.00001;
+      speed = 0.01;
     }
     else if(0.3 >= fabs(angle_))
     {
@@ -86,7 +86,7 @@ namespace practica5
     {
       speed = ANGULAR_VEL;
     }
-    else if(angle < 0.3)
+    else if(angle < -0.3)
     {
       speed = -ANGULAR_VEL;
     }
