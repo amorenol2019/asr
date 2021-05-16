@@ -33,7 +33,7 @@ public:
 
     for(int i = 0; i < ar_length; i++)
     {
-      if(msg->bounding_boxes[i].probability > MIN_PROB && msg->bounding_boxes[i].probability < MAX_PROB && msg->bounding_boxes[i].Class == object_)
+      if(msg->bounding_boxes[i].probability > 0.7 && msg->bounding_boxes[i].probability < 1 && msg->bounding_boxes[i].Class == object_)
       {
         ctr_image_x = (msg->bounding_boxes[i].xmin + msg->bounding_boxes[i].xmax) / 2;
         ctr_image_y = (msg->bounding_boxes[i].ymin + msg->bounding_boxes[i].ymax) / 2;
@@ -50,7 +50,7 @@ public:
     std_msgs::Bool msg;
     msg.data = detected_;
     detect_pub_.publish(msg);
-    // ROS_INFO_STREAM("detected: " << detected_);
+    ROS_INFO_STREAM("detected: " << detected_);
 
     if(!detected_) {
       return;

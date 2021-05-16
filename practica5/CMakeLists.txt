@@ -47,5 +47,5 @@ add_definitions(${PCL_DEFINITIONS})
 add_executable(nodo_rgbd src/nodo_rgbd.cpp)
 target_link_libraries(nodo_rgbd ${catkin_LIBRARIES})
 
-add_executable(practica5 src/practica5.cpp src/practica5/Go_point.cpp src/practica5/Turn.cpp src/practica5/Go_object.cpp)
+add_executable(practica5 src/practica5.cpp src/practica5/Go_point.cpp src/practica5/Go_object.cpp src/practica5/Turn.cpp)
 target_link_libraries(practica5 ${catkin_LIBRARIES})
