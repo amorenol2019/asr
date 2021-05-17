@@ -17,25 +17,25 @@ namespace practica5
   : BT::ActionNodeBase(name, config), nh_("~") {}
 
   void Go_point::set_coordinates(){
-    if(destination_ == "carreta"){ // "frigo"){
-      goal_.target_pose.pose.position.x = -0.5; // -0.42;
-      goal_.target_pose.pose.position.y = 9.0; // -3.04;
-      goal_.target_pose.pose.orientation.w = 0.05;
+    if(destination_ == "frigo"){ // "carreta"){
+      goal_.target_pose.pose.position.x = -0.42; // -0.5;
+      goal_.target_pose.pose.position.y = -3.04; // 9.0;
+      goal_.target_pose.pose.orientation.w = 0.0; // 0.05;
     }
-    else if(destination_ == "cajas"){ // "grifo"){
-      goal_.target_pose.pose.position.x = -3.5; // -0.39;
-      goal_.target_pose.pose.position.y = -2.3; // 1.61;
-      goal_.target_pose.pose.orientation.w = 0.05;
+    else if(destination_ == "grifo"){ // "cajas"){
+      goal_.target_pose.pose.position.x = -0.39; // -3.5;
+      goal_.target_pose.pose.position.y = 1.61; // -2.3;
+      goal_.target_pose.pose.orientation.w = 0.0; // 0.05;
     }
-    else if(destination_ == "esquina"){ // "cocina"){
-      goal_.target_pose.pose.position.x = 4.0; // 2.21;
-      goal_.target_pose.pose.position.y = -8.5; // -0.96;
-      goal_.target_pose.pose.orientation.w = 0.05;
+    else if(destination_ == "cocina"){ // "esquina"){
+      goal_.target_pose.pose.position.x = 2.21; // 4.0;
+      goal_.target_pose.pose.position.y = -0.96; // -8.5;
+      goal_.target_pose.pose.orientation.w = 0.0; // 0.05;
     }
-    else if(destination_ == "contenedor"){ // "despensa"){
-      goal_.target_pose.pose.position.x = 2.5; // 3.02;
-      goal_.target_pose.pose.position.y = -7.0; // 0.97;
-      goal_.target_pose.pose.orientation.w = 0.05;
+    else if(destination_ == "despensa"){ // "contenedor"){
+      goal_.target_pose.pose.position.x = 3.02; // 2.5;
+      goal_.target_pose.pose.position.y = 0.97; // -7.0;
+      goal_.target_pose.pose.orientation.w = 0.0; // 0.05;
     }
     else
     {
