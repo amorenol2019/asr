@@ -2,7 +2,7 @@
     <BehaviorTree ID="MainTree">
       <Sequence name="root_sequence">
         <Go_point   name="Go_point" goal="{destination}"/>
-      </Sequence>  
+      </Sequence>
       <Sequence name="root_sequence">
         <Turn   name="Turn"/>
         <Go_object   name="Go_object" target="{object}"/>

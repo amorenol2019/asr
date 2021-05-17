@@ -26,7 +26,7 @@ namespace practica5
     detected_ = msg->data;
   }
 
-  void Go_object::look4_TF(const std::string name , float *angle , float *distance)
+  void Go_object::look4_TF(const std::string name, float *angle, float *distance)
   {
       geometry_msgs::TransformStamped bf2obj_msg;
       try {
@@ -42,22 +42,22 @@ namespace practica5
       *distance = bf2obj_msg.transform.translation.x;
   }
 
-  bool Go_object::centre_2object(float angle , float distance)
+  bool Go_object::centre_2object(float angle, float distance)
   {
     bool near = false;
     bool centered = false;
     bool arrived = false;
 
-    //si la tf no esta creada se acerca al objecto
+    // si la tf no esta creada se acerca al objecto
     if(angle == IMPOSIBLE_ANGLE)
     {
-      vel_.linear.x= LINEAR_VEL;
+      vel_.linear.x = LINEAR_VEL;
       vel_pub_.publish(vel_);
       return false;
     }
 
-    //si la tf esta creada centra el objecto
-    if( fabs(angle) <= 0.3)
+    // si la tf esta creada centra el objecto
+    if(fabs(angle) <= 0.3)
     {
       vel_.angular.z = 0;
       centered = true;
@@ -71,8 +71,8 @@ namespace practica5
       vel_.angular.z = -ANGULAR_VEL;
     }
 
-    //si la tf esta creada se acerca al objecto
-    //movimiento lineal
+    // si la tf esta creada se acerca al objecto
+    // movimiento lineal
     if(distance > MIN_DISTANCE)
     {
       vel_.linear.x = LINEAR_VEL;
@@ -89,32 +89,32 @@ namespace practica5
     }
 
     vel_pub_.publish(vel_);
-    
+
     return arrived;
   }
 
   BT::NodeStatus Go_object::tick()
   {
-      if(!detected_)
-      {
-        return BT::NodeStatus::FAILURE;
-      }
+    if(!detected_)
+    {
+      return BT::NodeStatus::FAILURE;
+    }
 
-      std::string object = getInput<std::string>("target").value();
+    std::string object = getInput<std::string>("target").value();
 
-      float angle , distance;
-      look4_TF( object , &angle , &distance);
-      bool arrived = centre_2object( angle  ,distance );
+    float angle, distance;
+    look4_TF(object, &angle, &distance);
+    bool arrived = centre_2object(angle, distance);
 
-      if(arrived)
-      {
-        ROS_INFO("HOORRAY , HE LLEGADO AL OBJECTO");
-        return BT::NodeStatus::RUNNING;
-      }
-      else
-      {
-        return BT::NodeStatus::RUNNING;
-      }
+    if(arrived)
+    {
+      ROS_INFO("HOORRAY, HE LLEGADO AL OBJECTO");
+      return BT::NodeStatus::RUNNING;
+    }
+    else
+    {
+      return BT::NodeStatus::RUNNING;
+    }
   }
   void Go_object::halt()
   {
